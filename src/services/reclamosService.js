@@ -5,8 +5,8 @@ export default class ReclamosService {
     this.reclamos = new Reclamos();
   }
 
-  buscarTodos = () => {
-    return this.reclamos.buscarTodos();
+  buscarTodos = (querys) => {
+    return this.reclamos.buscarTodos(querys);
   };
 
   buscarId = (reclamo) => {

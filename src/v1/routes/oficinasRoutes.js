@@ -14,4 +14,6 @@ router.patch("/:idOficina", oficinasController.modificar);
 
 // Quitar empleado de oficina
 
+// Empleados por oficina
+
 export { router };

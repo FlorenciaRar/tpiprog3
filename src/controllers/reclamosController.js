@@ -6,8 +6,13 @@ export default class ReclamosController {
   }
 
   buscarTodos = async (req, res) => {
+    const {limit, offset} = req.query;
+    const querys = {
+      limite: limit ? Number(limit) : 0,
+      desplazamiento: offset ? Number(offset) : 0
+    }
     try {
-      const reclamos = await this.service.buscarTodos();
+      const reclamos = await this.service.buscarTodos(querys);
       res.status(200).send({ estado: "OK", data: reclamos });
     } catch (error) {
       console.log(error)

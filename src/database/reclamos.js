@@ -2,9 +2,13 @@ import { conexion } from "./conexion.js";
 import { enviarCorreo } from "../utils/enviarCorreo.js";
 
 export default class Reclamos {
-  buscarTodos = async () => {
-    const sql = "SELECT r.asunto, r.descripcion, r.fechaCreado, r.fechaFinalizado, r.fechaCancelado, re.descripcion AS 'reclamoEstado', rt.descripcion AS 'reclamoTipo' FROM reclamos AS r JOIN reclamos_estado AS re ON re.idReclamoEstado = r.idReclamoEstado JOIN reclamos_tipo AS rt ON r.idReclamoTipo = rt.idReclamoTipo";
-    const [resultado] = await conexion.query(sql);
+  buscarTodos = async ({limite, desplazamiento}) => {
+    let sql = "SELECT r.asunto, r.descripcion, r.fechaCreado, r.fechaFinalizado, r.fechaCancelado, re.descripcion AS 'reclamoEstado', rt.descripcion AS 'reclamoTipo' FROM reclamos AS r JOIN reclamos_estado AS re ON re.idReclamoEstado = r.idReclamoEstado JOIN reclamos_tipo AS rt ON r.idReclamoTipo = rt.idReclamoTipo ORDER BY r.idReclamo ASC";
+    
+    if(limite){
+      sql += " LIMIT ? OFFSET ?";
+    }
+    const [resultado] = await conexion.query(sql, [limite, desplazamiento]);
     return resultado;
   };
 

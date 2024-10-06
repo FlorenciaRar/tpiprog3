@@ -26,6 +26,14 @@ export default class ReclamosService {
     return this.reclamos.cancelar(idReclamo);
   };
 
+  cambiarEstado = (idReclamo, estado) => {
+    return this.reclamos.cambiarEstado(idReclamo, estado);
+  };
+
+  buscarUsuario = (idUsuario) => {
+    return this.reclamos.buscarUsuario(idUsuario);
+  };
+
   buscarOficina = (idUsuario) => {
     return this.reclamos.buscarOficina(idUsuario);
     

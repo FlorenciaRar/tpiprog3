@@ -10,4 +10,8 @@ router.get("/:idOficina", oficinasController.buscarId);
 router.post("/", oficinasController.crear);
 router.patch("/:idOficina", oficinasController.modificar);
 
+// Agregar empleado a oficina
+
+// Quitar empleado de oficina
+
 export { router };

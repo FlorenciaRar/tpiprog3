@@ -14,7 +14,7 @@ router.patch("/:idReclamo", reclamosController.modificar); //Autenticar
 router.patch("/:idReclamo/cancelar", reclamosController.cancelar) // Autenticar
 
 // Cambiar estado (para empleados)
-router.patch("/:idReclamo/estado/:idReclamoEstado", reclamosController.cambiarEstado) // Autenticar
+router.patch("/:idReclamo/estado", reclamosController.cambiarEstado) // Autenticar
 
 // Reclamos por usuario
 router.get("/usuario/:idUsuario", reclamosController.buscarUsuario); // Temporalmente con parametro

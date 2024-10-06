@@ -43,9 +43,26 @@ export default class Reclamos {
   };
 
   cancelar = async (idReclamo) => {
-    // Esto debe ser autenticado y al where le falta "AND idUsuarioCreador = "
+    // Esto debe ser autenticado y le falta el SET usuarioFinalizador y al where le falta "AND idUsuarioCreador = "
     const sql = "UPDATE reclamos SET fechaCancelado = NOW(), idReclamoEstado = 3 WHERE idReclamo = ?;";
     const [resultado] = await conexion.query(sql, [idReclamo]);
+
+    if (resultado.affectedRows === 0) {
+      return res.status(400).json({
+        mensaje: "Ocurrió un error cancelando el reclamo",
+      });
+    }
+    const reclamo = await this.buscarId(idReclamo);
+
+    enviarCorreo(idReclamo, reclamo);
+
+    return reclamo;
+  };
+
+  cambiarEstado = async (idReclamo, estado) => {
+    // Esto debe ser autenticado y le falta el SET usuarioFinalizador y al where le falta "AND idReclamoTipo = idReclamoTipo que atiende el empleado"
+    const sql = "UPDATE reclamos SET fechaFinalizado = NOW(), idReclamoEstado = ? WHERE idReclamo = ?;";
+    const [resultado] = await conexion.query(sql, [estado, idReclamo]);
 
     if (resultado.affectedRows === 0) {
       return res.status(400).json({
@@ -59,11 +76,15 @@ export default class Reclamos {
     return reclamo;
   };
 
+  buscarUsuario = async (idUsuario) => {
+    const sql = "SELECT r.asunto, r.descripcion, r.fechaCreado, r.fechaFinalizado, r.fechaCancelado, re.descripcion AS 'reclamoEstado', rt.descripcion AS 'reclamoTipo', u.nombre AS 'usuarioCreador', u.correoElectronico FROM reclamos AS r JOIN reclamos_estado AS re ON re.idReclamoEstado = r.idReclamoEstado JOIN reclamos_tipo AS rt ON r.idReclamoTipo = rt.idReclamoTipo JOIN usuarios AS u ON r.idUsuarioCreador = u.idUsuario WHERE idUsuario = ?";
+    const [resultado] = await conexion.query(sql, [idUsuario]);
+    return resultado.length > 0 ? resultado : "Sin resultados";
+  };
+
   buscarOficina = async (idUsuario) => {
     const sql = "SELECT r.asunto FROM reclamos as r WHERE r.idReclamoTipo = (SELECT idReclamoTipo FROM oficinas as o JOIN usuarios_oficinas AS uo ON o.idOficina = uo.idOficina WHERE uo.idUsuario = ?);";
-    console.log(conexion.query(sql, [idUsuario]))
     const [resultado] = await conexion.query(sql, [idUsuario]);
-    console.log(resultado);
     return resultado;
   };
 }

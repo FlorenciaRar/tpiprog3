@@ -38,5 +38,4 @@ export default class Oficinas {
 
     return this.buscarId(idOficina);
   };
-
 }

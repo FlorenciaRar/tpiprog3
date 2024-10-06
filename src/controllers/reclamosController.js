@@ -149,13 +149,68 @@ export default class ReclamosController {
       });
     }
   };
-  // cancelar = async (req, res) => {};
 
-  // finalizar = async (req, res) => {};
+  cambiarEstado = async (req, res) => {
+    const idReclamo = req.params.idReclamo;
+    const estado = req.body.estado
+
+    if (idReclamo === undefined || idReclamo === null) {
+      return res.status(400).send({
+        estado: "ERROR",
+        mensaje: "Id requerida",
+      });
+    }
+
+    if (!estado) {
+      return res.status(400).send({
+        estado: "ERROR",
+        mensaje: "Estado requerido",
+      });
+    }
+    try {
+      const estadoReclamo = await this.service.cambiarEstado(idReclamo, estado);
+      
+      res.status(200).send({
+        estado: "OK",
+        data: estadoReclamo,
+      });
+    } catch (error) {
+      console.log(error);
+      res.status(500).send({
+        mensaje: "Ha ocurrido un error. Intentelo de nuevo más tarde",
+      });
+    }
+  };
+
+  buscarUsuario = async (req, res) => {
+    const idUsuario = req.params.idUsuario; // Luego sera req.user
+    if (idUsuario === undefined || idUsuario === null) {
+      return res.status(400).send({
+        estado: "ERROR",
+        mensaje: "Id requerida",
+      });
+    }
+    try {
+    const reclamos = await this.service.buscarUsuario(idUsuario);
+    if(!reclamos){
+      return res.status(404).send({
+        estado: "ERROR",
+        mensaje: "No se han encontrado reclamos",
+      });
+    }
+      res.status(200).send({
+        estado: "OK",
+        data: reclamos,
+      });
+    } catch (error) {
+      res.status(500).send({
+        mensaje: "Ha ocurrido un error. Intentelo de nuevo más tarde",
+      });
+    }
+  };
 
   buscarOficina = async (req, res) => {
     const idUsuario = req.params.idUsuario; // Luego sera req.user
-    console.log(idUsuario);
     if (idUsuario === undefined || idUsuario === null) {
       return res.status(400).send({
         estado: "ERROR",

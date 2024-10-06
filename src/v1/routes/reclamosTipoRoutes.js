@@ -6,9 +6,8 @@ const router = express.Router();
 const reclamosTipoController = new ReclamosTipoController();
 
 router.get("/", reclamosTipoController.buscarTodos);
-router.get("/:id", reclamosTipoController.buscarId);
+router.get("/:idReclamoTipo", reclamosTipoController.buscarId);
 router.post("/", reclamosTipoController.crear);
-router.patch("/:id", reclamosTipoController.modificar);
-router.delete("/:id", reclamosTipoController.eliminar);
+router.patch("/:idReclamoTipo", reclamosTipoController.modificar);
 
 export { router };

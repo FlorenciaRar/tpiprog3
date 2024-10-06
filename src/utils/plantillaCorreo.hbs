@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Lato:wght@100;900&display=swap"
+      rel="stylesheet" />
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        padding: 0;
+        background-color: #ffffff;
+        font-family: "Montserrat", sans-serif;
+      }
+
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      .row-content {
+        width: 100%;
+        margin: 0 auto;
+      }
+
+      .header,
+      .footer {
+        background-color: #009688;
+        text-align: center;
+        color: #ffffff;
+        padding: 10px;
+      }
+
+      .content {
+        padding: 10px;
+        color: #444a5b;
+      }
+
+      .content p {
+        margin-bottom: 16px;
+        line-height: 1.2;
+      }
+
+      .content strong {
+        font-weight: bold;
+      }
+
+      @media (max-width: 520px) {
+        .desktop_hide {
+          display: none;
+        }
+      }
+    </style>
+    <title>Cambio de estado</title>
+  </head>
+  <body>
+    <div class="row-content">
+      <div class="header">
+        <h1>Cambio de estado en su reclamo</h1>
+      </div>
+      <div class="content">
+        <p>Estimado {{nombre}},</p>
+        <p>
+          Le informamos que hubo un cambio de estado en su reclamo
+          <strong>#{{idReclamo}}</strong>
+        </p>
+        <p>Asunto: <strong>{{asunto}}</strong></p>
+        <p>Descripción: <strong>{{descripcion}}</strong></p>
+        <p>Estado: <strong>{{estado}}</strong></p>
+        <p>
+          Para más información, puede revisar su reclamo en nuestro
+          <a href="https://fcad.uner" target="_blank" rel="noopener"
+            >sitio web</a
+          >.
+        </p>
+      </div>
+      <div class="footer">
+        <h2>TUDW - Automotores S.R.L</h2>
+      </div>
+    </div>
+  </body>
+</html>

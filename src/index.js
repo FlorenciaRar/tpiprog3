@@ -1,19 +1,43 @@
 import express from "express";
 import dotenv from "dotenv";
+import cors from "cors";
+import helmet from "helmet";
+import swaggerUi from "swagger-ui-express";
+import swaggerJsdoc from "swagger-jsdoc";
 
-import { router as v1ReclamoTipoRouter } from "./v1/routes/reclamosTipoRoutes.js";
+import { router as v1ReclamosEstadoRouter } from "./v1/routes/reclamosEstadoRoutes.js";
+import { router as v1ReclamosTipoRouter } from "./v1/routes/reclamosTipoRoutes.js";
+import { router as v1OficinasRouter } from "./v1/routes/oficinasRoutes.js";
+import { router as v1ReclamosRouter } from "./v1/routes/reclamosRoutes.js";
+import { router as v1UsuariosRouter } from "./v1/routes/usuariosRoutes.js";
+import { swaggerConfig } from "./config/swaggerConfig.js";
 
 dotenv.config();
 
 const app = express();
-
 app.use(express.json());
+
+app.use(cors());
+app.use(helmet());
+
+const swaggerOptions = swaggerConfig;
+
+const swaggerDocs = swaggerJsdoc(swaggerOptions);
+
+app.use('/documentacion', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 app.get("/", (req, res) => {
   res.json({ estado: true });
 });
 
-app.use("/api/v1/reclamos-tipo", v1ReclamoTipoRouter);
+app.use("/api/v1/reclamos-estado", v1ReclamosEstadoRouter);
+app.use("/api/v1/reclamos-tipo", v1ReclamosTipoRouter);
+app.use("/api/v1/oficinas", v1OficinasRouter);
+app.use("/api/v1/reclamos", v1ReclamosRouter);
+app.use("/api/v1/usuarios", v1UsuariosRouter);
+
+
+
 
 const puerto = process.env.PUERTO;
 app.listen(puerto, () => {
@@ -166,192 +190,6 @@ app.get("/reclamos", async (req, res) => {
 
 // Crear reclamo (autenticar)
 
-// OFICINAS
-// Todas las oficinas
-app.get("/oficinas", async (req, res) => {
-  try {
-    const sql = "SELECT idOficina, nombre, idReclamoTipo FROM oficinas WHERE activo = 1;";
-    const [resultado] = await conexion.query(sql);
-
-    res.status(200).json(resultado);
-  } catch (err) {
-    res.status(500).json({
-      mensaje: "Ha ocurrido un error",
-    });
-  }
-});
-
-// Oficinas por id
-app.get("/oficinas/:idOficina", async (req, res) => {
-  try {
-    const idOficina = req.params.idOficina;
-    const sql = "SELECT idOficina, nombre, idReclamoTipo FROM oficinas WHERE idOficina = ? AND activo = 1;";
-    const [resultado] = await conexion.query(sql, [idOficina]);
-
-    if (resultado.length === 0) {
-      return res.status(404).json({
-        mensaje: "Oficina no encontrada",
-      });
-    }
-    res.status(200).json(resultado);
-  } catch (err) {
-    res.status(500).json({
-      mensaje: "Ha ocurrido un error. Intentelo de nuevo más tarde",
-    });
-  }
-});
-
-// Crear oficina
-app.post("/oficinas", async (req, res) => {
-  try {
-    const { nombre, idReclamoTipo } = req.body;
-
-    if (!nombre) {
-      return res.status(400).json({
-        mensaje: "Nombre requerido",
-      });
-    }
-    if (!idReclamoTipo) {
-      return res.status(400).json({
-        mensaje: "Tipo de reclamo requerido",
-      });
-    }
-    // Habria que verificar si el idReclamoTipo existe?
-
-    const sql = "INSERT INTO oficinas (nombre, idReclamoTipo, activo) VALUES  ?, ? , 1;";
-    const [resultado] = await conexion.query(sql, [nombre, idReclamoTipo]);
-
-    if (resultado.affectedRows === 0) {
-      return res.status(400).json({
-        mensaje: "Ocurrió un error creando la oficina",
-      });
-    }
-    res.status(201).json({
-      mensaje: "Oficina creada con éxito",
-    });
-  } catch (err) {
-    res.status(500).json({
-      mensaje: "Ha ocurrido un error. Intentelo de nuevo más tarde",
-    });
-  }
-});
-
-// Reclamos por oficina
-
-// Eliminar oficina
-
-// Ver trabajadores de una oficina
-
-// Asignar trabajadores a una oficina
-
-// Sacar trabajadores a una oficina
-
-// RECLAMOS-TIPO
-
-// app.use('/reclamo-tipo', routerReclamoTipo)
-// router.get('/', reclamoTipoController.getReclamoTipo)
-// exports.getReclamoTipo = async (rec, res) y aca recien va el try catch
-
-// // Todos los reclamos -tipo
-// app.get("/reclamos-tipo", async (req, res) => {
-//   try {
-//     const sql = "SELECT idReclamosTipo, descripcion FROM reclamos_tipo WHERE activo = 1";
-//     const [resultado] = await conexion.query(sql);
-
-//     res.status(200).json(resultado);
-//   } catch (err) {
-//     res.status(500).json({
-//       mensaje: "Ha ocurrido un error",
-//     });
-//   }
-// });
-
-// // Reclamo-tipo por id
-// app.get("/reclamos-tipo/:idReclamosTipo", async (req, res) => {
-//   try {
-//     const idReclamosTipo = req.params.idReclamosTipo;
-//     const sql = `SELECT * FROM reclamos_tipo WHERE  idReclamosTipo = ? AND activo = 1`;
-//     const [resultado] = await conexion.query(sql, [idReclamosTipo]);
-
-//     if (resultado.length === 0) {
-//       return res.status(404).json({
-//         mensaje: "Tipo de reclamo no encontrado",
-//       });
-//     }
-//     res.status(200).json(resultado);
-//   } catch (err) {
-//     res.status(500).json({
-//       mensaje: "Ha ocurrido un error. Intentelo de nuevo más tarde",
-//     });
-//   }
-// });
-
-// // Crear reclamo tipo
-// app.post("/reclamos-tipo", async (req, res) => {
-//   try {
-//     const { descripcion } = req.body;
-
-//     if (!descripcion) {
-//       return res.status(400).json({
-//         mensaje: "Descripción requerida",
-//       });
-//     }
-
-//     const sql = "INSERT INTO reclamos_tipo (descripcion, activo) VALUES  ? , 1;";
-//     const [resultado] = await conexion.query(sql, [descripcion]);
-
-//     if (resultado.affectedRows === 0) {
-//       return res.status(400).json({
-//         mensaje: "Ocurrió un error creando el tipo de reclamo",
-//       });
-//     }
-//     res.status(201).json({
-//       mensaje: "Tipo de reclamo creado con éxito",
-//     });
-//   } catch (err) {
-//     res.status(500).json({
-//       mensaje: "Ha ocurrido un error. Intentelo de nuevo más tarde",
-//     });
-//   }
-// });
-
-// // Modificar un reclamo tipo
-// app.patch("/reclamos-tipo/:idReclamosTipo", async (req, res) => {
-//   try {
-//     const { descripcion, activo } = req.body;
-
-//     if (!descripcion) {
-//       return res.status(400).json({
-//         mensaje: "Descripción requerida",
-//       });
-//     }
-//     if (activo === undefined || activo === null) {
-//       return res.status(400).json({
-//         mensaje: "Activo requerido",
-//       });
-//     }
-
-//     const idReclamosTipo = req.params.idReclamosTipo;
-//     const sql = "UPDATE reclamos_tipo SET descripcion = ? , activo = ?  WHERE idReclamosTipo = ? AND activo = 1";
-//     const [resultado] = await conexion.query(sql, [descripcion, activo, idReclamosTipo]);
-
-//     if (resultado.affectedRows === 0) {
-//       return res.status(400).json({
-//         mensaje: "Ocurrió un error modificando el tipo de reclamo",
-//       });
-//     }
-//     res.status(200).json({
-//       mensaje: "Tipo de reclamo modificado con éxito",
-//     });
-//   } catch (err) {
-//     res.status(500).json({
-//       mensaje: "Ha ocurrido un error. Intentelo de nuevo más tarde",
-//     });
-//   }
-// });
-
-// Desactivar un reclamo tipo (PREGUNTAR)
-
 // EMPLEADOS
 // Todos los empleados
 app.get("/empleados", async (req, res) => {
@@ -390,7 +228,7 @@ app.get("/empleados/:idEmpleado", async (req, res) => {
 // Cambiar el tipo de usuario a empleado (¿Doble consulta en el mismo endpoint?)
 // Tipo al hacer un post 1ro: le cambia el tipo usuario a empleado 2do: lo mete en usuarios-oficinas
 
-app.post("/oficinas/:idOficina/:idEmpleado", async (req, res) => {});
+// app.post("/oficinas/:idOficina/:idEmpleado", async (req, res) => {});
 
 // Cambiar el tipo de usuario a usuario
 // Hace lo inverso, lo saca de la oficina y le cambia el tipo

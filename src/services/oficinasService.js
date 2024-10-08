@@ -5,8 +5,8 @@ export default class OficinasService {
     this.oficinas = new Oficinas();
   }
 
-  buscarTodos = () => {
-    return this.oficinas.buscarTodos();
+  buscarTodos = (oficinaQuerys) => {
+    return this.oficinas.buscarTodos(oficinaQuerys);
   };
 
   buscarId = (oficina) => {
@@ -21,8 +21,5 @@ export default class OficinasService {
   modificar = (idOficina, oficina) => {
     return this.oficinas.modificar(idOficina, oficina);
   };
-
-  // eliminar = (reclamoTipo) => {
-  //   this.reclamosTipo.eliminar(reclamoTipo);
-  // };
+  
 }

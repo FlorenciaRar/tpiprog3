@@ -1,9 +1,13 @@
 import { conexion } from "./conexion.js";
 
 export default class Oficinas {
-  buscarTodos = async () => {
-    const sql = "SELECT o.idOficina, o.nombre, rt.descripcion FROM oficinas as o JOIN reclamos_tipo as rt ON o.idReclamoTipo = rt.idReclamoTipo WHERE o.activo = 1";
-    const [resultado] = await conexion.query(sql);
+  buscarTodos = async ({limite, desplazamiento}) => {
+    let sql = "SELECT o.idOficina, o.nombre, rt.descripcion FROM oficinas as o JOIN reclamos_tipo as rt ON o.idReclamoTipo = rt.idReclamoTipo WHERE o.activo = 1 ORDER BY o.nombre ASC";
+    
+    if(limite){
+      sql += " LIMIT ? OFFSET ?";
+    }
+    const [resultado] = await conexion.query(sql, [limite, desplazamiento]);
     return resultado;
   };
 

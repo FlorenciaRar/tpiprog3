@@ -34,7 +34,7 @@ export default class Reclamos {
   modificar = async (idReclamo, {asunto, descripcion}) => {
     // Ver el tema del control sobre la modificacion
     // Esto debe ser autenticado y al where le falta "AND idUsuarioCreador = "
-    const sql = "UPDATE reclamos SET asunto ?, descripcion = ? WHERE idReclamo = ?;";
+    const sql = "UPDATE reclamos SET asunto = ?, descripcion = ? WHERE idReclamo = ?;";
     const [resultado] = await conexion.query(sql, [asunto, descripcion, idReclamo]);
 
     if (resultado.affectedRows === 0) {

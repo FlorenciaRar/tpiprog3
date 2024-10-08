@@ -43,9 +43,9 @@ export const enviarCorreo = (idReclamo, reclamo)=>{
 
     transporter.sendMail(mailOptions, (error, info) => {
         if (error) {
-            console.error("Error enviado el correo: ", error);
+            console.error("ERROR", error);
         } else {
-            res.json({'estado': true, 'mensaje': 'Notificación enviada'});
+            res.json({'estado': "OK"});
         }
     });
 }

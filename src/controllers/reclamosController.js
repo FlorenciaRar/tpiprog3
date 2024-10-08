@@ -124,6 +124,7 @@ export default class ReclamosController {
         data: modificacionReclamo,
       });
     } catch (error) {
+      console.log(error);
       res.status(500).send({
         mensaje: "Ha ocurrido un error. Intentelo de nuevo más tarde",
       });

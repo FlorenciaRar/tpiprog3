@@ -6,10 +6,16 @@ export default class oficinasController {
   }
 
   buscarTodos = async (req, res) => {
+    const {limit, offset} = req.query;
+    const querys = {
+      limite: limit ? Number(limit) : 0,
+      desplazamiento: offset ? Number(offset) : 0
+    }
     try {
-      const oficinas = await this.service.buscarTodos();
+      const oficinas = await this.service.buscarTodos(querys);
       res.status(200).send({ estado: "OK", data: oficinas });
     } catch (error) {
+      console.log(error)
       res.status(500).send({
         mensaje: "Ha ocurrido un error. Intentelo de nuevo más tarde",
       });

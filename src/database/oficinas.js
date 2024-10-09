@@ -1,10 +1,11 @@
 import { conexion } from "./conexion.js";
 
 export default class Oficinas {
-  buscarTodos = async ({limite, desplazamiento}) => {
-    let sql = "SELECT o.idOficina, o.nombre, rt.descripcion FROM oficinas as o JOIN reclamos_tipo as rt ON o.idReclamoTipo = rt.idReclamoTipo WHERE o.activo = 1 ORDER BY o.nombre ASC";
-    
-    if(limite){
+  buscarTodos = async ({ limite, desplazamiento }) => {
+    let sql =
+      "SELECT o.idOficina, o.nombre, rt.descripcion FROM oficinas as o JOIN reclamos_tipo as rt ON o.idReclamoTipo = rt.idReclamoTipo WHERE o.activo = 1 ORDER BY o.nombre ASC";
+
+    if (limite) {
       sql += " LIMIT ? OFFSET ?";
     }
     const [resultado] = await conexion.query(sql, [limite, desplazamiento]);
@@ -12,7 +13,8 @@ export default class Oficinas {
   };
 
   buscarId = async (idOficina) => {
-    const sql = "SELECT o.idOficina, o.nombre, rt.descripcion FROM oficinas as o JOIN reclamos_tipo as rt ON o.idReclamoTipo = rt.idReclamoTipo WHERE o.idOficina = ? AND o.activo = 1";
+    const sql =
+      "SELECT o.idOficina, o.nombre, rt.descripcion FROM oficinas as o JOIN reclamos_tipo as rt ON o.idReclamoTipo = rt.idReclamoTipo WHERE o.idOficina = ? AND o.activo = 1";
     const [resultado] = await conexion.query(sql, [idOficina]);
     return resultado.length > 0 ? resultado[0] : null;
   };
@@ -30,7 +32,7 @@ export default class Oficinas {
     return this.buscarId(resultado.insertId);
   };
 
-  modificar = async (idOficina, {nombre, idReclamoTipo, activo}) => {
+  modificar = async (idOficina, { nombre, idReclamoTipo, activo }) => {
     const sql = "UPDATE oficinas SET nombre= ?, idReclamoTipo = ?, activo= ? WHERE idOficina = ?";
     const [resultado] = await conexion.query(sql, [nombre, idReclamoTipo, activo, idOficina]);
 
@@ -41,5 +43,12 @@ export default class Oficinas {
     }
 
     return this.buscarId(idOficina);
+  };
+
+  buscarEmpleados = async (idOficina) => {
+    const sql =
+      "SELECT u.nombre, u.apellido, o.nombre AS 'oficina' FROM usuarios_oficinas AS uo JOIN oficinas AS o ON uo.idOficina = o.idOficina JOIN usuarios AS u ON uo.idUsuario = u.idUsuario WHERE uo.idOficina = ? AND uo.activo = 1";
+    const [resultado] = await conexion.query(sql, [idOficina]);
+    return resultado;
   };
 }

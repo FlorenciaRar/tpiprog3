@@ -26,14 +26,14 @@ export default class usuariosController {
       });
     }
     try {
-    const usuario = await this.service.buscarId(idUsuario);
+      const usuario = await this.service.buscarId(idUsuario);
 
-    if(!usuario){
-      return res.status(404).send({
-        estado: "ERROR",
-        mensaje: "Usuario no encontrada",
-      });
-    }
+      if (!usuario) {
+        return res.status(404).send({
+          estado: "ERROR",
+          mensaje: "Usuario no encontrada",
+        });
+      }
       res.status(200).send({
         estado: "OK",
         data: usuario,
@@ -45,8 +45,10 @@ export default class usuariosController {
     }
   };
 
+  // se agrego idTipoUsuario segun la consigna del TP
   crear = async (req, res) => {
-    const { nombre, apellido, correoElectronico, contrasenia, imagen } = req.body;
+    const { nombre, apellido, correoElectronico, contrasenia, imagen } =
+      req.body;
 
     if (!nombre) {
       return res.status(400).send({
@@ -73,10 +75,16 @@ export default class usuariosController {
       });
     }
 
-    // Validar imagen 
+    // Validar imagen
 
     try {
-      const usuario = { nombre, apellido, correoElectronico, contrasenia, imagen };
+      const usuario = {
+        nombre,
+        apellido,
+        correoElectronico,
+        contrasenia,
+        imagen,
+      };
       const creacionUsuario = await this.service.crear(usuario);
 
       res.status(201).send({
@@ -93,7 +101,8 @@ export default class usuariosController {
 
   modificar = async (req, res) => {
     const idUsuario = req.params.idUsuario; // Luego será req.user
-    const {nombre, apellido, correoElectronico, contrasenia, imagen, activo} = req.body;
+    const { nombre, apellido, correoElectronico, contrasenia, imagen, activo } =
+      req.body;
 
     if (idUsuario === undefined || idUsuario === null) {
       return res.status(400).send({
@@ -130,7 +139,13 @@ export default class usuariosController {
     }
 
     try {
-      const modificacionUsuario = await this.service.modificar(idUsuario, {nombre, apellido, correoElectronico, imagen, activo});
+      const modificacionUsuario = await this.service.modificar(idUsuario, {
+        nombre,
+        apellido,
+        correoElectronico,
+        imagen,
+        activo,
+      });
 
       res.status(200).send({
         estado: "OK",
@@ -142,5 +157,4 @@ export default class usuariosController {
       });
     }
   };
-
 }

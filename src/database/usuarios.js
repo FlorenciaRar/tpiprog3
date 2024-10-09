@@ -14,7 +14,8 @@ export default class Usuarios {
   };
 
   crear = async ({ nombre, apellido, correoElectronico, contrasenia, imagen }) => {
-    const sql = "INSERT INTO usuarios (nombre, apellido, correoElectronico, contrasenia, idUsuarioTipo, imagen, activo) VALUES  (?, ?, ?, SHA2(?, 256), 3, ?, 1);";
+    const sql =
+      "INSERT INTO usuarios (nombre, apellido, correoElectronico, contrasenia, idUsuarioTipo, imagen, activo) VALUES  (?, ?, ?, SHA2(?, 256), 2, ?, 1);";
     const [resultado] = await conexion.query(sql, [nombre, apellido, correoElectronico, contrasenia, imagen]);
 
     if (resultado.affectedRows === 0) {
@@ -26,7 +27,7 @@ export default class Usuarios {
     return this.buscarId(resultado.insertId);
   };
 
-  modificar = async (idUsuario, {nombre, apellido, correoElectronico, imagen, activo}) => {
+  modificar = async (idUsuario, { nombre, apellido, correoElectronico, imagen, activo }) => {
     const sql = "UPDATE usuarios SET nombre= ?, apellido= ?, correoElectronico= ?, imagen= ?, activo= ? WHERE idUsuario = ?";
     const [resultado] = await conexion.query(sql, [nombre, apellido, correoElectronico, imagen, activo, idUsuario]);
 
@@ -38,6 +39,4 @@ export default class Usuarios {
 
     return this.buscarId(idUsuario);
   };
-
-  // eliminar = async ({ idReclamoTipo }) => {};
 }

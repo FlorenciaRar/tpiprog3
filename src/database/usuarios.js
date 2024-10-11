@@ -14,7 +14,6 @@ export default class Usuarios {
   };
 
   crear = async ({ nombre, apellido, correoElectronico, contrasenia, imagen }) => {
-    // se modifico idUsuarioTipo por idTipoUsuario para que coincida con la DB
     const sql =
       "INSERT INTO usuarios (nombre, apellido, correoElectronico, contrasenia, idUsuarioTipo, imagen, activo) VALUES  (?, ?, ?, SHA2(?, 256), 2, ?, 1);";
     const [resultado] = await conexion.query(sql, [nombre, apellido, correoElectronico, contrasenia, imagen]);

@@ -6,16 +6,16 @@ export default class ReclamosController {
   }
 
   buscarTodos = async (req, res) => {
-    const {limit, offset} = req.query;
+    const { limit, offset } = req.query;
     const querys = {
       limite: limit ? Number(limit) : 0,
-      desplazamiento: offset ? Number(offset) : 0
-    }
+      desplazamiento: offset ? Number(offset) : 0,
+    };
     try {
       const reclamos = await this.service.buscarTodos(querys);
       res.status(200).send({ estado: "OK", data: reclamos });
     } catch (error) {
-      console.log(error)
+      console.log(error);
       res.status(500).send({
         mensaje: "Ha ocurrido un error. Intentelo de nuevo más tarde",
       });
@@ -32,14 +32,14 @@ export default class ReclamosController {
       });
     }
     try {
-    const reclamo = await this.service.buscarId(idReclamo);
+      const reclamo = await this.service.buscarId(idReclamo);
 
-    if(!reclamo){
-      return res.status(404).send({
-        estado: "ERROR",
-        mensaje: "Reclamo no encontrado",
-      });
-    }
+      if (!reclamo) {
+        return res.status(404).send({
+          estado: "ERROR",
+          mensaje: "Reclamo no encontrado",
+        });
+      }
       res.status(200).send({
         estado: "OK",
         data: reclamo,
@@ -52,32 +52,27 @@ export default class ReclamosController {
   };
 
   crear = async (req, res) => {
-    const { asunto, descripcion, idReclamoTipo, idUsuarioCreador } = req.body;
+    const idUsuarioCreador = req.user.idUsuario;
+    const { asunto, descripcion, idReclamoTipo } = req.body;
 
     if (!asunto) {
-    return res.status(400).send({
-      estado: "ERROR",
-      mensaje: "Asunto requerido",
-    });
-  }
-  if (!descripcion) {
-    return res.status(400).send({
-      estado: "ERROR",
-      mensaje: "Descripción requerida",
-    });
-  }
-  if (!idReclamoTipo) {
-    return res.status(400).send({
-      estado: "ERROR",
-      mensaje: "IdReclamoTipo requerido",
-    });
-  }
-  if (!idUsuarioCreador) {
-    return res.status(400).send({
-      estado: "ERROR",
-      mensaje: "IdUsuarioCreador requerido",
-    });
-  }
+      return res.status(400).send({
+        estado: "ERROR",
+        mensaje: "Asunto requerido",
+      });
+    }
+    if (!descripcion) {
+      return res.status(400).send({
+        estado: "ERROR",
+        mensaje: "Descripción requerida",
+      });
+    }
+    if (!idReclamoTipo) {
+      return res.status(400).send({
+        estado: "ERROR",
+        mensaje: "IdReclamoTipo requerido",
+      });
+    }
     try {
       const reclamo = { asunto, descripcion, idReclamoTipo, idUsuarioCreador };
       const creacionReclamo = await this.service.crear(reclamo);
@@ -95,7 +90,7 @@ export default class ReclamosController {
 
   modificar = async (req, res) => {
     const idReclamo = req.params.idReclamo;
-    const {asunto, descripcion} = req.body;
+    const datos = req.body;
 
     if (idReclamo === undefined || idReclamo === null) {
       return res.status(400).send({
@@ -103,22 +98,10 @@ export default class ReclamosController {
         mensaje: "Id requerida",
       });
     }
-    if (!asunto) {
-      return res.status(400).send({
-        estado: "ERROR",
-        mensaje: "Asunto requerido",
-      });
-    }
-    if (!descripcion) {
-      return res.status(400).send({
-        estado: "ERROR",
-        mensaje: "Descripcion requerida",
-      });
-    }
 
     try {
-      const modificacionReclamo = await this.service.modificar(idReclamo, {asunto, descripcion});
-      
+      const modificacionReclamo = await this.service.modificar(idReclamo, datos);
+
       res.status(200).send({
         estado: "OK",
         data: modificacionReclamo,
@@ -133,6 +116,7 @@ export default class ReclamosController {
 
   cancelar = async (req, res) => {
     const idReclamo = req.params.idReclamo;
+    const idUsuario = req.user.idUsuario;
 
     if (idReclamo === undefined || idReclamo === null) {
       return res.status(400).send({
@@ -142,8 +126,8 @@ export default class ReclamosController {
     }
 
     try {
-      const cancelarReclamo = await this.service.cancelar(idReclamo);
-      
+      const cancelarReclamo = await this.service.cancelar({ idReclamo, idUsuario });
+
       res.status(200).send({
         estado: "OK",
         data: cancelarReclamo,
@@ -158,7 +142,8 @@ export default class ReclamosController {
 
   cambiarEstado = async (req, res) => {
     const idReclamo = req.params.idReclamo;
-    const estado = req.body.estado
+    const idUsuario = req.user.idUsuario;
+    const estado = Number(req.body.estado);
 
     if (idReclamo === undefined || idReclamo === null) {
       return res.status(400).send({
@@ -167,19 +152,30 @@ export default class ReclamosController {
       });
     }
 
-    if (!estado) {
+    if (!estado || estado === 3) {
       return res.status(400).send({
         estado: "ERROR",
-        mensaje: "Estado requerido",
+        mensaje: "Estado no válido",
       });
     }
     try {
-      const estadoReclamo = await this.service.cambiarEstado(idReclamo, estado);
-      
-      res.status(200).send({
-        estado: "OK",
-        data: estadoReclamo,
-      });
+      // Valida que el reclamo exista y no este cancelado
+      const reclamo = await this.service.buscarId(idReclamo);
+      console.log(reclamo);
+      if (reclamo && reclamo.reclamoEstado !== "Cancelado") {
+        // Esto no me gusta, deberia ser por idEsado, consultar
+        const estadoReclamo = await this.service.cambiarEstado({ idReclamo, idUsuario, estado });
+
+        res.status(200).send({
+          estado: "OK",
+          data: estadoReclamo,
+        });
+      } else {
+        return res.status(400).send({
+          estado: "ERROR",
+          mensaje: "El reclamo no existe o ha sido cancelado por el usuario",
+        });
+      }
     } catch (error) {
       console.log(error);
       res.status(500).send({
@@ -189,7 +185,7 @@ export default class ReclamosController {
   };
 
   buscarUsuario = async (req, res) => {
-    const idUsuario = req.params.idUsuario; // Luego sera req.user
+    const idUsuario = req.user.idUsuario;
     if (idUsuario === undefined || idUsuario === null) {
       return res.status(400).send({
         estado: "ERROR",
@@ -197,13 +193,13 @@ export default class ReclamosController {
       });
     }
     try {
-    const reclamos = await this.service.buscarUsuario(idUsuario);
-    if(!reclamos){
-      return res.status(404).send({
-        estado: "ERROR",
-        mensaje: "No se han encontrado reclamos",
-      });
-    }
+      const reclamos = await this.service.buscarUsuario(idUsuario);
+      if (!reclamos) {
+        return res.status(404).send({
+          estado: "ERROR",
+          mensaje: "No se han encontrado reclamos",
+        });
+      }
       res.status(200).send({
         estado: "OK",
         data: reclamos,
@@ -216,7 +212,7 @@ export default class ReclamosController {
   };
 
   buscarOficina = async (req, res) => {
-    const idUsuario = req.params.idUsuario; // Luego sera req.user
+    const idUsuario = req.user.idUsuario;
     if (idUsuario === undefined || idUsuario === null) {
       return res.status(400).send({
         estado: "ERROR",
@@ -224,19 +220,19 @@ export default class ReclamosController {
       });
     }
     try {
-    const reclamos = await this.service.buscarOficina(idUsuario);
-    console.log(reclamos);
-    if(!reclamos){
-      return res.status(404).send({
-        estado: "ERROR",
-        mensaje: "No se han encontrado reclamos",
-      });
-    }
+      const reclamos = await this.service.buscarOficina(idUsuario);
+      if (!reclamos) {
+        return res.status(404).send({
+          estado: "ERROR",
+          mensaje: "No se han encontrado reclamos",
+        });
+      }
       res.status(200).send({
         estado: "OK",
         data: reclamos,
       });
     } catch (error) {
+      console.log(error);
       res.status(500).send({
         mensaje: "Ha ocurrido un error. Intentelo de nuevo más tarde",
       });

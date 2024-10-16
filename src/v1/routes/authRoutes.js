@@ -1,5 +1,6 @@
 import express from "express";
 import passport from "passport";
+import { autenticado } from "../../middlewares/validarUsuarios.js";
 
 const router = express.Router();
 
@@ -26,15 +27,6 @@ router.post(
     })(req, res, next);
   }
 );
-
-// Middleware para verificar si el usuario está autenticado
-export function autenticado(req, res, next) {
-  if (req.isAuthenticated()) {
-    return next();
-  } else {
-    res.status(401).json({ mensaje: "No autorizado" });
-  }
-}
 
 // Ruta de sección autenticada
 router.get("/seccion-autenticada", autenticado, (req, res) => {

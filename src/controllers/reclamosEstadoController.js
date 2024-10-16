@@ -66,7 +66,7 @@ export default class ReclamosEstadoController {
 
   modificar = async (req, res) => {
     const idReclamoEstado = req.params.idReclamoEstado;
-    const {descripcion, activo} = req.body;
+    const datos = req.body;
 
     if (idReclamoEstado === undefined || idReclamoEstado === null) {
       return res.status(400).send({
@@ -74,21 +74,9 @@ export default class ReclamosEstadoController {
         mensaje: "Id requerida",
       });
     }
-    if (!descripcion) {
-      return res.status(400).send({
-        estado: "ERROR",
-        mensaje: "Descripción requerida",
-      });
-    }
-    if (activo === undefined || activo === null) {
-      return res.status(400).send({
-        estado: "ERROR",
-        mensaje: "Campo activo requerido",
-      });
-    }
 
     try {
-      const modificacionReclamoEstado = await this.service.modificar(idReclamoEstado, { descripcion, activo });
+      const modificacionReclamoEstado = await this.service.modificar(idReclamoEstado, datos);
       res.status(200).send({
         estado: "OK",
         data: modificacionReclamoEstado,
@@ -99,5 +87,4 @@ export default class ReclamosEstadoController {
       });
     }
   };
-
 }

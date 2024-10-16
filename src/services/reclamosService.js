@@ -11,7 +11,6 @@ export default class ReclamosService {
 
   buscarId = (reclamo) => {
     return this.reclamos.buscarId(reclamo);
-    
   };
 
   crear = (reclamo) => {
@@ -22,12 +21,12 @@ export default class ReclamosService {
     return this.reclamos.modificar(idReclamo, reclamo);
   };
 
-  cancelar = (idReclamo) => {
-    return this.reclamos.cancelar(idReclamo);
+  cancelar = (reclamo) => {
+    return this.reclamos.cancelar(reclamo);
   };
 
-  cambiarEstado = (idReclamo, estado) => {
-    return this.reclamos.cambiarEstado(idReclamo, estado);
+  cambiarEstado = (reclamo) => {
+    return this.reclamos.cambiarEstado(reclamo);
   };
 
   buscarUsuario = (idUsuario) => {
@@ -36,6 +35,5 @@ export default class ReclamosService {
 
   buscarOficina = (idUsuario) => {
     return this.reclamos.buscarOficina(idUsuario);
-    
   };
 }

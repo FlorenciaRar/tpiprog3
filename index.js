@@ -15,6 +15,7 @@ import { router as v1OficinasRouter } from "./src/v1/routes/oficinasRoutes.js";
 import { router as v1ReclamosRouter } from "./src/v1/routes/reclamosRoutes.js";
 import { router as v1UsuariosRouter } from "./src/v1/routes/usuariosRoutes.js";
 import authRoutes from "./src/v1/routes/authRoutes.js";
+import { autenticado, esAdmin } from "./src/middlewares/validarUsuarios.js";
 
 dotenv.config();
 
@@ -50,12 +51,12 @@ app.get("/", (req, res) => {
   res.json({ estado: "OK" });
 });
 
-app.use("/api/v1/reclamos-estado", v1ReclamosEstadoRouter);
-app.use("/api/v1/reclamos-tipo", v1ReclamosTipoRouter);
-app.use("/api/v1/oficinas", v1OficinasRouter);
-app.use("/api/v1/reclamos", v1ReclamosRouter);
-app.use("/api/v1/usuarios", v1UsuariosRouter);
-app.use("/api/v1", authRoutes); // Usar las rutas de login
+app.use("/api/v1/reclamos-estado", autenticado, esAdmin, v1ReclamosEstadoRouter);
+app.use("/api/v1/reclamos-tipo", autenticado, esAdmin, v1ReclamosTipoRouter);
+app.use("/api/v1/oficinas", autenticado, esAdmin, v1OficinasRouter);
+app.use("/api/v1/reclamos", autenticado, v1ReclamosRouter);
+app.use("/api/v1/usuarios", autenticado, v1UsuariosRouter);
+app.use("/api/v1", authRoutes);
 
 const puerto = process.env.PUERTO;
 app.listen(puerto, () => {

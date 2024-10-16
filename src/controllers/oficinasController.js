@@ -84,7 +84,7 @@ export default class oficinasController {
 
   modificar = async (req, res) => {
     const idOficina = req.params.idOficina;
-    const { nombre, idReclamoTipo, activo } = req.body;
+    const datos = req.body;
 
     if (idOficina === undefined || idOficina === null) {
       return res.status(400).send({
@@ -92,27 +92,9 @@ export default class oficinasController {
         mensaje: "Id requerida",
       });
     }
-    if (!nombre) {
-      return res.status(400).send({
-        estado: "ERROR",
-        mensaje: "Nombre requerido",
-      });
-    }
-    if (!idReclamoTipo) {
-      return res.status(400).send({
-        estado: "ERROR",
-        mensaje: "IdReclamoTipo requerida",
-      });
-    }
-    if (activo === undefined || activo === null) {
-      return res.status(400).send({
-        estado: "ERROR",
-        mensaje: "Campo activo requerido",
-      });
-    }
 
     try {
-      const modificacionOficina = await this.service.modificar(idOficina, { nombre, idReclamoTipo, activo });
+      const modificacionOficina = await this.service.modificar(idOficina, datos);
 
       res.status(200).send({
         estado: "OK",

@@ -45,10 +45,8 @@ export default class usuariosController {
     }
   };
 
-  // se agrego idTipoUsuario segun la consigna del TP
   crear = async (req, res) => {
-    const { nombre, apellido, correoElectronico, contrasenia, imagen } =
-      req.body;
+    const { nombre, apellido, correoElectronico, contrasenia, imagen } = req.body;
 
     if (!nombre) {
       return res.status(400).send({
@@ -100,9 +98,8 @@ export default class usuariosController {
   };
 
   modificar = async (req, res) => {
-    const idUsuario = req.params.idUsuario; // Luego será req.user
-    const { nombre, apellido, correoElectronico, contrasenia, imagen, activo } =
-      req.body;
+    const idUsuario = req.user.idUsuario; // Luego será req.user
+    const datos = req.body;
 
     if (idUsuario === undefined || idUsuario === null) {
       return res.status(400).send({
@@ -110,49 +107,23 @@ export default class usuariosController {
         mensaje: "Id requerida",
       });
     }
-    if (!nombre) {
-      return res.status(400).send({
-        estado: "ERROR",
-        mensaje: "Nombre requerido",
-      });
-    }
-    if (!apellido) {
-      return res.status(400).send({
-        estado: "ERROR",
-        mensaje: "Apellido requerido",
-      });
-    }
-    if (!correoElectronico) {
-      return res.status(400).send({
-        estado: "ERROR",
-        mensaje: "Correo electrónico requerido",
-      });
-    }
 
-    // Validar imagen
-
-    if (activo === undefined || activo === null) {
-      return res.status(400).send({
+    if (datos.contrasenia) {
+      return res.status(403).send({
         estado: "ERROR",
-        mensaje: "Campo activo requerid0",
+        mensaje: "El campo contraseña no se puede modificar",
       });
     }
 
     try {
-      const modificacionUsuario = await this.service.modificar(idUsuario, {
-        nombre,
-        apellido,
-        correoElectronico,
-        imagen,
-        activo,
-      });
-
+      const modificacionUsuario = await this.service.modificar({ idUsuario, datos });
       res.status(200).send({
         estado: "OK",
         data: modificacionUsuario,
       });
     } catch (error) {
       res.status(500).send({
+        error,
         mensaje: "Ha ocurrido un error. Intentelo de nuevo más tarde",
       });
     }

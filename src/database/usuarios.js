@@ -8,13 +8,12 @@ export default class Usuarios {
   };
 
   buscarId = async (idUsuario) => {
-    const sql = "SELECT nombre, apellido, correoElectronico FROM usuarios WHERE idUsuario = ? AND activo = 1;";
+    const sql = "SELECT nombre, apellido, correoElectronico, idUsuarioTipo FROM usuarios WHERE idUsuario = ? AND activo = 1;";
     const [resultado] = await conexion.query(sql, [idUsuario]);
     return resultado.length > 0 ? resultado[0] : null;
   };
 
   crear = async ({ nombre, apellido, correoElectronico, contrasenia, imagen }) => {
-    // se modifico idUsuarioTipo por idTipoUsuario para que coincida con la DB
     const sql =
       "INSERT INTO usuarios (nombre, apellido, correoElectronico, contrasenia, idUsuarioTipo, imagen, activo) VALUES  (?, ?, ?, SHA2(?, 256), 2, ?, 1);";
     const [resultado] = await conexion.query(sql, [nombre, apellido, correoElectronico, contrasenia, imagen]);
@@ -28,9 +27,9 @@ export default class Usuarios {
     return this.buscarId(resultado.insertId);
   };
 
-  modificar = async (idUsuario, { nombre, apellido, correoElectronico, imagen, activo }) => {
-    const sql = "UPDATE usuarios SET nombre= ?, apellido= ?, correoElectronico= ?, imagen= ?, activo= ? WHERE idUsuario = ?";
-    const [resultado] = await conexion.query(sql, [nombre, apellido, correoElectronico, imagen, activo, idUsuario]);
+  modificar = async ({ idUsuario, datos }) => {
+    const sql = "UPDATE usuarios SET ? WHERE idUsuario = ?";
+    const [resultado] = await conexion.query(sql, [datos, idUsuario]);
 
     if (resultado.affectedRows === 0) {
       return res.status(400).json({

@@ -15,26 +15,18 @@ passport.use(
         const sql = "SELECT * FROM usuarios WHERE correoElectronico = ? AND contrasenia = SHA2(?,256)";
         const [result] = await conexion.query(sql, [correo, contrasenia]);
 
-        // console.log("consulta SQL:", result);
-
-        // Si no se encuentra ningún usuario con el correo proporcionado
         if (result.length === 0) {
           return done(null, false, { message: "Usuario no encontrado" });
         }
 
         const usuario = result[0];
 
-        // console.log("objeto usuario:", usuario);
-
-        // Si la contraseña es correcta
-        if (usuario) {
+        if (bcrypt.compareSync(contrasenia, usuario.contrasenia)) {
           return done(null, usuario);
         } else {
-          // Si la contraseña es incorrecta
           return done(null, false, { message: "Credenciales incorrectas" });
         }
       } catch (err) {
-        // Si ocurre un error durante la consulta
         return done(err);
       }
     }

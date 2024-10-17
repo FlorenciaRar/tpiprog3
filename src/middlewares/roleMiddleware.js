@@ -5,7 +5,8 @@ export const verificarTipoUsuario = (tiposPermitidos) => {
       return res.status(401).json({ mensaje: "No autorizado" });
     }
 
-    if (!tiposPermitidos.includes(user.idTipoUsuario)) {
+    if (!tiposPermitidos.includes(user.idUsuarioTipo)) {
+      console.log(user);
       return res.status(403).json({ mensaje: "Acceso denegado" });
     }
 

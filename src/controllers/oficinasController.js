@@ -6,16 +6,16 @@ export default class oficinasController {
   }
 
   buscarTodos = async (req, res) => {
-    const {limit, offset} = req.query;
+    const { limit, offset } = req.query;
     const querys = {
       limite: limit ? Number(limit) : 0,
-      desplazamiento: offset ? Number(offset) : 0
-    }
+      desplazamiento: offset ? Number(offset) : 0,
+    };
     try {
       const oficinas = await this.service.buscarTodos(querys);
       res.status(200).send({ estado: "OK", data: oficinas });
     } catch (error) {
-      console.log(error)
+      console.log(error);
       res.status(500).send({
         mensaje: "Ha ocurrido un error. Intentelo de nuevo más tarde",
       });
@@ -32,14 +32,14 @@ export default class oficinasController {
       });
     }
     try {
-    const oficina = await this.service.buscarId(idOficina);
+      const oficina = await this.service.buscarId(idOficina);
 
-    if(!oficina){
-      return res.status(404).send({
-        estado: "ERROR",
-        mensaje: "Oficina no encontrada",
-      });
-    }
+      if (!oficina) {
+        return res.status(404).send({
+          estado: "ERROR",
+          mensaje: "Oficina no encontrada",
+        });
+      }
       res.status(200).send({
         estado: "OK",
         data: oficina,
@@ -84,7 +84,7 @@ export default class oficinasController {
 
   modificar = async (req, res) => {
     const idOficina = req.params.idOficina;
-    const {nombre, idReclamoTipo, activo} = req.body;
+    const datos = req.body;
 
     if (idOficina === undefined || idOficina === null) {
       return res.status(400).send({
@@ -92,27 +92,9 @@ export default class oficinasController {
         mensaje: "Id requerida",
       });
     }
-    if (!nombre) {
-      return res.status(400).send({
-        estado: "ERROR",
-        mensaje: "Nombre requerido",
-      });
-    }
-    if (!idReclamoTipo) {
-      return res.status(400).send({
-        estado: "ERROR",
-        mensaje: "IdReclamoTipo requerida",
-      });
-    }
-    if (activo === undefined || activo === null) {
-      return res.status(400).send({
-        estado: "ERROR",
-        mensaje: "Campo activo requerido",
-      });
-    }
 
     try {
-      const modificacionOficina = await this.service.modificar(idOficina, {nombre, idReclamoTipo, activo});
+      const modificacionOficina = await this.service.modificar(idOficina, datos);
 
       res.status(200).send({
         estado: "OK",
@@ -125,4 +107,19 @@ export default class oficinasController {
     }
   };
 
+  buscarEmpleados = async (req, res) => {
+    const idOficina = req.params.idOficina;
+
+    try {
+      const empleadosOficina = await this.service.buscarEmpleados(idOficina);
+      res.status(200).send({
+        estado: "OK",
+        data: empleadosOficina,
+      });
+    } catch (error) {
+      res.status(500).send({
+        mensaje: "Ha ocurrido un error. Intentelo de nuevo más tarde",
+      });
+    }
+  };
 }

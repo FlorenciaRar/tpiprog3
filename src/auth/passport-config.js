@@ -12,8 +12,8 @@ passport.use(
     },
     async (correo, contrasenia, done) => {
       try {
-        const sql = "SELECT * FROM usuarios WHERE correoElectronico = ?";
-        const [result] = await conexion.query(sql, [correo]);
+        const sql = "SELECT * FROM usuarios WHERE correoElectronico = ? AND contrasenia = SHA2(?,256)";
+        const [result] = await conexion.query(sql, [correo, contrasenia]);
 
         if (result.length === 0) {
           return done(null, false, { message: "Usuario no encontrado" });

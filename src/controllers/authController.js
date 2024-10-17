@@ -6,16 +6,29 @@ dotenv.config();
 
 export const login = (req, res, next) => {
   passport.authenticate("local", { session: false }, (err, usuario, info) => {
-    if (err || !usuario) {
-      return res.status(400).json({
-        message: "Algo salió mal",
-        usuario: usuario,
+    if (err) {
+      console.error("Error en la autenticación:", err);
+      return res.status(500).json({
+        message: "Error en el servidor",
+        error: err,
+      });
+    }
+
+    if (!usuario) {
+      console.warn("Usuario no encontrado o credenciales incorrectas:", info);
+      return res.status(401).json({
+        message: info ? info.message : "Credenciales incorrectas",
+        usuario: false,
       });
     }
 
     req.login(usuario, { session: false }, (err) => {
       if (err) {
-        res.send(err);
+        console.error("Error al iniciar sesión:", err);
+        return res.status(500).json({
+          message: "Error al iniciar sesión",
+          error: err,
+        });
       }
 
       // Aquí eliges qué datos del usuario deseas almacenar en el token
@@ -24,7 +37,6 @@ export const login = (req, res, next) => {
         correo: usuario.correoElectronico,
         nombre: usuario.nombre,
         apellido: usuario.apellido,
-        // Puedes agregar más datos si lo deseas
       };
 
       // Generar el token JWT
@@ -32,6 +44,7 @@ export const login = (req, res, next) => {
         expiresIn: "1h",
       });
 
+      console.log("Autenticación exitosa, token generado:", token);
       return res.json({ usuario, token });
     });
   })(req, res);

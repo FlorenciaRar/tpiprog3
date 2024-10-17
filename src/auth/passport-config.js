@@ -1,7 +1,7 @@
 import passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
 import { conexion } from "../database/conexion.js";
-import bcrypt from "bcryptjs";
+import crypto from "crypto";
 
 // Configuración de la estrategia local
 passport.use(
@@ -21,7 +21,12 @@ passport.use(
 
         const usuario = result[0];
 
-        if (bcrypt.compareSync(contrasenia, usuario.contrasenia)) {
+        // Verificar la contraseña usando SHA-2
+        const hash = crypto
+          .createHash("sha256")
+          .update(contrasenia)
+          .digest("hex");
+        if (hash === usuario.contrasenia) {
           return done(null, usuario);
         } else {
           return done(null, false, { message: "Credenciales incorrectas" });

@@ -11,15 +11,13 @@ export default class UsuariosService {
 
   buscarId = (usuario) => {
     return this.usuarios.buscarId(usuario);
-    
   };
 
   crear = (usuario) => {
     return this.usuarios.crear(usuario);
   };
 
-  modificar = (idUsuario, usuario) => {
-    return this.usuarios.modificar(idUsuario, usuario);
+  modificar = (usuario) => {
+    return this.usuarios.modificar(usuario);
   };
-
 }

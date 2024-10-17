@@ -11,7 +11,6 @@ export default class OficinasService {
 
   buscarId = (oficina) => {
     return this.oficinas.buscarId(oficina);
-    
   };
 
   crear = (oficina) => {
@@ -21,5 +20,8 @@ export default class OficinasService {
   modificar = (idOficina, oficina) => {
     return this.oficinas.modificar(idOficina, oficina);
   };
-  
+
+  buscarEmpleados = (idOficina) => {
+    return this.oficinas.buscarEmpleados(idOficina);
+  };
 }

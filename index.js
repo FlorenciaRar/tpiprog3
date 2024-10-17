@@ -19,6 +19,7 @@ import { router as v1UsuariosRouter } from "./src/v1/routes/usuariosRoutes.js";
 import authRoutes from "./src/v1/routes/authRoutes.js";
 import { authenticateJWT } from "./src/middlewares/authMiddleware.js";
 
+
 dotenv.config(); // Asegúrate de que dotenv se configura al inicio
 
 const app = express();

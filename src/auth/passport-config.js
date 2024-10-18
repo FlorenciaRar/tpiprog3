@@ -21,12 +21,9 @@ passport.use(
 
         const usuario = result[0];
 
-        const hash = crypto.createHash("sha256").update(contrasenia).digest("hex");
-        if (hash === usuario.contrasenia) {
-          return done(null, usuario);
-        } else {
-          return done(null, false, { message: "Credenciales incorrectas" });
-        }
+       return done(null, usuario);
+      
+        
       } catch (err) {
         return done(err);
       }

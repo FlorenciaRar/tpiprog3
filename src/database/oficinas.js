@@ -32,9 +32,9 @@ export default class Oficinas {
     return this.buscarId(resultado.insertId);
   };
 
-  modificar = async (idOficina, { nombre, idReclamoTipo, activo }) => {
-    const sql = "UPDATE oficinas SET nombre= ?, idReclamoTipo = ?, activo= ? WHERE idOficina = ?";
-    const [resultado] = await conexion.query(sql, [nombre, idReclamoTipo, activo, idOficina]);
+  modificar = async (idOficina, datos) => {
+    const sql = "UPDATE oficinas SET ? WHERE idOficina = ?";
+    const [resultado] = await conexion.query(sql, [datos, idOficina]);
 
     if (resultado.affectedRows === 0) {
       return res.status(400).json({

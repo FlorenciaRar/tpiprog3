@@ -26,9 +26,9 @@ export default class ReclamosEstado {
     return this.buscarId(resultado.insertId);
   };
 
-  modificar = async (idReclamoEstado,{ descripcion, activo }) => {
-    const sql = "UPDATE reclamos_estado SET descripcion = ?, activo = ? WHERE idReclamoEstado = ?";
-    const [resultado] = await conexion.query(sql, [descripcion, activo, idReclamoEstado]);
+  modificar = async (idReclamoEstado, datos) => {
+    const sql = "UPDATE reclamos_estado SET ? WHERE idReclamoEstado = ?";
+    const [resultado] = await conexion.query(sql, [datos, idReclamoEstado]);
 
     if (resultado.affectedRows === 0) {
       return res.status(400).json({

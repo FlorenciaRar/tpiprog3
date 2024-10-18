@@ -1,25 +1,41 @@
 import express from "express";
 import ReclamosController from "../../controllers/reclamosController.js";
+import { esAdmin, esCliente, esEmpleado } from "../../middlewares/validarUsuarios.js";
 
 const router = express.Router();
 
 const reclamosController = new ReclamosController();
 
+// ADMIN
+
 router.get("/", reclamosController.buscarTodos);
-router.get("/:idReclamo", reclamosController.buscarId);
-router.post("/", reclamosController.crear); // Autenticar
-router.patch("/:idReclamo", reclamosController.modificar); //Autenticar
 
-// Cancelar un reclamo (para clientes)
-router.patch("/:idReclamo/cancelar", reclamosController.cancelar); // Autenticar
+// router.get("/:idReclamo", reclamosController.buscarId); // Todavia no se
 
-// Cambiar estado (para empleados)
-router.post("/:idReclamo/estado", reclamosController.cambiarEstado); // Autenticar
+// router.patch("/:idReclamo", reclamosController.modificar); // Mepa que no va
 
-// Reclamos por usuario
-router.get("/usuario/:idUsuario", reclamosController.buscarUsuario); // Temporalmente con parametro
+// Falta: Info estadistica
 
-// Reclamos por empleado
-router.get("/oficina/:idUsuario", reclamosController.buscarOficina); // Temporalmente con parametro
+// Falta: Descargar informes
+
+// CLIENTES
+router.get("/usuario", esCliente, reclamosController.buscarUsuario); // Reclamos por usuario
+
+router.post("/", esCliente, reclamosController.crear);
+
+router.patch("/:idReclamo/cancelar", esCliente, reclamosController.cancelar); // Cancelar un reclamo
+// Verificar que sea propio LISTO
+// Verificar que no este finalizado
+
+// EMPLEADOS
+
+router.get("/oficina", esEmpleado, reclamosController.buscarOficina); //Reclamos por empleado
+
+router.patch("/:idReclamo/estado", esEmpleado, reclamosController.cambiarEstado); // Cambiar estado de un reclamo
+// Verificar que no pueda poner estado cancelado LISTO
+// Verificar que solo modifique estado LISTO
+// Verificar que el reclamo no este cancelado LISTO
+// Verificar que exista LISTO
+// Verificar qeu no pueda cambiarlo si no es de su oficina
 
 export { router };

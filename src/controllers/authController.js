@@ -37,7 +37,7 @@ export const login = (req, res, next) => {
         correo: usuario.correoElectronico,
         nombre: usuario.nombre,
         apellido: usuario.apellido,
-        idTipoUsuario: usuario.idTipoUsuario,
+        idUsuarioTipo: usuario.idUsuarioTipo,
       };
 
       // Generar el token JWT

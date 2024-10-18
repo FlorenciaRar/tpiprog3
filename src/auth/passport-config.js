@@ -21,9 +21,7 @@ passport.use(
 
         const usuario = result[0];
 
-       return done(null, usuario);
-      
-        
+        return done(null, usuario);
       } catch (err) {
         return done(err);
       }

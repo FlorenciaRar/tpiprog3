@@ -8,7 +8,7 @@ const reclamosController = new ReclamosController();
 
 // ADMIN
 
-router.get("/", esAdmin, reclamosController.buscarTodos);
+router.get("/", reclamosController.buscarTodos);
 
 // router.get("/:idReclamo", reclamosController.buscarId); // Todavia no se
 

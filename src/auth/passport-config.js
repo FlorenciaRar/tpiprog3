@@ -3,7 +3,6 @@ import { Strategy as LocalStrategy } from "passport-local";
 import { conexion } from "../database/conexion.js";
 import crypto from "crypto";
 
-// Configuración de la estrategia local
 passport.use(
   new LocalStrategy(
     {
@@ -22,11 +21,7 @@ passport.use(
 
         const usuario = result[0];
 
-        // Verificar la contraseña usando SHA-2
-        const hash = crypto
-          .createHash("sha256")
-          .update(contrasenia)
-          .digest("hex");
+        const hash = crypto.createHash("sha256").update(contrasenia).digest("hex");
         if (hash === usuario.contrasenia) {
           console.log("Contraseña correcta para el usuario:", correo);
           return done(null, usuario);
@@ -42,22 +37,21 @@ passport.use(
   )
 );
 
-// Serializar y deserializar usuario
-passport.serializeUser((usuario, done) => {
-  done(null, usuario.idUsuario);
-});
+// passport.serializeUser((usuario, done) => {
+//   done(null, usuario.idUsuario);
+// });
 
-passport.deserializeUser(async (id, done) => {
-  try {
-    const sql = "SELECT * FROM usuarios WHERE idUsuario = ?";
-    const [result] = await conexion.query(sql, [id]);
-    if (result.length === 0) {
-      return done(new Error("Usuario no encontrado"));
-    }
-    done(null, result[0]);
-  } catch (err) {
-    done(err);
-  }
-});
+// passport.deserializeUser(async (id, done) => {
+//   try {
+//     const sql = "SELECT * FROM usuarios WHERE idUsuario = ?";
+//     const [result] = await conexion.query(sql, [id]);
+//     if (result.length === 0) {
+//       return done(new Error("Usuario no encontrado"));
+//     }
+//     done(null, result[0]);
+//   } catch (err) {
+//     done(err);
+//   }
+// });
 
 export default passport;

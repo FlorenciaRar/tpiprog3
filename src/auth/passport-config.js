@@ -11,11 +11,11 @@ passport.use(
     },
     async (correo, contrasenia, done) => {
       try {
-        const sql =
-          "SELECT nombre, apellido, correoElectronico, idUsuarioTipo FROM usuarios WHERE correoElectronico = ? AND contrasenia = SHA2(?,256)";
-        const [result] = await conexion.query(sql, [correo, contrasenia]);
+        const sql = "SELECT * FROM usuarios WHERE correoElectronico = ?";
+        const [result] = await conexion.query(sql, [correo]);
 
         if (result.length === 0) {
+          console.warn("Usuario no encontrado:", correo);
           return done(null, false, { message: "Usuario no encontrado" });
         }
 
@@ -23,11 +23,14 @@ passport.use(
 
         const hash = crypto.createHash("sha256").update(contrasenia).digest("hex");
         if (hash === usuario.contrasenia) {
+          console.log("Contraseña correcta para el usuario:", correo);
           return done(null, usuario);
         } else {
+          console.warn("Contraseña incorrecta para el usuario:", correo);
           return done(null, false, { message: "Credenciales incorrectas" });
         }
       } catch (err) {
+        console.error("Error en la autenticación:", err);
         return done(err);
       }
     }

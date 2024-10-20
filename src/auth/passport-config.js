@@ -38,21 +38,4 @@ passport.use(
   )
 );
 
-// passport.serializeUser((usuario, done) => {
-//   done(null, usuario.idUsuario);
-// });
-
-// passport.deserializeUser(async (id, done) => {
-//   try {
-//     const sql = "SELECT * FROM usuarios WHERE idUsuario = ?";
-//     const [result] = await conexion.query(sql, [id]);
-//     if (result.length === 0) {
-//       return done(new Error("Usuario no encontrado"));
-//     }
-//     done(null, result[0]);
-//   } catch (err) {
-//     done(err);
-//   }
-// });
-
 export default passport;

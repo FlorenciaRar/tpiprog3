@@ -1,6 +1,7 @@
 import express from "express";
 import ReclamosController from "../../controllers/reclamosController.js";
 import { esAdmin, esCliente, esEmpleado } from "../../middlewares/validarUsuarios.js";
+import { verificarTipoUsuario } from "../../middlewares/roleMiddleware.js";
 
 const router = express.Router();
 
@@ -19,17 +20,17 @@ router.get("/", reclamosController.buscarTodos);
 // Falta: Descargar informes
 
 // CLIENTES
-router.get("/usuario", esCliente, reclamosController.buscarUsuario); // Reclamos por usuario
+router.get("/usuario", verificarTipoUsuario([3]), reclamosController.buscarUsuario); // Reclamos por usuario
 
-router.post("/", esCliente, reclamosController.crear);
+router.post("/", verificarTipoUsuario([3]), reclamosController.crear);
 
-router.patch("/:idReclamo/cancelar", esCliente, reclamosController.cancelar); // Cancelar un reclamo
+router.patch("/:idReclamo/cancelar", verificarTipoUsuario([3]), reclamosController.cancelar); // Cancelar un reclamo
 // Verificar que sea propio LISTO
 // Verificar que no este finalizado
 
 // EMPLEADOS
 
-router.get("/oficina", esEmpleado, reclamosController.buscarOficina); //Reclamos por empleado
+router.get("/oficina", verificarTipoUsuario([2]), reclamosController.buscarOficina); //Reclamos por empleado
 
 router.patch("/:idReclamo/estado", esEmpleado, reclamosController.cambiarEstado); // Cambiar estado de un reclamo
 // Verificar que no pueda poner estado cancelado LISTO

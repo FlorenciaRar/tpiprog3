@@ -51,8 +51,8 @@ app.get("/", (req, res) => {
 
 app.use("/api/v1", authRoutes);
 app.use("/api/v1/reclamos-estado", authenticateJWT, verificarTipoUsuario([1]), v1ReclamosEstadoRouter);
-app.use("/api/v1/reclamos-tipo", authenticateJWT, verificarTipoUsuario([1, 2]), v1ReclamosTipoRouter);
-app.use("/api/v1/oficinas", authenticateJWT, verificarTipoUsuario([2]), v1OficinasRouter);
+app.use("/api/v1/reclamos-tipo", authenticateJWT, verificarTipoUsuario([1]), v1ReclamosTipoRouter);
+app.use("/api/v1/oficinas", authenticateJWT, verificarTipoUsuario([1]), v1OficinasRouter);
 app.use("/api/v1/reclamos", authenticateJWT, verificarTipoUsuario([1, 2, 3]), v1ReclamosRouter);
 app.use("/api/v1/usuarios", authenticateJWT, verificarTipoUsuario([1]), v1UsuariosRouter);
 

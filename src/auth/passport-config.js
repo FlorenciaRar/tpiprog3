@@ -29,6 +29,7 @@ passport.use(
           console.warn("Contraseña incorrecta para el usuario:", correo);
           return done(null, false, { message: "Credenciales incorrectas" });
         }
+
       } catch (err) {
         console.error("Error en la autenticación:", err);
         return done(err);

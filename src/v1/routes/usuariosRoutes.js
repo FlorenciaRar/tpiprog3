@@ -9,6 +9,7 @@ const usuariosController = new UsuariosController();
 
 router.get("/", verificarTipoUsuario([1]), usuariosController.buscarTodos);
 router.get("/:idUsuario", usuariosController.buscarId);
+router.post("/", usuariosController.crear); // se agrego para poder crear un usuario
 
 router.patch("/", esCliente, usuariosController.modificar);
 
@@ -17,5 +18,5 @@ router.patch("/", esCliente, usuariosController.modificar);
 // router.get("/empleados", esAdmin, usuariosController.buscarEmpleados);
 // router.get("/empleados/:idUsuario", esAdmin, usuariosController.buscarEmpleadosId);
 // router.post("/empleados", esAdmin, usuariosController.crearEmpleado); // Crear empleados, validar que usuario sea admin // MODIFICAR EL NOMBRE EN EL RESTO DEL SISTEMA
-// router.patch("/empleados", esAdmin, usuariosController.modificarEmpleado);
+// // router.patch("/empleados", esAdmin, usuariosController.modificarEmpleado);
 export { router };

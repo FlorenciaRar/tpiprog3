@@ -31,13 +31,12 @@ export const login = (req, res, next) => {
         });
       }
 
-      // Aquí eliges qué datos del usuario deseas almacenar en el token
       const payload = {
         id: usuario.idUsuario,
         correo: usuario.correoElectronico,
         nombre: usuario.nombre,
         apellido: usuario.apellido,
-        idTipoUsuario: usuario.idTipoUsuario,
+        idUsuarioTipo: usuario.idUsuarioTipo,
       };
 
       // Generar el token JWT

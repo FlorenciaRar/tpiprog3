@@ -1,14 +1,14 @@
-import UsuariosService from "../services/usuariosService.js";
+import EmpleadosService from "../services/empleadosService.js";
 
-export default class usuariosController {
+export default class EmpleadosController {
   constructor() {
-    this.service = new UsuariosService();
+    this.service = new EmpleadosService();
   }
 
   buscarTodos = async (req, res) => {
     try {
-      const usuarios = await this.service.buscarTodos();
-      res.status(200).send({ estado: "OK", data: usuarios });
+      const empleados = await this.service.buscarTodos();
+      res.status(200).send({ estado: "OK", data: empleados });
     } catch (error) {
       res.status(500).send({
         mensaje: "Ha ocurrido un error. Intentelo de nuevo más tarde",
@@ -17,26 +17,26 @@ export default class usuariosController {
   };
 
   buscarId = async (req, res) => {
-    const idUsuario = req.params.idUsuario;
+    const idEmpleado = req.params.idEmpleado;
 
-    if (idUsuario === undefined || idUsuario === null) {
+    if (idEmpleado === undefined || idEmpleado === null) {
       return res.status(400).send({
         estado: "ERROR",
         mensaje: "Datos requeridos",
       });
     }
     try {
-      const usuario = await this.service.buscarId(idUsuario);
+      const empleado = await this.service.buscarId(idEmpleado);
 
-      if (!usuario) {
+      if (!empleado) {
         return res.status(404).send({
           estado: "ERROR",
-          mensaje: "Usuario no encontrada",
+          mensaje: "Empleado no encontrado",
         });
       }
       res.status(200).send({
         estado: "OK",
-        data: usuario,
+        data: empleado,
       });
     } catch (error) {
       res.status(500).send({
@@ -76,18 +76,18 @@ export default class usuariosController {
     // Validar imagen
 
     try {
-      const usuario = {
+      const empleado = {
         nombre,
         apellido,
         correoElectronico,
         contrasenia,
         imagen,
       };
-      const creacionUsuario = await this.service.crear(usuario);
+      const creacionEmpleado = await this.service.crear(empleado);
 
       res.status(201).send({
         estado: "OK",
-        data: creacionUsuario,
+        data: creacionEmpleado,
       });
     } catch (error) {
       console.log(error);
@@ -98,10 +98,10 @@ export default class usuariosController {
   };
 
   modificar = async (req, res) => {
-    const idUsuario = req.user.idUsuario; // Luego será req.user
+    const idEmpleado = req.params.idEmpleado;
     const datos = req.body;
 
-    if (idUsuario === undefined || idUsuario === null) {
+    if (idEmpleado === undefined || idEmpleado === null) {
       return res.status(400).send({
         estado: "ERROR",
         mensaje: "Id requerida",
@@ -116,10 +116,10 @@ export default class usuariosController {
     }
 
     try {
-      const modificacionUsuario = await this.service.modificar({ idUsuario, datos });
+      const modificacionEmpleado = await this.service.modificar({ idEmpleado, datos });
       res.status(200).send({
         estado: "OK",
-        data: modificacionUsuario,
+        data: modificacionEmpleado,
       });
     } catch (error) {
       res.status(500).send({

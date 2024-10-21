@@ -159,11 +159,8 @@ export default class ReclamosController {
       });
     }
     try {
-      // Valida que el reclamo exista y no este cancelado
       const reclamo = await this.service.buscarId(idReclamo);
-      console.log(reclamo);
-      if (reclamo && reclamo.reclamoEstado !== "Cancelado") {
-        // Esto no me gusta, deberia ser por idEsado, consultar
+      if (reclamo && reclamo.reclamoEstado !== "Cancelado") { // Esto no me gusta, deberia ser por idEsado, consultar
         const estadoReclamo = await this.service.cambiarEstado({ idReclamo, idUsuario, estado });
 
         res.status(200).send({

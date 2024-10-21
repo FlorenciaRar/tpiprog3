@@ -31,7 +31,7 @@ export default class usuariosController {
       if (!usuario) {
         return res.status(404).send({
           estado: "ERROR",
-          mensaje: "Usuario no encontrada",
+          mensaje: "Usuario no encontrado",
         });
       }
       res.status(200).send({

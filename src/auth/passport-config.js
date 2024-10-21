@@ -1,9 +1,11 @@
 import passport from "passport";
+import { ExtractJwt, Strategy } from 'passport-jwt';
 import { Strategy as LocalStrategy } from "passport-local";
 import { conexion } from "../database/conexion.js";
 import crypto from "crypto";
+import UsuariosService from "../services/usuariosService.js";
 
-passport.use(
+export const estrategia = 
   new LocalStrategy(
     {
       usernameField: "correo",
@@ -11,24 +13,16 @@ passport.use(
     },
     async (correo, contrasenia, done) => {
       try {
-        const sql = "SELECT * FROM usuarios WHERE correoElectronico = ?";
-        const [result] = await conexion.query(sql, [correo]);
+        const service = new UsuariosService;
+        const usuario = service.buscarLogin({correo, contrasenia})
 
-        if (result.length === 0) {
+        if (!usuario) {
           console.warn("Usuario no encontrado:", correo);
-          return done(null, false, { message: "Usuario no encontrado" });
-        }
-
-        const usuario = result[0];
-
-        const hash = crypto.createHash("sha256").update(contrasenia).digest("hex");
-        if (hash === usuario.contrasenia) {
-          console.log("Contraseña correcta para el usuario:", correo);
-          return done(null, usuario);
+          return done(null, false, { mensaje: "Datos incorrectos" });
         } else {
-          console.warn("Contraseña incorrecta para el usuario:", correo);
-          return done(null, false, { message: "Credenciales incorrectas" });
+          return done(null, usuario, { mensaje: 'Bienvenido' });
         }
+
 
       } catch (err) {
         console.error("Error en la autenticación:", err);
@@ -36,6 +30,21 @@ passport.use(
       }
     }
   )
-);
 
-export default passport;
+const opts = {
+  jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+  secretOrKey: process.env.JWT_SECRET,
+};
+
+export const validacion = 
+  new Strategy(opts, async (jwt_payload, done) => {
+
+      const service = new UsuariosService;
+      const usuario = service.buscarId(jwt_payload.idUsuario)
+
+      if (usuario) {
+            return done(null, usuario);
+        } else {
+            return done(err, false);
+        }
+  })

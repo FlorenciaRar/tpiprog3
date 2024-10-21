@@ -7,15 +7,16 @@ import swaggerUi from "swagger-ui-express";
 import swaggerJsdoc from "swagger-jsdoc";
 import { swaggerConfig } from "./src/config/swaggerConfig.js";
 import session from "express-session";
-import passport from "./src/auth/passport-config.js";
-import jwtPassport from "./src/auth/jwt-config.js"; // Importa la configuración de JWT
-import { verificarTipoUsuario } from "./src/middlewares/roleMiddleware.js"; // Importa el middleware de roles
+import { estrategia, validacion } from "./src/auth/passport-config.js";
+import passport from "passport";
+import { verificarTipoUsuario } from "./src/middlewares/roleMiddleware.js";
 
 import { router as v1ReclamosEstadoRouter } from "./src/v1/routes/reclamosEstadoRoutes.js";
 import { router as v1ReclamosTipoRouter } from "./src/v1/routes/reclamosTipoRoutes.js";
 import { router as v1OficinasRouter } from "./src/v1/routes/oficinasRoutes.js";
 import { router as v1ReclamosRouter } from "./src/v1/routes/reclamosRoutes.js";
 import { router as v1UsuariosRouter } from "./src/v1/routes/usuariosRoutes.js";
+import { router as v1EmpleadosRouter } from "./src/v1/routes/empleadosRoutes.js";
 import authRoutes from "./src/v1/routes/authRoutes.js";
 import { authenticateJWT } from "./src/middlewares/authMiddleware.js";
 
@@ -37,6 +38,8 @@ app.use(
   })
 );
 
+passport.use(estrategia);
+passport.use(validacion);
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -55,6 +58,7 @@ app.use("/api/v1/reclamos-tipo", authenticateJWT, verificarTipoUsuario([1]), v1R
 app.use("/api/v1/oficinas", authenticateJWT, verificarTipoUsuario([1]), v1OficinasRouter);
 app.use("/api/v1/reclamos", authenticateJWT, verificarTipoUsuario([1, 2, 3]), v1ReclamosRouter);
 app.use("/api/v1/usuarios", authenticateJWT, verificarTipoUsuario([1]), v1UsuariosRouter);
+app.use("/api/v1/empleados", authenticateJWT, verificarTipoUsuario([1]), v1EmpleadosRouter);
 
 const puerto = process.env.PUERTO;
 app.listen(puerto, () => {

@@ -20,4 +20,8 @@ export default class UsuariosService {
   modificar = (usuario) => {
     return this.usuarios.modificar(usuario);
   };
+
+  buscarLogin = (usuario) =>{
+    return this.usuarios.buscarLogin(usuario);
+  }
 }

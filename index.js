@@ -7,8 +7,8 @@ import swaggerUi from "swagger-ui-express";
 import swaggerJsdoc from "swagger-jsdoc";
 import { swaggerConfig } from "./src/config/swaggerConfig.js";
 import session from "express-session";
-import passport from "./src/auth/passport-config.js";
-import jwtPassport from "./src/auth/jwt-config.js"; 
+import { estrategia, validacion } from "./src/auth/passport-config.js";
+import passport from "passport";
 import { verificarTipoUsuario } from "./src/middlewares/roleMiddleware.js";
 
 import { router as v1ReclamosEstadoRouter } from "./src/v1/routes/reclamosEstadoRoutes.js";
@@ -38,6 +38,8 @@ app.use(
   })
 );
 
+passport.use(estrategia);
+passport.use(validacion);
 app.use(passport.initialize());
 app.use(passport.session());
 

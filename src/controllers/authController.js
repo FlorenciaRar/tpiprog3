@@ -39,12 +39,10 @@ export const login = (req, res, next) => {
         idUsuarioTipo: usuario.idUsuarioTipo,
       };
 
-      // Generar el token JWT
       const token = jwt.sign(payload, process.env.JWT_SECRET, {
         expiresIn: "1h",
       });
 
-      console.log("Autenticación exitosa, token generado:", token);
       return res.json({ usuario, token });
     });
   })(req, res);

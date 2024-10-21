@@ -38,4 +38,10 @@ export default class Usuarios {
     }
     return this.buscarId(idUsuario);
   };
+
+  buscarLogin = async ({correoElectronico, contrasenia})=>{
+     const sql = "SELECT idUsuario, nombre, apellido, correoElectronico, idUsuarioTipo, imagen FROM usuarios WHERE correoElectronico = ? AND contrasenia = SHA2(?, 256) AND activo = 1;";
+    const [resultado] = await conexion.query(sql, [correoElectronico, contrasenia]);
+    return resultado.length > 0 ? resultado[0] : null;
+  }
 }

@@ -13,8 +13,8 @@ export const estrategia =
     },
     async (correo, contrasenia, done) => {
       try {
-        const service = new UsuariosService;
-        const usuario = service.buscarLogin({correo, contrasenia})
+        const service = new UsuariosService();
+        const usuario = await service.buscarLogin({correo, contrasenia})
 
         if (!usuario) {
           console.warn("Usuario no encontrado:", correo);
@@ -39,8 +39,8 @@ const opts = {
 export const validacion = 
   new Strategy(opts, async (jwt_payload, done) => {
 
-      const service = new UsuariosService;
-      const usuario = service.buscarId(jwt_payload.idUsuario)
+      const service = new UsuariosService();
+      const usuario = await service.buscarId(jwt_payload.idUsuario)
 
       if (usuario) {
             return done(null, usuario);

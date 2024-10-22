@@ -40,11 +40,11 @@ export const validacion =
   new Strategy(opts, async (jwt_payload, done) => {
 
       const service = new UsuariosService();
-      const usuario = await service.buscarId(jwt_payload.idUsuario)
+      const usuario = await service.buscarId(jwt_payload.id)
 
       if (usuario) {
             return done(null, usuario);
         } else {
-            return done(err, false);
+            return done(null, false);
         }
   })

@@ -22,15 +22,6 @@ export const login = (req, res, next) => {
       });
     }
 
-    req.login(usuario, { session: false }, (err) => {
-      if (err) {
-        console.error("Error al iniciar sesión:", err);
-        return res.status(500).json({
-          message: "Error al iniciar sesión",
-          error: err,
-        });
-      }
-
       const payload = {
         id: usuario.idUsuario,
         correo: usuario.correoElectronico,
@@ -42,8 +33,7 @@ export const login = (req, res, next) => {
       const token = jwt.sign(payload, process.env.JWT_SECRET, {
         expiresIn: "1h",
       });
-
+      
       return res.json({ usuario, token });
-    });
   })(req, res);
 };

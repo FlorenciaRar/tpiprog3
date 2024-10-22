@@ -41,7 +41,7 @@ app.use(
 passport.use(estrategia);
 passport.use(validacion);
 app.use(passport.initialize());
-app.use(passport.session());
+
 
 const swaggerOptions = swaggerConfig;
 const swaggerDocs = swaggerJsdoc(swaggerOptions);

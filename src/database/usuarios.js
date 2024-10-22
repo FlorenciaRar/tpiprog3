@@ -8,7 +8,7 @@ export default class Usuarios {
   };
 
   buscarId = async (idUsuario) => {
-    const sql = "SELECT nombre, apellido, correoElectronico, idUsuarioTipo FROM usuarios WHERE idUsuario = ? AND activo = 1;";
+    const sql = "SELECT idUsuario, nombre, apellido, correoElectronico, idUsuarioTipo FROM usuarios WHERE idUsuario = ? AND activo = 1;";
     const [resultado] = await conexion.query(sql, [idUsuario]);
     return resultado.length > 0 ? resultado[0] : null;
   };

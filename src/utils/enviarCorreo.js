@@ -29,8 +29,8 @@ export const enviarCorreo = (idReclamo, reclamo)=>{
     const transporter = nodemailer.createTransport({ 
         service: 'gmail',
         auth:{
-            user: process.env.CORREO, 
-            pass: process.env.CLAVE
+            user: process.env.EMAIL_USUARIO, 
+            pass: process.env.EMAIL_CLAVE
         },
         tls : { rejectUnauthorized: false }
     });

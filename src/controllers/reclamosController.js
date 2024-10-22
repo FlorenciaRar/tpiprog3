@@ -25,12 +25,6 @@ export default class ReclamosController {
   buscarId = async (req, res) => {
     const idReclamo = req.params.idReclamo;
 
-    if (idReclamo === undefined || idReclamo === null) {
-      return res.status(400).send({
-        estado: "ERROR",
-        mensaje: "Id requerida",
-      });
-    }
     try {
       const reclamo = await this.service.buscarId(idReclamo);
 
@@ -55,24 +49,6 @@ export default class ReclamosController {
     const idUsuarioCreador = req.user.idUsuario;
     const { asunto, descripcion, idReclamoTipo } = req.body;
 
-    if (!asunto) {
-      return res.status(400).send({
-        estado: "ERROR",
-        mensaje: "Asunto requerido",
-      });
-    }
-    if (!descripcion) {
-      return res.status(400).send({
-        estado: "ERROR",
-        mensaje: "Descripción requerida",
-      });
-    }
-    if (!idReclamoTipo) {
-      return res.status(400).send({
-        estado: "ERROR",
-        mensaje: "IdReclamoTipo requerido",
-      });
-    }
     try {
       const reclamo = { asunto, descripcion, idReclamoTipo, idUsuarioCreador };
       const creacionReclamo = await this.service.crear(reclamo);
@@ -100,7 +76,10 @@ export default class ReclamosController {
     }
 
     try {
-      const modificacionReclamo = await this.service.modificar(idReclamo, datos);
+      const modificacionReclamo = await this.service.modificar(
+        idReclamo,
+        datos
+      );
 
       res.status(200).send({
         estado: "OK",
@@ -126,7 +105,10 @@ export default class ReclamosController {
     }
 
     try {
-      const cancelarReclamo = await this.service.cancelar({ idReclamo, idUsuario });
+      const cancelarReclamo = await this.service.cancelar({
+        idReclamo,
+        idUsuario,
+      });
 
       res.status(200).send({
         estado: "OK",
@@ -160,8 +142,13 @@ export default class ReclamosController {
     }
     try {
       const reclamo = await this.service.buscarId(idReclamo);
-      if (reclamo && reclamo.reclamoEstado !== "Cancelado") { // Esto no me gusta, deberia ser por idEsado, consultar
-        const estadoReclamo = await this.service.cambiarEstado({ idReclamo, idUsuario, estado });
+      if (reclamo && reclamo.reclamoEstado !== "Cancelado") {
+        // Esto no me gusta, deberia ser por idEsado, consultar
+        const estadoReclamo = await this.service.cambiarEstado({
+          idReclamo,
+          idUsuario,
+          estado,
+        });
 
         res.status(200).send({
           estado: "OK",

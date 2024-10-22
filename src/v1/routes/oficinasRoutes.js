@@ -1,6 +1,7 @@
 import express from "express";
 import OficinasController from "../../controllers/oficinasController.js";
-import { esEmpleado } from "../../middlewares/validarUsuarios.js";
+import { manejarErrores } from "../../middlewares/manejarErrores.js";
+import { validarOficinas } from "../../middlewares/validaciones.js";
 
 const router = express.Router();
 
@@ -12,9 +13,19 @@ router.get("/:idOficina", oficinasController.buscarId);
 
 router.post("/", oficinasController.crear);
 
-router.patch("/:idOficina", oficinasController.modificar);
+router.patch(
+  "/:idOficina",
+  validarOficinas,
+  manejarErrores,
+  oficinasController.modificar
+);
 
-router.get("/:idOficina/empleados/", oficinasController.buscarEmpleados); // Empleados por oficina
+router.get(
+  "/:idOficina/empleados/",
+  validarOficinas,
+  manejarErrores,
+  oficinasController.buscarEmpleados
+); // Empleados por oficina
 
 // Agregar empleado a oficina
 // router.post("/empleados/", oficinasController.agregarEmpleados);

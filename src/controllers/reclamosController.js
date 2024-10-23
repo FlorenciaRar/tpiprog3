@@ -160,7 +160,7 @@ export default class ReclamosController {
     }
     try {
       const reclamo = await this.service.buscarId(idReclamo);
-      if (reclamo && reclamo.reclamoEstado !== "Cancelado") { // Esto no me gusta, deberia ser por idEsado, consultar
+      if (reclamo && reclamo.idReclamoEstado !== 3) {
         const estadoReclamo = await this.service.cambiarEstado({ idReclamo, idUsuario, estado });
 
         res.status(200).send({

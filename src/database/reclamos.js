@@ -15,7 +15,7 @@ export default class Reclamos {
 
   buscarId = async (idReclamo) => {
     const sql =
-      "SELECT r.asunto, r.descripcion, r.fechaCreado, r.fechaFinalizado, r.fechaCancelado, re.descripcion AS 'reclamoEstado', rt.descripcion AS 'reclamoTipo', u.nombre AS 'usuarioCreador', u.correoElectronico FROM reclamos AS r JOIN reclamos_estado AS re ON re.idReclamoEstado = r.idReclamoEstado JOIN reclamos_tipo AS rt ON r.idReclamoTipo = rt.idReclamoTipo JOIN usuarios AS u ON r.idUsuarioCreador = u.idUsuario WHERE idReclamo = ?";
+      "SELECT r.asunto, r.descripcion, r.fechaCreado, r.fechaFinalizado, r.fechaCancelado,re.idReclamoEstado, re.descripcion AS 'reclamoEstado', rt.descripcion AS 'reclamoTipo', u.nombre AS 'usuarioCreador', u.correoElectronico FROM reclamos AS r JOIN reclamos_estado AS re ON re.idReclamoEstado = r.idReclamoEstado JOIN reclamos_tipo AS rt ON r.idReclamoTipo = rt.idReclamoTipo JOIN usuarios AS u ON r.idUsuarioCreador = u.idUsuario WHERE idReclamo = ?";
     const [resultado] = await conexion.query(sql, [idReclamo]);
     return resultado.length > 0 ? resultado[0] : null;
   };
@@ -23,7 +23,12 @@ export default class Reclamos {
   crear = async ({ asunto, descripcion, idReclamoTipo, idUsuarioCreador }) => {
     const sql =
       "INSERT INTO reclamos (asunto, descripcion, fechaCreado, fechaFinalizado, fechaCancelado, idReclamoEstado, idReclamoTipo, idUsuarioCreador, idUsuarioFinalizador) VALUES  (?, ?, NOW(), NULL, NULL, 1, ?, ?, NULL);";
-    const [resultado] = await conexion.query(sql, [asunto, descripcion, idReclamoTipo, idUsuarioCreador]);
+    const [resultado] = await conexion.query(sql, [
+      asunto,
+      descripcion,
+      idReclamoTipo,
+      idUsuarioCreador,
+    ]);
 
     if (resultado.affectedRows === 0) {
       return "Ocurrió un error creando el reclamo";
@@ -47,11 +52,15 @@ export default class Reclamos {
 
   cancelar = async ({ idReclamo, idUsuario }) => {
     const sql =
-      "UPDATE reclamos SET fechaCancelado = NOW(), idReclamoEstado = 3, idUsuarioFinalizador = ? WHERE idReclamo = ? AND idUsuarioCreador = ?;";
-    const [resultado] = await conexion.query(sql, [idUsuario, idReclamo, idUsuario]);
+      "UPDATE reclamos SET fechaCancelado = NOW(), idReclamoEstado = 3, idUsuarioFinalizador = ? WHERE idReclamo = ? AND idUsuarioCreador = ? AND idReclamoEstado =1;";
+    const [resultado] = await conexion.query(sql, [
+      idUsuario,
+      idReclamo,
+      idUsuario,
+    ]);
 
     if (resultado.affectedRows === 0) {
-      return "Ocurrió un error cancelando el reclamo";
+      return "Ocurrió un error cancelando el reclamo, o el reclamo no tiene estado 'Creado'";
     }
     const reclamo = await this.buscarId(idReclamo);
 
@@ -62,10 +71,16 @@ export default class Reclamos {
 
   cambiarEstado = async ({ idReclamo, idUsuario, estado }) => {
     // le falta "AND idReclamoTipo = idReclamoTipo que atiende el empleado"
-    const sql = "UPDATE reclamos SET idReclamoEstado = ?, fechaFinalizado = ?, idUsuarioFinalizador = ? WHERE idReclamo = ?";
+    const sql =
+      "UPDATE reclamos SET idReclamoEstado = ?, fechaFinalizado = ?, idUsuarioFinalizador = ? WHERE idReclamo = ?";
     let fin = estado === 4 ? new Date().toISOString() : null;
     let usuario = estado === 4 ? idUsuario : null;
-    const [resultado] = await conexion.query(sql, [estado, fin, usuario, idReclamo]);
+    const [resultado] = await conexion.query(sql, [
+      estado,
+      fin,
+      usuario,
+      idReclamo,
+    ]);
 
     if (resultado.affectedRows === 0) {
       return "Ocurrió un error cambiando el estado del reclamo";

@@ -30,7 +30,7 @@ router.patch("/:idReclamo/cancelar", verificarTipoUsuario([3]), reclamosControll
 // EMPLEADOS
 router.get("/oficina", verificarTipoUsuario([2]), reclamosController.buscarOficina); //Reclamos por empleado
 
-router.patch("/:idReclamo/estado", esEmpleado, reclamosController.cambiarEstado); // Cambiar estado de un reclamo
+router.patch("/:idReclamo/estado", verificarTipoUsuario([2]), reclamosController.cambiarEstado); // Cambiar estado de un reclamo
 // Verificar qeu no pueda cambiarlo si no es de su oficina
 
 export { router };

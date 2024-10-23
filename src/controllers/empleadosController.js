@@ -27,13 +27,6 @@ export default class EmpleadosController {
     }
     try {
       const empleado = await this.service.buscarId(idEmpleado);
-
-      if (!empleado) {
-        return res.status(404).send({
-          estado: "ERROR",
-          mensaje: "Empleado no encontrado",
-        });
-      }
       res.status(200).send({
         estado: "OK",
         data: empleado,
@@ -46,35 +39,8 @@ export default class EmpleadosController {
   };
 
   crear = async (req, res) => {
-    const { nombre, apellido, correoElectronico, contrasenia, imagen } = req.body;
-
-    if (!nombre) {
-      return res.status(400).send({
-        estado: "ERROR",
-        mensaje: "Nombre requerido",
-      });
-    }
-    if (!apellido) {
-      return res.status(400).send({
-        estado: "ERROR",
-        mensaje: "Apellido requerido",
-      });
-    }
-    if (!correoElectronico) {
-      return res.status(400).send({
-        estado: "ERROR",
-        mensaje: "Correo electrónico requerido",
-      });
-    }
-    if (!contrasenia) {
-      return res.status(400).send({
-        estado: "ERROR",
-        mensaje: "Contraseña requerida",
-      });
-    }
-
-    // Validar imagen
-
+    const { nombre, apellido, correoElectronico, contrasenia, imagen } =
+      req.body;
     try {
       const empleado = {
         nombre,
@@ -116,7 +82,10 @@ export default class EmpleadosController {
     }
 
     try {
-      const modificacionEmpleado = await this.service.modificar({ idEmpleado, datos });
+      const modificacionEmpleado = await this.service.modificar({
+        idEmpleado,
+        datos,
+      });
       res.status(200).send({
         estado: "OK",
         data: modificacionEmpleado,

@@ -27,13 +27,6 @@ export default class usuariosController {
     }
     try {
       const usuario = await this.service.buscarId(idUsuario);
-
-      if (!usuario) {
-        return res.status(404).send({
-          estado: "ERROR",
-          mensaje: "Usuario no encontrado",
-        });
-      }
       res.status(200).send({
         estado: "OK",
         data: usuario,
@@ -46,35 +39,8 @@ export default class usuariosController {
   };
 
   crear = async (req, res) => {
-    const { nombre, apellido, correoElectronico, contrasenia, imagen } = req.body;
-
-    if (!nombre) {
-      return res.status(400).send({
-        estado: "ERROR",
-        mensaje: "Nombre requerido",
-      });
-    }
-    if (!apellido) {
-      return res.status(400).send({
-        estado: "ERROR",
-        mensaje: "Apellido requerido",
-      });
-    }
-    if (!correoElectronico) {
-      return res.status(400).send({
-        estado: "ERROR",
-        mensaje: "Correo electrónico requerido",
-      });
-    }
-    if (!contrasenia) {
-      return res.status(400).send({
-        estado: "ERROR",
-        mensaje: "Contraseña requerida",
-      });
-    }
-
-    // Validar imagen
-
+    const { nombre, apellido, correoElectronico, contrasenia, imagen } =
+      req.body;
     try {
       const usuario = {
         nombre,
@@ -116,7 +82,10 @@ export default class usuariosController {
     }
 
     try {
-      const modificacionUsuario = await this.service.modificar({ idUsuario, datos });
+      const modificacionUsuario = await this.service.modificar({
+        idUsuario,
+        datos,
+      });
       res.status(200).send({
         estado: "OK",
         data: modificacionUsuario,

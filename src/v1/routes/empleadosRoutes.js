@@ -11,27 +11,24 @@ const router = express.Router();
 
 const empleadosController = new EmpleadosController();
 
-router.get("/", verificarTipoUsuario([1]), empleadosController.buscarTodos);
+router.get("/", empleadosController.buscarTodos);
 router.get(
   "/:idEmpleado",
-  verificarTipoUsuario([1]),
   validarIdEmpleado,
   manejarErrores,
   empleadosController.buscarId
 );
 router.post(
   "/",
-  verificarTipoUsuario([1]),
   validarEmpleados,
   manejarErrores,
   empleadosController.crear
-); // checkear que ande
+);
 router.patch(
   "/empleados",
-  verificarTipoUsuario([1]),
   validarEmpleados,
   manejarErrores,
   empleadosController.modificar
-); //chequear que ande
+); 
 
 export { router };

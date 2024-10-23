@@ -19,15 +19,9 @@ const reclamosController = new ReclamosController();
 // ADMIN
 router.get("/", verificarTipoUsuario([1]), reclamosController.buscarTodos);
 
-router.get(
-  "/:idReclamo",
-  verificarTipoUsuario([1, 2]),
-  validarIdReclamo,
-  manejarErrores,
-  reclamosController.buscarId
-); 
+router.get("/:idReclamo", verificarTipoUsuario([1]), validarIdReclamo, manejarErrores,reclamosController.buscarId); 
 
-// router.patch("/:idReclamo", reclamosController.modificar); // Mepa que no va
+router.patch("/:idReclamo", verificarTipoUsuario([1]),reclamosController.modificar);
 
 // Falta: Info estadistica
 

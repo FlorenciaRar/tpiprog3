@@ -21,7 +21,7 @@ import { router as v1InformeReclamos } from "./src/v1/routes/informeReclamosRout
 import authRoutes from "./src/v1/routes/authRoutes.js";
 import { authenticateJWT } from "./src/middlewares/authMiddleware.js";
 
-dotenv.config(); // Asegúrate de que dotenv se configura al inicio
+dotenv.config();
 
 const app = express();
 app.use(express.json());
@@ -43,7 +43,6 @@ passport.use(estrategia);
 passport.use(validacion);
 app.use(passport.initialize());
 
-
 const swaggerOptions = swaggerConfig;
 const swaggerDocs = swaggerJsdoc(swaggerOptions);
 
@@ -53,7 +52,6 @@ app.get("/", (req, res) => {
   res.json({ estado: "OK" });
 });
 
-app.use("/api/v1", authRoutes);
 app.use("/api/v1/reclamos-estado", authenticateJWT, verificarTipoUsuario([1]), v1ReclamosEstadoRouter);
 app.use("/api/v1/reclamos-tipo", authenticateJWT, verificarTipoUsuario([1]), v1ReclamosTipoRouter);
 app.use("/api/v1/oficinas", authenticateJWT, verificarTipoUsuario([1]), v1OficinasRouter);

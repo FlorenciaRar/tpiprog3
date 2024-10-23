@@ -17,6 +17,7 @@ import { router as v1OficinasRouter } from "./src/v1/routes/oficinasRoutes.js";
 import { router as v1ReclamosRouter } from "./src/v1/routes/reclamosRoutes.js";
 import { router as v1UsuariosRouter } from "./src/v1/routes/usuariosRoutes.js";
 import { router as v1EmpleadosRouter } from "./src/v1/routes/empleadosRoutes.js";
+import { router as v1InformeReclamos } from "./src/v1/routes/informeReclamosRoutes.js";
 import authRoutes from "./src/v1/routes/authRoutes.js";
 import { authenticateJWT } from "./src/middlewares/authMiddleware.js";
 
@@ -59,6 +60,7 @@ app.use("/api/v1/oficinas", authenticateJWT, verificarTipoUsuario([1]), v1Oficin
 app.use("/api/v1/reclamos", authenticateJWT, verificarTipoUsuario([1, 2, 3]), v1ReclamosRouter);
 app.use("/api/v1/usuarios", authenticateJWT, verificarTipoUsuario([1, 3]), v1UsuariosRouter);
 app.use("/api/v1/empleados", authenticateJWT, verificarTipoUsuario([1]), v1EmpleadosRouter);
+app.use("/api/v1/informe", authenticateJWT, verificarTipoUsuario([1]), v1InformeReclamos);
 
 const puerto = process.env.PUERTO;
 app.listen(puerto, () => {

@@ -7,7 +7,7 @@ const empleadosController = new EmpleadosController();
 
 router.get("/", empleadosController.buscarTodos);
 router.get("/:idEmpleado", empleadosController.buscarId);
-router.post("/", empleadosController.crear); // checkear que ande
-router.patch("/empleados", empleadosController.modificar);  //chequear que ande
+router.post("/", empleadosController.crear);
+router.patch("/:idEmpleado", empleadosController.modificar);
 
 export { router };

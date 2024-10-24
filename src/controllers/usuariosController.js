@@ -18,6 +18,7 @@ export default class usuariosController {
 
   buscarId = async (req, res) => {
     const idUsuario = req.params.idUsuario;
+    console.log(idUsuario);
 
     if (idUsuario === undefined || idUsuario === null) {
       return res.status(400).send({
@@ -27,6 +28,13 @@ export default class usuariosController {
     }
     try {
       const usuario = await this.service.buscarId(idUsuario);
+
+      if (!usuario) {
+        return res.status(404).send({
+          estado: "ERROR",
+          mensaje: "Usuario no encontrado",
+        });
+      }
       res.status(200).send({
         estado: "OK",
         data: usuario,

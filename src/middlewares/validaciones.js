@@ -52,5 +52,5 @@ export const validarEmpleados = [
 ];
 
 export const validarIdEmpleado = [
-  param("idReclamo").notEmpty().withMessage("El id del reclamo es requerido"),
+  param("idReclamo").notEmpty().withMessage("El id del empleado es requerido"),
 ];

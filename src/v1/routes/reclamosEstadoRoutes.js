@@ -9,17 +9,7 @@ const reclamosEstadoController = new ReclamosEstadoController();
 
 router.get("/", reclamosEstadoController.buscarTodos);
 router.get("/:idReclamoEstado", reclamosEstadoController.buscarId);
-router.post(
-  "/",
-  validarReclamosEstado,
-  manejarErrores,
-  reclamosEstadoController.crear
-);
-router.patch(
-  "/:idReclamoEstado",
-  validarReclamosEstado,
-  manejarErrores,
-  reclamosEstadoController.modificar
-);
+router.post("/", validarReclamosEstado, manejarErrores, reclamosEstadoController.crear);
+router.patch("/:idReclamoEstado", manejarErrores, reclamosEstadoController.modificar);
 
 export { router };

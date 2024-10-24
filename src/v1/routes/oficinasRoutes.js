@@ -13,19 +13,9 @@ router.get("/:idOficina", oficinasController.buscarId);
 
 router.post("/", oficinasController.crear);
 
-router.patch(
-  "/:idOficina",
-  validarOficinas,
-  manejarErrores,
-  oficinasController.modificar
-);
+router.patch("/:idOficina", manejarErrores, oficinasController.modificar);
 
-router.get(
-  "/:idOficina/empleados/",
-  validarOficinas,
-  manejarErrores,
-  oficinasController.buscarEmpleados
-); // Empleados por oficina
+router.get("/:idOficina/empleados/", manejarErrores, oficinasController.buscarEmpleados); // Empleados por oficina
 
 // Agregar empleado a oficina
 // router.post("/empleados/", oficinasController.agregarEmpleados);

@@ -76,10 +76,7 @@ export default class ReclamosController {
     }
 
     try {
-      const modificacionReclamo = await this.service.modificar(
-        idReclamo,
-        datos
-      );
+      const modificacionReclamo = await this.service.modificar(idReclamo, datos);
 
       res.status(200).send({
         estado: "OK",
@@ -105,10 +102,7 @@ export default class ReclamosController {
     }
 
     try {
-      const cancelarReclamo = await this.service.cancelar({
-        idReclamo,
-        idUsuario,
-      });
+      const cancelarReclamo = await this.service.cancelar({ idReclamo, idUsuario });
 
       res.status(200).send({
         estado: "OK",
@@ -125,7 +119,7 @@ export default class ReclamosController {
   cambiarEstado = async (req, res) => {
     const idReclamo = req.params.idReclamo;
     const idUsuario = req.user.idUsuario;
-    const estado = Number(req.body.estado);
+    const estado = Number(req.body.idReclamoEstado);
 
     if (idReclamo === undefined || idReclamo === null) {
       return res.status(400).send({
@@ -133,7 +127,7 @@ export default class ReclamosController {
         mensaje: "Id requerida",
       });
     }
-
+    //pasarlo a express validator
     if (!estado || estado === 3) {
       return res.status(400).send({
         estado: "ERROR",
@@ -141,21 +135,12 @@ export default class ReclamosController {
       });
     }
     try {
-      const reclamo = await this.service.buscarId(idReclamo);
-      
-      if (reclamo && reclamo.idReclamoEstado !== 3) {
-        const estadoReclamo = await this.service.cambiarEstado({ idReclamo, idUsuario, estado });
+      const estadoReclamo = await this.service.cambiarEstado({ idReclamo, idUsuario, estado });
 
-        res.status(200).send({
-          estado: "OK",
-          data: estadoReclamo,
-        });
-      } else {
-        return res.status(400).send({
-          estado: "ERROR",
-          mensaje: "El reclamo no existe o ha sido cancelado por el usuario",
-        });
-      }
+      res.status(200).send({
+        estado: "OK",
+        data: estadoReclamo,
+      });
     } catch (error) {
       console.log(error);
       res.status(500).send({

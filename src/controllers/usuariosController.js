@@ -39,8 +39,7 @@ export default class usuariosController {
   };
 
   crear = async (req, res) => {
-    const { nombre, apellido, correoElectronico, contrasenia, imagen } =
-      req.body;
+    const { nombre, apellido, correoElectronico, contrasenia, imagen } = req.body;
     try {
       const usuario = {
         nombre,
@@ -64,7 +63,7 @@ export default class usuariosController {
   };
 
   modificar = async (req, res) => {
-    const idUsuario = req.user.idUsuario; // Luego será req.user
+    const idUsuario = req.user.idUsuario;
     const datos = req.body;
 
     if (idUsuario === undefined || idUsuario === null) {
@@ -74,12 +73,12 @@ export default class usuariosController {
       });
     }
 
-    if (datos.contrasenia) {
-      return res.status(403).send({
-        estado: "ERROR",
-        mensaje: "El campo contraseña no se puede modificar",
-      });
-    }
+    // if (datos.contrasenia) {
+    //   return res.status(403).send({
+    //     estado: "ERROR",
+    //     mensaje: "El campo contraseña no se puede modificar",
+    //   });
+    // }
 
     try {
       const modificacionUsuario = await this.service.modificar({

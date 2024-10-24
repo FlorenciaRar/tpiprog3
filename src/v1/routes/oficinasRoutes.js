@@ -17,10 +17,8 @@ router.patch("/:idOficina", manejarErrores, oficinasController.modificar);
 
 router.get("/:idOficina/empleados/", manejarErrores, oficinasController.buscarEmpleados); // Empleados por oficina
 
-// Agregar empleado a oficina
-// router.post("/empleados/", oficinasController.agregarEmpleados);
+router.post("/agregar/empleados/", oficinasController.agregarEmpleados); // Agregar empleado a oficina
 
-// Quitar empleado de oficina
-// router.patch("/empleados/", oficinasController.quitarEmpleados);
+router.patch("/quitar/empleados/", oficinasController.quitarEmpleados); // Quitar empleado de oficina
 
 export { router };

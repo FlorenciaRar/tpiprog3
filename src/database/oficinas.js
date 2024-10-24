@@ -47,8 +47,46 @@ export default class Oficinas {
 
   buscarEmpleados = async (idOficina) => {
     const sql =
-      "SELECT u.nombre, u.apellido, o.nombre AS 'oficina' FROM usuarios_oficinas AS uo JOIN oficinas AS o ON uo.idOficina = o.idOficina JOIN usuarios AS u ON uo.idUsuario = u.idUsuario WHERE uo.idOficina = ? AND uo.activo = 1";
+      "SELECT u.idUsuario, u.nombre, u.apellido, o.nombre AS 'oficina' FROM usuarios_oficinas AS uo JOIN oficinas AS o ON uo.idOficina = o.idOficina JOIN usuarios AS u ON uo.idUsuario = u.idUsuario WHERE uo.idOficina = ? AND uo.activo = 1";
     const [resultado] = await conexion.query(sql, [idOficina]);
     return resultado;
+  };
+
+  agregarEmpleados = async ({ idOficina, empleadosExistentes }) => {
+    let empleadosAgregados = 0;
+    try {
+      await conexion.beginTransaction();
+
+      for (const empleado of empleadosExistentes) {
+        const sql = `INSERT INTO usuarios_oficinas (idUsuario, idOficina, activo) VALUES (?,?, 1);`;
+        const resultado = conexion.query(sql, [empleado.idUsuario, idOficina]);
+        empleadosAgregados += 1;
+      }
+      await conexion.commit();
+      return { estado: true, mensaje: `${empleadosAgregados} empleados agregados` };
+    } catch (error) {
+      await conexion.rollback();
+      console.log(error);
+      return { estado: false, mensaje: "Ocurrió un error agregando empleados a la oficina" };
+    }
+  };
+
+  quitarEmpleados = async ({ idOficina, empleadosExistentes }) => {
+    let empleadosQuitados = 0;
+    try {
+      await conexion.beginTransaction();
+
+      for (const empleado of empleadosExistentes) {
+        const sql = `UPDATE usuarios_oficinas SET activo = 0 WHERE idUsuario = ? AND idOficina = ?;`;
+        const resultado = conexion.query(sql, [empleado.idUsuario, idOficina]);
+        empleadosQuitados += 1;
+      }
+      await conexion.commit();
+      return { estado: true, mensaje: `${empleadosQuitados} empleados quitados con exito!` };
+    } catch (error) {
+      await conexion.rollback();
+      console.log(error);
+      return { estado: false, mensaje: "Ocurrió un error quitando empleados a la oficina" };
+    }
   };
 }

@@ -52,6 +52,7 @@ app.get("/", (req, res) => {
   res.json({ estado: "OK" });
 });
 
+app.use("/api/v1/", authRoutes);
 app.use("/api/v1/reclamos-estado", authenticateJWT, verificarTipoUsuario([1]), v1ReclamosEstadoRouter);
 app.use("/api/v1/reclamos-tipo", authenticateJWT, verificarTipoUsuario([1]), v1ReclamosTipoRouter);
 app.use("/api/v1/oficinas", authenticateJWT, verificarTipoUsuario([1]), v1OficinasRouter);

@@ -27,9 +27,9 @@ export default class Empleados {
     return this.buscarId(resultado.insertId);
   };
 
-  modificar = async ({ idUsuario, datos }) => {
+  modificar = async ({ idEmpleado, datos }) => {
     const sql = "UPDATE usuarios SET ? WHERE idUsuario = ?";
-    const [resultado] = await conexion.query(sql, [datos, idUsuario]);
+    const [resultado] = await conexion.query(sql, [datos, idEmpleado]);
 
     if (resultado.affectedRows === 0) {
       return res.status(400).json({
@@ -37,6 +37,6 @@ export default class Empleados {
       });
     }
 
-    return this.buscarId(idUsuario);
+    return this.buscarId(idEmpleado);
   };
 }

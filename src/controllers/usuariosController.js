@@ -73,12 +73,12 @@ export default class usuariosController {
       });
     }
 
-    // if (datos.contrasenia) {
-    //   return res.status(403).send({
-    //     estado: "ERROR",
-    //     mensaje: "El campo contraseña no se puede modificar",
-    //   });
-    // }
+    if (datos.contrasenia) {
+      return res.status(403).send({
+        estado: "ERROR",
+        mensaje: "El campo contraseña no se puede modificar",
+      });
+    }
 
     try {
       const modificacionUsuario = await this.service.modificar({

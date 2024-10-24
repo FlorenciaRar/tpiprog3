@@ -57,8 +57,7 @@ app.use("/api/v1/reclamos-estado", authenticateJWT, verificarTipoUsuario([1]), v
 app.use("/api/v1/reclamos-tipo", authenticateJWT, verificarTipoUsuario([1]), v1ReclamosTipoRouter);
 app.use("/api/v1/oficinas", authenticateJWT, verificarTipoUsuario([1]), v1OficinasRouter);
 app.use("/api/v1/reclamos", authenticateJWT, verificarTipoUsuario([1, 2, 3]), v1ReclamosRouter);
-// app.use("/api/v1/usuarios", authenticateJWT, verificarTipoUsuario([1, 3]), v1UsuariosRouter);
-app.use("/api/v1/usuarios", v1UsuariosRouter);
+app.use("/api/v1/usuarios", authenticateJWT, verificarTipoUsuario([1, 3]), v1UsuariosRouter);
 app.use("/api/v1/empleados", authenticateJWT, verificarTipoUsuario([1]), v1EmpleadosRouter);
 app.use("/api/v1/informe", authenticateJWT, verificarTipoUsuario([1]), v1InformeReclamos);
 

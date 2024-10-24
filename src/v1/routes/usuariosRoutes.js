@@ -11,7 +11,7 @@ const usuariosController = new UsuariosController();
 
 router.get("/", authenticateJWT, verificarTipoUsuario([1]), usuariosController.buscarTodos);
 router.get("/:idUsuario", authenticateJWT, verificarTipoUsuario([1]), validarIdUsuario, manejarErrores, usuariosController.buscarId);
-router.post("/", validarUsuarios, manejarErrores, usuariosController.crear);
-router.patch("/", authenticateJWT, verificarTipoUsuario([3]), usuariosController.modificar);
+router.post("/", authenticateJWT, verificarTipoUsuario([1]), validarUsuarios, manejarErrores, usuariosController.crear);
+router.patch("/", authenticateJWT, verificarTipoUsuario([1, 3]), usuariosController.modificar);
 
 export { router };

@@ -11,6 +11,6 @@ const empleadosController = new EmpleadosController();
 router.get("/", empleadosController.buscarTodos);
 router.get("/:idEmpleado", validarIdEmpleado, manejarErrores, empleadosController.buscarId);
 router.post("/", validarEmpleados, manejarErrores, empleadosController.crear);
-router.patch("/empleados", manejarErrores, empleadosController.modificar);
+router.patch("/:idEmpleado", manejarErrores, empleadosController.modificar);
 
 export { router };

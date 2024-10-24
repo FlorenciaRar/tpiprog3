@@ -30,4 +30,4 @@ export const validarEmpleados = [
   body("contrasenia").isLength({ min: 6 }).withMessage("La contraseña debe tener al menos 6 caracteres"),
 ];
 
-export const validarIdEmpleado = [param("idReclamo").notEmpty().withMessage("El id del reclamo es requerido")];
+export const validarIdEmpleado = [param("idEmpleado").notEmpty().withMessage("El id del reclamo es requerido")];

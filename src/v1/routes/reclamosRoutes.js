@@ -22,17 +22,14 @@ router.get("/", verificarTipoUsuario([1]), reclamosController.buscarTodos);
 router.get(
   "/:idReclamo",
   verificarTipoUsuario([1, 2]),
-  // permite que solo el admin y empleado puedan ver los reclamos ( agregar 3 para que el cliente tambien pueda verlo )
   validarIdReclamo,
   manejarErrores,
   reclamosController.buscarId
-); // Actualmente funcionando todo OK!
+); 
 
 // router.patch("/:idReclamo", reclamosController.modificar); // Mepa que no va
 
 // Falta: Info estadistica
-
-// Falta: Descargar informes
 
 // CLIENTES
 router.get(
@@ -66,13 +63,7 @@ router.get(
   reclamosController.buscarOficina
 ); //Reclamos por empleado
 
-router.patch(
-  "/:idReclamo/estado",
-  esEmpleado,
-  validarReclamos,
-  manejarErrores,
-  reclamosController.cambiarEstado
-); // Cambiar estado de un reclamo
+router.patch("/:idReclamo/estado", verificarTipoUsuario([2]), validarReclamos, manejarErrores, reclamosController.cambiarEstado); // Cambiar estado de un reclamo
 // Verificar qeu no pueda cambiarlo si no es de su oficina
 
 export { router };

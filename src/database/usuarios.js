@@ -2,7 +2,7 @@ import { conexion } from "./conexion.js";
 
 export default class Usuarios {
   buscarTodos = async () => {
-    const sql = "SELECT nombre, apellido, correoElectronico FROM usuarios WHERE activo = 1;";
+    const sql = "SELECT idUsuario,nombre, apellido, correoElectronico FROM usuarios WHERE activo = 1;";
     const [resultado] = await conexion.query(sql);
     return resultado;
   };
@@ -13,10 +13,10 @@ export default class Usuarios {
     return resultado.length > 0 ? resultado[0] : null;
   };
 
-  crear = async ({ nombre, apellido, correoElectronico, contrasenia, imagen }) => {
+  crear = async ({ nombre, apellido, correoElectronico, contrasenia, idUsuarioTipo = 3, imagen }) => {
     const sql =
-      "INSERT INTO usuarios (nombre, apellido, correoElectronico, contrasenia, idUsuarioTipo, imagen, activo) VALUES  (?, ?, ?, SHA2(?, 256), 3, ?, 1);";
-    const [resultado] = await conexion.query(sql, [nombre, apellido, correoElectronico, contrasenia, imagen]);
+      "INSERT INTO usuarios (nombre, apellido, correoElectronico, contrasenia, idUsuarioTipo, imagen, activo) VALUES  (?, ?, ?, SHA2(?, 256), ?, ?, 1);";
+    const [resultado] = await conexion.query(sql, [nombre, apellido, correoElectronico, contrasenia, idUsuarioTipo, imagen]);
 
     if (resultado.affectedRows === 0) {
       return res.status(400).json({
@@ -39,9 +39,10 @@ export default class Usuarios {
     return this.buscarId(idUsuario);
   };
 
-  buscarLogin = async ({correo, contrasenia})=>{
-     const sql = "SELECT idUsuario, nombre, apellido, correoElectronico, idUsuarioTipo, imagen FROM usuarios WHERE correoElectronico = ? AND contrasenia = SHA2(?, 256) AND activo = 1;";
+  buscarLogin = async ({ correo, contrasenia }) => {
+    const sql =
+      "SELECT idUsuario, nombre, apellido, correoElectronico, idUsuarioTipo, imagen FROM usuarios WHERE correoElectronico = ? AND contrasenia = SHA2(?, 256) AND activo = 1;";
     const [resultado] = await conexion.query(sql, [correo, contrasenia]);
     return resultado.length > 0 ? resultado[0] : null;
-  }
+  };
 }

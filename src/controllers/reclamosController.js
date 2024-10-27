@@ -68,6 +68,13 @@ export default class ReclamosController {
     const idReclamo = req.params.idReclamo;
     const datos = req.body;
 
+    if (!Object.keys(datos).length) {
+      return res.status(400).send({
+        estado: "ERROR",
+        mensaje: "Debe modificar al menos un campo",
+      });
+    }
+
     if (idReclamo === undefined || idReclamo === null) {
       return res.status(400).send({
         estado: "ERROR",
@@ -76,17 +83,13 @@ export default class ReclamosController {
     }
 
     try {
-      const modificacionReclamo = await this.service.modificar(
-        idReclamo,
-        datos
-      );
+      const modificacionReclamo = await this.service.modificar(idReclamo, datos);
 
       res.status(200).send({
         estado: "OK",
         data: modificacionReclamo,
       });
     } catch (error) {
-      console.log(error);
       res.status(500).send({
         mensaje: "Ha ocurrido un error. Intentelo de nuevo más tarde",
       });
@@ -105,10 +108,7 @@ export default class ReclamosController {
     }
 
     try {
-      const cancelarReclamo = await this.service.cancelar({
-        idReclamo,
-        idUsuario,
-      });
+      const cancelarReclamo = await this.service.cancelar({ idReclamo, idUsuario });
 
       res.status(200).send({
         estado: "OK",
@@ -125,7 +125,7 @@ export default class ReclamosController {
   cambiarEstado = async (req, res) => {
     const idReclamo = req.params.idReclamo;
     const idUsuario = req.user.idUsuario;
-    const estado = Number(req.body.estado);
+    const estado = Number(req.body.idReclamoEstado);
 
     if (idReclamo === undefined || idReclamo === null) {
       return res.status(400).send({
@@ -134,28 +134,13 @@ export default class ReclamosController {
       });
     }
 
-    if (!estado || estado === 3) {
-      return res.status(400).send({
-        estado: "ERROR",
-        mensaje: "Estado no válido",
-      });
-    }
     try {
-      const reclamo = await this.service.buscarId(idReclamo);
-      
-      if (reclamo && reclamo.idReclamoEstado !== 3) {
-        const estadoReclamo = await this.service.cambiarEstado({ idReclamo, idUsuario, estado });
+      const estadoReclamo = await this.service.cambiarEstado({ idReclamo, idUsuario, estado });
 
-        res.status(200).send({
-          estado: "OK",
-          data: estadoReclamo,
-        });
-      } else {
-        return res.status(400).send({
-          estado: "ERROR",
-          mensaje: "El reclamo no existe o ha sido cancelado por el usuario",
-        });
-      }
+      res.status(200).send({
+        estado: "OK",
+        data: estadoReclamo,
+      });
     } catch (error) {
       console.log(error);
       res.status(500).send({
@@ -164,7 +149,7 @@ export default class ReclamosController {
     }
   };
 
-  buscarUsuario = async (req, res) => {
+  buscarReclamosUsuario = async (req, res) => {
     const idUsuario = req.user.idUsuario;
     if (idUsuario === undefined || idUsuario === null) {
       return res.status(400).send({
@@ -173,17 +158,18 @@ export default class ReclamosController {
       });
     }
     try {
-      const reclamos = await this.service.buscarUsuario(idUsuario);
+      const reclamos = await this.service.buscarReclamosUsuario(idUsuario);
       if (!reclamos) {
         return res.status(404).send({
           estado: "ERROR",
           mensaje: "No se han encontrado reclamos",
         });
+      } else {
+        res.status(200).send({
+          estado: "OK",
+          data: reclamos,
+        });
       }
-      res.status(200).send({
-        estado: "OK",
-        data: reclamos,
-      });
     } catch (error) {
       res.status(500).send({
         mensaje: "Ha ocurrido un error. Intentelo de nuevo más tarde",
@@ -191,7 +177,7 @@ export default class ReclamosController {
     }
   };
 
-  buscarOficina = async (req, res) => {
+  buscarReclamosOficina = async (req, res) => {
     const idUsuario = req.user.idUsuario;
     if (idUsuario === undefined || idUsuario === null) {
       return res.status(400).send({
@@ -200,17 +186,18 @@ export default class ReclamosController {
       });
     }
     try {
-      const reclamos = await this.service.buscarOficina(idUsuario);
+      const reclamos = await this.service.buscarReclamosOficina(idUsuario);
       if (!reclamos) {
         return res.status(404).send({
           estado: "ERROR",
           mensaje: "No se han encontrado reclamos",
         });
+      } else {
+        res.status(200).send({
+          estado: "OK",
+          data: reclamos,
+        });
       }
-      res.status(200).send({
-        estado: "OK",
-        data: reclamos,
-      });
     } catch (error) {
       console.log(error);
       res.status(500).send({

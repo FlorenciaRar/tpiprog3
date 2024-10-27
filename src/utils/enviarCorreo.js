@@ -1,51 +1,49 @@
-import express from 'express';
-import dotenv from 'dotenv';
-import nodemailer from 'nodemailer';
-import handlebars from 'handlebars';
-import fs from 'fs';
-import path  from 'path';
-import { fileURLToPath } from 'url';  
+import dotenv from "dotenv";
+import nodemailer from "nodemailer";
+import handlebars from "handlebars";
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
 
 dotenv.config();
 
-export const enviarCorreo = (idReclamo, reclamo)=>{
-    const filename = fileURLToPath(import.meta.url);
-    const dir = path.dirname(`${filename}`);
-    
-    const plantilla = fs.readFileSync(path.join(dir + '/plantillaCorreo.hbs'), 'utf-8');
+export const enviarCorreo = async (datosReclamo) => {
+  const filename = fileURLToPath(import.meta.url);
+  const dir = path.dirname(`${filename}`);
 
-    const template = handlebars.compile(plantilla);
+  const plantilla = fs.readFileSync(path.join(dir + "/plantillaCorreo.hbs"), "utf-8");
 
-    const datosReclamo = {
-        idReclamo,
-        nombre: reclamo.usuarioCreador,
-        asunto: reclamo.asunto,
-        descripcion: reclamo.descripcion !== null ? reclamo.descripcion : 'Sin descripción',
-        estado: reclamo.reclamoEstado
-    }
+  const template = handlebars.compile(plantilla);
 
-    const correoHtml = template(datosReclamo);
+  const datos = {
+    idReclamo: datosReclamo.idReclamo,
+    nombre: datosReclamo.usuarioCreador,
+    asunto: datosReclamo.asunto,
+    descripcion: datosReclamo.descripcion !== null ? datosReclamo.descripcion : "Sin descripción",
+    estado: datosReclamo.reclamoEstado,
+  };
 
-    const transporter = nodemailer.createTransport({ 
-        service: 'gmail',
-        auth:{
-            user: process.env.EMAIL_USUARIO, 
-            pass: process.env.EMAIL_CLAVE
-        },
-        tls : { rejectUnauthorized: false }
-    });
+  const correoHtml = template(datos);
 
-    const mailOptions = {
-        to: reclamo.correoElectronico,
-        subject: "Cambio de estado en su reclamo",
-        html: correoHtml,
-    };
+  const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: process.env.EMAIL_USUARIO,
+      pass: process.env.EMAIL_CLAVE,
+    },
+    tls: { rejectUnauthorized: false },
+  });
 
-    transporter.sendMail(mailOptions, (error, info) => {
-        if (error) {
-            console.error("ERROR", error);
-        } else {
-            res.json({'estado': "OK"});
-        }
-    });
-}
+  const mailOptions = {
+    to: datosReclamo.correoElectronico,
+    subject: "Cambio de estado en su reclamo",
+    html: correoHtml,
+  };
+
+  try {
+    transporter.sendMail(mailOptions);
+    return { estado: "OK", mensaje: "Se envió el correo electronico" };
+  } catch (error) {
+    return { estado: "ERROR", mensaje: "Correo electrónico no enviado." };
+  }
+};

@@ -27,10 +27,12 @@ export default class EmpleadosController {
     }
     try {
       const empleado = await this.service.buscarId(idEmpleado);
-      res.status(200).send({
-        estado: "OK",
-        data: empleado,
-      });
+
+      if (!empleado) {
+        res.status(404).send({ estado: "ERROR", mensaje: "Empleado no encontrado" });
+      } else {
+        res.status(200).send({ estado: "OK", data: empleado });
+      }
     } catch (error) {
       res.status(500).send({
         mensaje: "Ha ocurrido un error. Intentelo de nuevo más tarde",
@@ -39,8 +41,7 @@ export default class EmpleadosController {
   };
 
   crear = async (req, res) => {
-    const { nombre, apellido, correoElectronico, contrasenia, imagen } =
-      req.body;
+    const { nombre, apellido, correoElectronico, contrasenia, imagen } = req.body;
     try {
       const empleado = {
         nombre,
@@ -64,10 +65,17 @@ export default class EmpleadosController {
   };
 
   modificar = async (req, res) => {
-    const idEmpleado = req.params.idEmpleado;
+    const idUsuario = req.params.idEmpleado;
     const datos = req.body;
 
-    if (idEmpleado === undefined || idEmpleado === null) {
+    if (!Object.keys(datos).length) {
+      return res.status(400).send({
+        estado: "ERROR",
+        mensaje: "Debe modificar al menos un campo",
+      });
+    }
+
+    if (idUsuario === undefined || idUsuario === null) {
       return res.status(400).send({
         estado: "ERROR",
         mensaje: "Id requerida",
@@ -83,7 +91,7 @@ export default class EmpleadosController {
 
     try {
       const modificacionEmpleado = await this.service.modificar({
-        idEmpleado,
+        idUsuario,
         datos,
       });
       res.status(200).send({
@@ -92,7 +100,7 @@ export default class EmpleadosController {
       });
     } catch (error) {
       res.status(500).send({
-        error,
+        error: error,
         mensaje: "Ha ocurrido un error. Intentelo de nuevo más tarde",
       });
     }

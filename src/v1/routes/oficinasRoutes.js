@@ -1,7 +1,7 @@
 import express from "express";
 import OficinasController from "../../controllers/oficinasController.js";
 import { manejarErrores } from "../../middlewares/manejarErrores.js";
-import { validarOficinas } from "../../middlewares/validaciones.js";
+import { validarAgregarQuitarEmpleado, validarOficinas } from "../../middlewares/validaciones.js";
 
 const router = express.Router();
 
@@ -11,26 +11,14 @@ router.get("/", oficinasController.buscarTodos);
 
 router.get("/:idOficina", oficinasController.buscarId);
 
-router.post("/", oficinasController.crear);
+router.post("/", validarOficinas, manejarErrores, oficinasController.crear);
 
-router.patch(
-  "/:idOficina",
-  validarOficinas,
-  manejarErrores,
-  oficinasController.modificar
-);
+router.patch("/:idOficina", manejarErrores, oficinasController.modificar);
 
-router.get(
-  "/:idOficina/empleados/",
-  validarOficinas,
-  manejarErrores,
-  oficinasController.buscarEmpleados
-); // Empleados por oficina
+router.get("/:idOficina/empleados/", oficinasController.buscarEmpleados); // Empleados por oficina
 
-// Agregar empleado a oficina
-// router.post("/empleados/", oficinasController.agregarEmpleados);
+router.post("/agregar/empleados/", validarAgregarQuitarEmpleado, manejarErrores, oficinasController.agregarEmpleados); // Agregar empleado a oficina
 
-// Quitar empleado de oficina
-// router.patch("/empleados/", oficinasController.quitarEmpleados);
+router.patch("/quitar/empleados/", validarAgregarQuitarEmpleado, manejarErrores, oficinasController.quitarEmpleados); // Quitar empleado de oficina
 
 export { router };

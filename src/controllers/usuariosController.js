@@ -27,10 +27,12 @@ export default class usuariosController {
     }
     try {
       const usuario = await this.service.buscarId(idUsuario);
-      res.status(200).send({
-        estado: "OK",
-        data: usuario,
-      });
+
+      if (!usuario) {
+        res.status(404).send({ estado: "ERROR", mensaje: "Usuario no encontrado" });
+      } else {
+        res.status(200).send({ estado: "OK", data: usuario });
+      }
     } catch (error) {
       res.status(500).send({
         mensaje: "Ha ocurrido un error. Intentelo de nuevo más tarde",
@@ -39,8 +41,7 @@ export default class usuariosController {
   };
 
   crear = async (req, res) => {
-    const { nombre, apellido, correoElectronico, contrasenia, imagen } =
-      req.body;
+    const { nombre, apellido, correoElectronico, contrasenia, imagen } = req.body;
     try {
       const usuario = {
         nombre,
@@ -64,8 +65,15 @@ export default class usuariosController {
   };
 
   modificar = async (req, res) => {
-    const idUsuario = req.user.idUsuario; // Luego será req.user
+    const idUsuario = req.user.idUsuario;
     const datos = req.body;
+
+    if (!Object.keys(datos).length) {
+      return res.status(400).send({
+        estado: "ERROR",
+        mensaje: "Debe modificar al menos un campo",
+      });
+    }
 
     if (idUsuario === undefined || idUsuario === null) {
       return res.status(400).send({

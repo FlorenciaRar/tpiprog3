@@ -30,14 +30,14 @@ app.use(cors());
 app.use(helmet());
 app.use(validateContentType);
 
-app.use(
-  session({
-    secret: "claveSecreta",
-    resave: false,
-    saveUninitialized: false,
-    cookie: { secure: false },
-  })
-);
+// app.use(
+//   session({
+//     secret: "claveSecreta",
+//     resave: false,
+//     saveUninitialized: false,
+//     cookie: { secure: false },
+//   })
+// );
 
 passport.use(estrategia);
 passport.use(validacion);

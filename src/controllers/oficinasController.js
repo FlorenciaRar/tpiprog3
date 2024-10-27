@@ -35,15 +35,10 @@ export default class oficinasController {
       const oficina = await this.service.buscarId(idOficina);
 
       if (!oficina) {
-        return res.status(404).send({
-          estado: "ERROR",
-          mensaje: "Oficina no encontrada",
-        });
+        res.status(404).send({ estado: "ERROR", mensaje: "Oficina no encontrada" });
+      } else {
+        res.status(200).send({ estado: "OK", data: oficina });
       }
-      res.status(200).send({
-        estado: "OK",
-        data: oficina,
-      });
     } catch (error) {
       res.status(500).send({
         mensaje: "Ha ocurrido un error. Intentelo de nuevo más tarde",
@@ -53,19 +48,6 @@ export default class oficinasController {
 
   crear = async (req, res) => {
     const { nombre, idReclamoTipo } = req.body;
-
-    if (!nombre) {
-      return res.status(400).send({
-        estado: "ERROR",
-        mensaje: "Nombre requerido",
-      });
-    }
-    if (!idReclamoTipo) {
-      return res.status(400).send({
-        estado: "ERROR",
-        mensaje: "IdReclamoTipo requerida",
-      });
-    }
 
     try {
       const oficina = { nombre, idReclamoTipo };
@@ -85,6 +67,13 @@ export default class oficinasController {
   modificar = async (req, res) => {
     const idOficina = req.params.idOficina;
     const datos = req.body;
+
+    if (!Object.keys(datos).length) {
+      return res.status(400).send({
+        estado: "ERROR",
+        mensaje: "Debe modificar al menos un campo",
+      });
+    }
 
     if (idOficina === undefined || idOficina === null) {
       return res.status(400).send({
@@ -112,12 +101,58 @@ export default class oficinasController {
 
     try {
       const empleadosOficina = await this.service.buscarEmpleados(idOficina);
-      res.status(200).send({
-        estado: "OK",
-        data: empleadosOficina,
-      });
+
+      if (empleadosOficina.length > 0) {
+        res.status(200).send({ estado: "OK", data: empleadosOficina });
+      } else {
+        res.status(404).send({ estado: "OK", mensaje: "No se han encontrado empleados para esta oficina" });
+      }
     } catch (error) {
       res.status(500).send({
+        mensaje: "Ha ocurrido un error. Intentelo de nuevo más tarde",
+      });
+    }
+  };
+
+  agregarEmpleados = async (req, res) => {
+    const { idOficina, empleados } = req.body;
+
+    try {
+      const oficinaEmpleados = {
+        idOficina,
+        empleados,
+      };
+      const nuevoOficinaEmpleados = await this.service.agregarEmpleados(oficinaEmpleados);
+      if (nuevoOficinaEmpleados.estado) {
+        res.status(200).send({ estado: "OK", mensaje: nuevoOficinaEmpleados.mensaje });
+      } else {
+        res.status(404).send({ estado: "ERROR", mensaje: nuevoOficinaEmpleados.mensaje });
+      }
+    } catch (error) {
+      res.status(500).send({
+        mensaje: "Ha ocurrido un error. Intentelo de nuevo más tarde",
+      });
+    }
+  };
+
+  quitarEmpleados = async (req, res) => {
+    const { idOficina, empleados } = req.body;
+
+    try {
+      const oficinaEmpleados = {
+        idOficina,
+        empleados,
+      };
+
+      const nuevoOficinaEmpleados = await this.service.quitarEmpleados(oficinaEmpleados);
+      if (nuevoOficinaEmpleados.estado) {
+        res.status(200).send({ estado: "OK", mensaje: nuevoOficinaEmpleados.mensaje });
+      } else {
+        res.status(404).send({ estado: "ERROR", mensaje: nuevoOficinaEmpleados.mensaje });
+      }
+    } catch (error) {
+      res.status(500).send({
+        estado: "ERROR",
         mensaje: "Ha ocurrido un error. Intentelo de nuevo más tarde",
       });
     }

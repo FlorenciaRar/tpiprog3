@@ -17,11 +17,15 @@ export default class UsuariosService {
     return this.usuarios.crear(usuario);
   };
 
-  modificar = (usuario) => {
+  modificar = async (usuario) => {
+    const existeUsuario = await this.usuarios.buscarId(usuario.idUsuario);
+    if (existeUsuario === null) {
+      return { estado: false, mensaje: "El usuario no existe" };
+    }
     return this.usuarios.modificar(usuario);
   };
 
-  buscarLogin = (usuario) =>{
+  buscarLogin = (usuario) => {
     return this.usuarios.buscarLogin(usuario);
-  }
+  };
 }

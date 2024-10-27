@@ -2,41 +2,22 @@ import { conexion } from "./conexion.js";
 
 export default class Empleados {
   buscarTodos = async () => {
-    const sql = "SELECT nombre, apellido, correoElectronico FROM usuarios WHERE idUsuarioTipo = 2 AND activo = 1;";
+    const sql = "SELECT idUsuario, nombre, apellido, correoElectronico FROM usuarios WHERE idUsuarioTipo = 2 AND activo = 1;";
     const [resultado] = await conexion.query(sql);
     return resultado;
   };
 
   buscarId = async (idUsuario) => {
-    const sql = "SELECT nombre, apellido, correoElectronico, idUsuarioTipo FROM usuarios WHERE idUsuario = ? AND idUsuarioTipo = 2 AND activo = 1;";
+    const sql =
+      "SELECT idUsuario, nombre, apellido, correoElectronico, idUsuarioTipo FROM usuarios WHERE idUsuario = ? AND idUsuarioTipo = 2 AND activo = 1;";
     const [resultado] = await conexion.query(sql, [idUsuario]);
     return resultado.length > 0 ? resultado[0] : null;
   };
 
-  crear = async ({ nombre, apellido, correoElectronico, contrasenia, imagen }) => {
+  buscarEnOficina = async ({ idUsuario, idOficina }) => {
     const sql =
-      "INSERT INTO usuarios (nombre, apellido, correoElectronico, contrasenia, idUsuarioTipo, imagen, activo) VALUES  (?, ?, ?, SHA2(?, 256), 2, ?, 1);";
-    const [resultado] = await conexion.query(sql, [nombre, apellido, correoElectronico, contrasenia, imagen]);
-
-    if (resultado.affectedRows === 0) {
-      return res.status(400).json({
-        mensaje: "Ocurrió un error creando el empleado",
-      });
-    }
-
-    return this.buscarId(resultado.insertId);
-  };
-
-  modificar = async ({ idEmpleado, datos }) => {
-    const sql = "UPDATE usuarios SET ? WHERE idUsuario = ?";
-    const [resultado] = await conexion.query(sql, [datos, idEmpleado]);
-
-    if (resultado.affectedRows === 0) {
-      return res.status(400).json({
-        mensaje: "Ocurrió un error modificando el usuario",
-      });
-    }
-
-    return this.buscarId(idEmpleado);
+      "SELECT u.idUsuario, u.nombre, u.apellido, u.correoElectronico, u.idUsuarioTipo FROM usuarios AS u JOIN usuarios_oficinas AS uo ON u.idUsuario = uo.idUsuario JOIN oficinas AS o ON uo.idOficina = o.idOficina WHERE u.idUsuario = ? AND uo.idOficina = ? AND uo.activo = 1;";
+    const [resultado] = await conexion.query(sql, [idUsuario, idOficina]);
+    return resultado.length > 0 ? resultado[0] : null;
   };
 }

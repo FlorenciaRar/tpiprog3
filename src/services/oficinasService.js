@@ -19,15 +19,27 @@ export default class OficinasService {
     return this.oficinas.crear(oficina);
   };
 
-  modificar = (idOficina, oficina) => {
+  modificar = async (idOficina, oficina) => {
+    const extisteOficina = await this.oficinas.buscarId(idOficina);
+    if (!extisteOficina) {
+      return { estado: false, mensaje: "No existe la oficina" };
+    }
     return this.oficinas.modificar(idOficina, oficina);
   };
 
-  buscarEmpleados = (idOficina) => {
+  buscarEmpleados = async (idOficina) => {
+    const extisteOficina = await this.oficinas.buscarId(idOficina);
+    if (!extisteOficina) {
+      return { estado: false, mensaje: "No existe la oficina" };
+    }
     return this.oficinas.buscarEmpleados(idOficina);
   };
 
   agregarEmpleados = async ({ idOficina, empleados }) => {
+    const extisteOficina = await this.oficinas.buscarId(idOficina);
+    if (!extisteOficina) {
+      return { estado: false, mensaje: "No existe la oficina" };
+    }
     let empleadosExistentes = [];
     for (const empleado of empleados) {
       const existe = await this.empleadosService.buscarId(empleado.idUsuario);
@@ -36,13 +48,14 @@ export default class OficinasService {
       }
     }
 
-    const relaciones = await this.oficinas.buscarEmpleados(idOficina);
-    console.log(relaciones);
-
     return await this.oficinas.agregarEmpleados({ idOficina, empleadosExistentes });
   };
 
   quitarEmpleados = async ({ idOficina, empleados }) => {
+    const extisteOficina = await this.oficinas.buscarId(idOficina);
+    if (!extisteOficina) {
+      return { estado: false, mensaje: "No existe la oficina" };
+    }
     let empleadosExistentes = [];
     for (const empleado of empleados) {
       const existe = await this.empleadosService.buscarId(empleado.idUsuario);

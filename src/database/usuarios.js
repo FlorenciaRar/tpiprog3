@@ -2,7 +2,7 @@ import { conexion } from "./conexion.js";
 
 export default class Usuarios {
   buscarTodos = async () => {
-    const sql = "SELECT nombre, apellido, correoElectronico FROM usuarios WHERE activo = 1;";
+    const sql = "SELECT idUsuario,nombre, apellido, correoElectronico FROM usuarios WHERE activo = 1;";
     const [resultado] = await conexion.query(sql);
     return resultado;
   };

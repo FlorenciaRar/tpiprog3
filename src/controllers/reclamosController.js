@@ -68,6 +68,13 @@ export default class ReclamosController {
     const idReclamo = req.params.idReclamo;
     const datos = req.body;
 
+    if (!Object.keys(datos).length) {
+      return res.status(400).send({
+        estado: "ERROR",
+        mensaje: "Debe modificar al menos un campo",
+      });
+    }
+
     if (idReclamo === undefined || idReclamo === null) {
       return res.status(400).send({
         estado: "ERROR",
@@ -83,7 +90,6 @@ export default class ReclamosController {
         data: modificacionReclamo,
       });
     } catch (error) {
-      console.log(error);
       res.status(500).send({
         mensaje: "Ha ocurrido un error. Intentelo de nuevo más tarde",
       });
@@ -127,13 +133,7 @@ export default class ReclamosController {
         mensaje: "Id requerida",
       });
     }
-    //pasarlo a express validator
-    if (!estado || estado === 3) {
-      return res.status(400).send({
-        estado: "ERROR",
-        mensaje: "Estado no válido",
-      });
-    }
+
     try {
       const estadoReclamo = await this.service.cambiarEstado({ idReclamo, idUsuario, estado });
 
@@ -149,7 +149,7 @@ export default class ReclamosController {
     }
   };
 
-  buscarUsuario = async (req, res) => {
+  buscarReclamosUsuario = async (req, res) => {
     const idUsuario = req.user.idUsuario;
     if (idUsuario === undefined || idUsuario === null) {
       return res.status(400).send({
@@ -158,17 +158,18 @@ export default class ReclamosController {
       });
     }
     try {
-      const reclamos = await this.service.buscarUsuario(idUsuario);
+      const reclamos = await this.service.buscarReclamosUsuario(idUsuario);
       if (!reclamos) {
         return res.status(404).send({
           estado: "ERROR",
           mensaje: "No se han encontrado reclamos",
         });
+      } else {
+        res.status(200).send({
+          estado: "OK",
+          data: reclamos,
+        });
       }
-      res.status(200).send({
-        estado: "OK",
-        data: reclamos,
-      });
     } catch (error) {
       res.status(500).send({
         mensaje: "Ha ocurrido un error. Intentelo de nuevo más tarde",
@@ -176,7 +177,7 @@ export default class ReclamosController {
     }
   };
 
-  buscarOficina = async (req, res) => {
+  buscarReclamosOficina = async (req, res) => {
     const idUsuario = req.user.idUsuario;
     if (idUsuario === undefined || idUsuario === null) {
       return res.status(400).send({
@@ -185,17 +186,18 @@ export default class ReclamosController {
       });
     }
     try {
-      const reclamos = await this.service.buscarOficina(idUsuario);
+      const reclamos = await this.service.buscarReclamosOficina(idUsuario);
       if (!reclamos) {
         return res.status(404).send({
           estado: "ERROR",
           mensaje: "No se han encontrado reclamos",
         });
+      } else {
+        res.status(200).send({
+          estado: "OK",
+          data: reclamos,
+        });
       }
-      res.status(200).send({
-        estado: "OK",
-        data: reclamos,
-      });
     } catch (error) {
       console.log(error);
       res.status(500).send({

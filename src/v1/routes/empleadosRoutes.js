@@ -2,7 +2,6 @@ import express from "express";
 import EmpleadosController from "../../controllers/empleadosController.js";
 import { manejarErrores } from "../../middlewares/manejarErrores.js";
 import { validarEmpleados, validarIdEmpleado } from "../../middlewares/validaciones.js";
-import { verificarTipoUsuario } from "../../middlewares/roleMiddleware.js";
 
 const router = express.Router();
 

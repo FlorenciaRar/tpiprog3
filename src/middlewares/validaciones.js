@@ -1,10 +1,13 @@
-import { body, param } from "express-validator";
+import { body, check, param } from "express-validator";
 
-export const validarReclamosEstado = [body("estado").notEmpty().withMessage("El estado es requerido")];
+export const validarReclamosEstado = [body("descripcion").notEmpty().withMessage("La descripcion es requerida")];
 
-export const validarReclamosTipo = [body("tipo").notEmpty().withMessage("El tipo es requerido")];
+export const validarReclamosTipo = [body("descripcion").notEmpty().withMessage("La descripcion requerido")];
 
-export const validarOficinas = [body("nombre").notEmpty().withMessage("El nombre es requerido")];
+export const validarOficinas = [
+  body("nombre").notEmpty().withMessage("El nombre es requerido"),
+  body("idReclamoTipo").notEmpty().withMessage("El nombre es requerido"),
+];
 
 export const validarReclamos = [
   body("asunto").notEmpty().withMessage("El asunto es requerido"),
@@ -31,3 +34,12 @@ export const validarEmpleados = [
 ];
 
 export const validarIdEmpleado = [param("idEmpleado").notEmpty().withMessage("El id del reclamo es requerido")];
+
+export const validarAgregarQuitarEmpleado = [
+  body("idOficina").notEmpty().withMessage("El idOficina es requerido"),
+  body("empleados").isArray({ min: 1 }).withMessage("El campo empleados no puede estar vacío"),
+];
+
+export const validarCambioEstado = [
+  body("idReclamoEstado").notEmpty().withMessage("El campo no puede estar vacío").not().equals("3").withMessage("Estado no válido"),
+];

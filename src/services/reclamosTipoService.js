@@ -17,7 +17,11 @@ export default class ReclamosTipoService {
     return this.reclamosTipo.crear(reclamoTipo);
   };
 
-  modificar = (idReclamoTipo, reclamoTipo) => {
+  modificar = async (idReclamoTipo, reclamoTipo) => {
+    const existeReclamoTipo = await this.reclamosTipo.buscarId(idReclamoTipo);
+    if (existeReclamoTipo === null) {
+      return { estado: false, mensaje: "El reclamo tipo no existe" };
+    }
     return this.reclamosTipo.modificar(idReclamoTipo, reclamoTipo);
   };
 }

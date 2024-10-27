@@ -39,18 +39,17 @@ export default class Reclamos {
     if (resultado.affectedRows === 0) {
       return "Ocurrió un error modificando el reclamo";
     }
-
     return this.buscarId(idReclamo);
   };
 
-  buscarUsuario = async (idUsuario) => {
+  buscarReclamosUsuario = async (idUsuario) => {
     const sql =
       "SELECT r.idReclamo, r.asunto, r.descripcion, r.fechaCreado, r.fechaFinalizado, r.fechaCancelado, re.descripcion AS 'reclamoEstado', rt.descripcion AS 'reclamoTipo', u.nombre AS 'usuarioCreador', u.correoElectronico FROM reclamos AS r JOIN reclamos_estado AS re ON re.idReclamoEstado = r.idReclamoEstado JOIN reclamos_tipo AS rt ON r.idReclamoTipo = rt.idReclamoTipo JOIN usuarios AS u ON r.idUsuarioCreador = u.idUsuario WHERE idUsuario = ?";
     const [resultado] = await conexion.query(sql, [idUsuario]);
     return resultado.length > 0 ? resultado : "Sin resultados";
   };
 
-  buscarOficina = async (idUsuario) => {
+  buscarReclamosOficina = async (idUsuario) => {
     const sql =
       "SELECT r.idReclamo, r.asunto, r.descripcion, r.fechaCreado, r.fechaFinalizado, r.fechaCancelado, re.descripcion AS 'reclamoEstado', rt.descripcion AS 'reclamoTipo', o.nombre AS 'oficina' FROM reclamos AS r JOIN reclamos_estado AS re ON r.idReclamoEstado = re.idReclamoEstado JOIN reclamos_tipo AS rt ON r.idReclamoTipo = rt.idReclamoTipo JOIN oficinas AS o ON r.idReclamoTipo = o.idReclamoTipo JOIN usuarios_oficinas AS uo ON o.idOficina = uo.idOficina WHERE uo.idUsuario = ?;";
     const [resultado] = await conexion.query(sql, [idUsuario]);

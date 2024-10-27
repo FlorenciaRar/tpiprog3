@@ -33,7 +33,7 @@ export default class Oficinas {
   };
 
   modificar = async (idOficina, datos) => {
-    const sql = "UPDATE oficinas SET ? WHERE idOficina = ?";
+    const sql = "UPDATE oficinas SET ? WHERE idOficina = ? AND activo = 1";
     const [resultado] = await conexion.query(sql, [datos, idOficina]);
 
     if (resultado.affectedRows === 0) {
@@ -47,26 +47,25 @@ export default class Oficinas {
 
   buscarEmpleados = async (idOficina) => {
     const sql =
-      "SELECT u.idUsuario, u.nombre, u.apellido, o.nombre AS 'oficina' FROM usuarios_oficinas AS uo JOIN oficinas AS o ON uo.idOficina = o.idOficina JOIN usuarios AS u ON uo.idUsuario = u.idUsuario WHERE uo.idOficina = ? AND uo.activo = 1";
+      "SELECT u.idUsuario, u.nombre, u.apellido, o.nombre AS 'oficina' FROM usuarios_oficinas AS uo JOIN oficinas AS o ON uo.idOficina = o.idOficina JOIN usuarios AS u ON uo.idUsuario = u.idUsuario WHERE uo.idOficina = ? AND uo.activo = 1  AND u.activo = 1";
     const [resultado] = await conexion.query(sql, [idOficina]);
     return resultado;
   };
 
   agregarEmpleados = async ({ idOficina, empleadosExistentes }) => {
-    let empleadosAgregados = 0;
+    let empleadosAgregados = [];
     try {
       await conexion.beginTransaction();
 
       for (const empleado of empleadosExistentes) {
         const sql = `INSERT INTO usuarios_oficinas (idUsuario, idOficina, activo) VALUES (?,?, 1);`;
         const resultado = conexion.query(sql, [empleado.idUsuario, idOficina]);
-        empleadosAgregados += 1;
+        empleadosAgregados.push(empleado);
       }
       await conexion.commit();
-      return { estado: true, mensaje: `${empleadosAgregados} empleados agregados` };
+      return { estado: true, mensaje: `${empleadosAgregados.length} empleados agregados` };
     } catch (error) {
       await conexion.rollback();
-      console.log(error);
       return { estado: false, mensaje: "Ocurrió un error agregando empleados a la oficina" };
     }
   };

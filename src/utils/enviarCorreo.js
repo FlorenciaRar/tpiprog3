@@ -42,8 +42,8 @@ export const enviarCorreo = async (datosReclamo) => {
 
   try {
     transporter.sendMail(mailOptions);
-    return { estado: true, mensaje: "Se envió el correo electronico" };
+    return { estado: "OK", mensaje: "Se envió el correo electronico" };
   } catch (error) {
-    return { estado: false, mensaje: "Correo electrónico no enviado.", error: error, datos: datosReclamo };
+    return { estado: "ERROR", mensaje: "Correo electrónico no enviado." };
   }
 };

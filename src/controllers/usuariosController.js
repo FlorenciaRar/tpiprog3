@@ -94,10 +94,11 @@ export default class usuariosController {
         idUsuario,
         datos,
       });
-      res.status(200).send({
-        estado: "OK",
-        data: modificacionUsuario,
-      });
+      if (!modificacionUsuario) {
+        res.status(404).send({ estado: "ERROR", mensaje: "El usuario no se pudo modificar" });
+      } else {
+        res.status(200).send({ estado: "OK", data: modificacionUsuario });
+      }
     } catch (error) {
       res.status(500).send({
         error,

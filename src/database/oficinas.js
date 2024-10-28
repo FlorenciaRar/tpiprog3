@@ -24,9 +24,7 @@ export default class Oficinas {
     const [resultado] = await conexion.query(sql, [nombre, idReclamoTipo]);
 
     if (resultado.affectedRows === 0) {
-      return res.status(400).json({
-        mensaje: "Ocurrió un error creando la oficina",
-      });
+      return "Ocurrió un error creando la oficina";
     }
 
     return this.buscarId(resultado.insertId);
@@ -37,9 +35,7 @@ export default class Oficinas {
     const [resultado] = await conexion.query(sql, [datos, idOficina]);
 
     if (resultado.affectedRows === 0) {
-      return res.status(400).json({
-        mensaje: "Ocurrió un error modificando la oficina",
-      });
+      return "Ocurrió un error modificando la oficina";
     }
 
     return this.buscarId(idOficina);

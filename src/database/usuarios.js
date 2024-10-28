@@ -13,22 +13,20 @@ export default class Usuarios {
     return resultado.length > 0 ? resultado[0] : null;
   };
 
-  crear = async ({ nombre, apellido, correoElectronico, contrasenia, idUsuarioTipo = 3, imagen }) => {
+  crear = async ({ nombre, apellido, correoElectronico, contrasenia, imagen }) => {
     const sql =
-      "INSERT INTO usuarios (nombre, apellido, correoElectronico, contrasenia, idUsuarioTipo, imagen, activo) VALUES  (?, ?, ?, SHA2(?, 256), ?, ?, 1);";
-    const [resultado] = await conexion.query(sql, [nombre, apellido, correoElectronico, contrasenia, idUsuarioTipo, imagen]);
+      "INSERT INTO usuarios (nombre, apellido, correoElectronico, contrasenia, idUsuarioTipo, imagen, activo) VALUES  (?, ?, ?, SHA2(?, 256), 3, ?, 1);";
+    const [resultado] = await conexion.query(sql, [nombre, apellido, correoElectronico, contrasenia, imagen]);
 
     if (resultado.affectedRows === 0) {
-      return res.status(400).json({
-        mensaje: "Ocurrió un error creando el usuario",
-      });
+      return "Ocurrió un error creando el usuario";
     }
 
     return this.buscarId(resultado.insertId);
   };
 
   modificar = async ({ idUsuario, datos }) => {
-    const sql = "UPDATE usuarios SET ? WHERE idUsuario = ?";
+    const sql = "UPDATE usuarios SET ? WHERE idUsuario = ? AND activo = 1";
     const [resultado] = await conexion.query(sql, [datos, idUsuario]);
 
     if (resultado.affectedRows === 0) {

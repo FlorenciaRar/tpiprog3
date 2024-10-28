@@ -82,10 +82,10 @@ export default class EmpleadosController {
       });
     }
 
-    if (datos.contrasenia) {
+    if (datos.contrasenia || datos.idUsuarioTipo) {
       return res.status(403).send({
         estado: "ERROR",
-        mensaje: "El campo contraseña no se puede modificar",
+        mensaje: "Alguno de los campos no se puede modificar",
       });
     }
 
@@ -94,13 +94,14 @@ export default class EmpleadosController {
         idUsuario,
         datos,
       });
-      res.status(200).send({
-        estado: "OK",
-        data: modificacionEmpleado,
-      });
+      if (!modificacionEmpleado) {
+        res.status(404).send({ estado: "ERROR", mensaje: "El empleado no se pudo modificar" });
+      } else {
+        res.status(200).send({ estado: "OK", data: modificacionEmpleado });
+      }
     } catch (error) {
+      console.log(error);
       res.status(500).send({
-        error: error,
         mensaje: "Ha ocurrido un error. Intentelo de nuevo más tarde",
       });
     }

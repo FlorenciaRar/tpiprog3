@@ -9,6 +9,17 @@ const router = express.Router();
 
 const usuariosController = new UsuariosController();
 
+/**
+ * @swagger
+ * /api/v1/usuarios:
+ *   get:
+ *     summary: Retorna todos los usuarios
+ *     responses:
+ *       200:
+ *         description: Successful response
+ *       404:
+ *         description: Resource not found
+ */
 router.get("/", authenticateJWT, verificarTipoUsuario([1]), usuariosController.buscarTodos);
 router.get("/:idUsuario", authenticateJWT, verificarTipoUsuario([1]), validarIdUsuario, manejarErrores, usuariosController.buscarId);
 router.post("/", authenticateJWT, verificarTipoUsuario([1]), validarUsuarios, manejarErrores, usuariosController.crear);

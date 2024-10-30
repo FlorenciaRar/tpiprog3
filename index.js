@@ -4,8 +4,9 @@ import cors from "cors";
 import helmet from "helmet";
 import { validateContentType } from "./src/middlewares/validarContentType.js";
 import swaggerUi from "swagger-ui-express";
-import swaggerJsdoc from "swagger-jsdoc";
-import { swaggerConfig } from "./src/config/swaggerConfig.js";
+import swaggerFile  from './src/utils/swagger-output.json' assert { type: "json" };
+//import swaggerJsdoc from "swagger-jsdoc";
+//import { swaggerConfig } from "./src/config/swaggerConfig.js";
 import session from "express-session";
 import { estrategia, validacion } from "./src/auth/passport-config.js";
 import passport from "passport";
@@ -43,10 +44,11 @@ passport.use(estrategia);
 passport.use(validacion);
 app.use(passport.initialize());
 
-const swaggerOptions = swaggerConfig;
-const swaggerDocs = swaggerJsdoc(swaggerOptions);
+//const swaggerOptions = swaggerConfig;
+//const swaggerDocs = swaggerJsdoc(swaggerOptions);
 
-app.use("/documentacion", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+//app.use("/documentacion", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+app.use('/documentacion', swaggerUi.serve, swaggerUi.setup(swaggerFile))
 
 app.get("/", (req, res) => {
   res.json({ estado: "OK" });

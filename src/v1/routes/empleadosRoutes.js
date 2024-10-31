@@ -1,13 +1,15 @@
 import express from "express";
 import EmpleadosController from "../../controllers/empleadosController.js";
+import { manejarErrores } from "../../middlewares/manejarErrores.js";
+import { validarEmpleados, validarIdEmpleado } from "../../middlewares/validaciones.js";
 
 const router = express.Router();
 
 const empleadosController = new EmpleadosController();
 
 router.get("/", empleadosController.buscarTodos);
-router.get("/:idEmpleado", empleadosController.buscarId);
-router.post("/", empleadosController.crear); // checkear que ande
-router.patch("/empleados", empleadosController.modificar);  //chequear que ande
+router.get("/:idEmpleado", validarIdEmpleado, manejarErrores, empleadosController.buscarId);
+router.post("/", validarEmpleados, manejarErrores, empleadosController.crear);
+router.patch("/:idEmpleado", manejarErrores, empleadosController.modificar);
 
 export { router };

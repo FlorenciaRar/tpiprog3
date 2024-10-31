@@ -13,11 +13,23 @@ export default class EmpleadosService {
     return this.empleados.buscarId(empleado);
   };
 
+  buscarEnOficina = async (idUsuario) => {
+    const extisteEmpleado = await this.empleados.buscarId(idUsuario);
+    if (!extisteEmpleado) {
+      return { estado: false, mensaje: "No existe el empleado" };
+    }
+    return this.empleados.buscarEnOficina(idUsuario);
+  };
+
   crear = (empleado) => {
     return this.empleados.crear(empleado);
   };
 
-  modificar = (empleado) => {
+  modificar = async (empleado) => {
+    const extisteEmpleado = await this.empleados.buscarId(empleado.idUsuario);
+    if (!extisteEmpleado) {
+      return "No existe el empleado";
+    }
     return this.empleados.modificar(empleado);
   };
 }

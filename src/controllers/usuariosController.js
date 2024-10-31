@@ -29,15 +29,10 @@ export default class usuariosController {
       const usuario = await this.service.buscarId(idUsuario);
 
       if (!usuario) {
-        return res.status(404).send({
-          estado: "ERROR",
-          mensaje: "Usuario no encontrado",
-        });
+        res.status(404).send({ estado: "ERROR", mensaje: "Usuario no encontrado" });
+      } else {
+        res.status(200).send({ estado: "OK", data: usuario });
       }
-      res.status(200).send({
-        estado: "OK",
-        data: usuario,
-      });
     } catch (error) {
       res.status(500).send({
         mensaje: "Ha ocurrido un error. Intentelo de nuevo más tarde",
@@ -47,34 +42,6 @@ export default class usuariosController {
 
   crear = async (req, res) => {
     const { nombre, apellido, correoElectronico, contrasenia, imagen } = req.body;
-
-    if (!nombre) {
-      return res.status(400).send({
-        estado: "ERROR",
-        mensaje: "Nombre requerido",
-      });
-    }
-    if (!apellido) {
-      return res.status(400).send({
-        estado: "ERROR",
-        mensaje: "Apellido requerido",
-      });
-    }
-    if (!correoElectronico) {
-      return res.status(400).send({
-        estado: "ERROR",
-        mensaje: "Correo electrónico requerido",
-      });
-    }
-    if (!contrasenia) {
-      return res.status(400).send({
-        estado: "ERROR",
-        mensaje: "Contraseña requerida",
-      });
-    }
-
-    // Validar imagen
-
     try {
       const usuario = {
         nombre,
@@ -98,8 +65,15 @@ export default class usuariosController {
   };
 
   modificar = async (req, res) => {
-    const idUsuario = req.user.idUsuario; // Luego será req.user
+    const idUsuario = req.user.idUsuario;
     const datos = req.body;
+
+    if (!Object.keys(datos).length) {
+      return res.status(400).send({
+        estado: "ERROR",
+        mensaje: "Debe modificar al menos un campo",
+      });
+    }
 
     if (idUsuario === undefined || idUsuario === null) {
       return res.status(400).send({
@@ -116,11 +90,15 @@ export default class usuariosController {
     }
 
     try {
-      const modificacionUsuario = await this.service.modificar({ idUsuario, datos });
-      res.status(200).send({
-        estado: "OK",
-        data: modificacionUsuario,
+      const modificacionUsuario = await this.service.modificar({
+        idUsuario,
+        datos,
       });
+      if (!modificacionUsuario) {
+        res.status(404).send({ estado: "ERROR", mensaje: "El usuario no se pudo modificar" });
+      } else {
+        res.status(200).send({ estado: "OK", data: modificacionUsuario });
+      }
     } catch (error) {
       res.status(500).send({
         error,

@@ -29,15 +29,10 @@ export default class EmpleadosController {
       const empleado = await this.service.buscarId(idEmpleado);
 
       if (!empleado) {
-        return res.status(404).send({
-          estado: "ERROR",
-          mensaje: "Empleado no encontrado",
-        });
+        res.status(404).send({ estado: "ERROR", mensaje: "Empleado no encontrado" });
+      } else {
+        res.status(200).send({ estado: "OK", data: empleado });
       }
-      res.status(200).send({
-        estado: "OK",
-        data: empleado,
-      });
     } catch (error) {
       res.status(500).send({
         mensaje: "Ha ocurrido un error. Intentelo de nuevo más tarde",
@@ -47,34 +42,6 @@ export default class EmpleadosController {
 
   crear = async (req, res) => {
     const { nombre, apellido, correoElectronico, contrasenia, imagen } = req.body;
-
-    if (!nombre) {
-      return res.status(400).send({
-        estado: "ERROR",
-        mensaje: "Nombre requerido",
-      });
-    }
-    if (!apellido) {
-      return res.status(400).send({
-        estado: "ERROR",
-        mensaje: "Apellido requerido",
-      });
-    }
-    if (!correoElectronico) {
-      return res.status(400).send({
-        estado: "ERROR",
-        mensaje: "Correo electrónico requerido",
-      });
-    }
-    if (!contrasenia) {
-      return res.status(400).send({
-        estado: "ERROR",
-        mensaje: "Contraseña requerida",
-      });
-    }
-
-    // Validar imagen
-
     try {
       const empleado = {
         nombre,
@@ -98,32 +65,43 @@ export default class EmpleadosController {
   };
 
   modificar = async (req, res) => {
-    const idEmpleado = req.params.idEmpleado;
+    const idUsuario = req.params.idEmpleado;
     const datos = req.body;
 
-    if (idEmpleado === undefined || idEmpleado === null) {
+    if (!Object.keys(datos).length) {
+      return res.status(400).send({
+        estado: "ERROR",
+        mensaje: "Debe modificar al menos un campo",
+      });
+    }
+
+    if (idUsuario === undefined || idUsuario === null) {
       return res.status(400).send({
         estado: "ERROR",
         mensaje: "Id requerida",
       });
     }
 
-    if (datos.contrasenia) {
+    if (datos.contrasenia || datos.idUsuarioTipo) {
       return res.status(403).send({
         estado: "ERROR",
-        mensaje: "El campo contraseña no se puede modificar",
+        mensaje: "Alguno de los campos no se puede modificar",
       });
     }
 
     try {
-      const modificacionEmpleado = await this.service.modificar({ idEmpleado, datos });
-      res.status(200).send({
-        estado: "OK",
-        data: modificacionEmpleado,
+      const modificacionEmpleado = await this.service.modificar({
+        idUsuario,
+        datos,
       });
+      if (!modificacionEmpleado) {
+        res.status(404).send({ estado: "ERROR", mensaje: "El empleado no se pudo modificar" });
+      } else {
+        res.status(200).send({ estado: "OK", data: modificacionEmpleado });
+      }
     } catch (error) {
+      console.log(error);
       res.status(500).send({
-        error,
         mensaje: "Ha ocurrido un error. Intentelo de nuevo más tarde",
       });
     }

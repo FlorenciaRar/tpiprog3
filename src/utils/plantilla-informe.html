@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Informe de Reclamos</h1>
+
+      <div class="card">
+        <h2>🟧 Total de Reclamos</h2>
+        <span class="value">{{ reclamosTotales }}</span>
+      </div>
+
+      <div class="card">
+        <h2>✅ Reclamos Finalizados</h2>
+        <span class="value">{{ reclamosFinalizados }}</span>
+      </div>
+
+      <div class="card">
+        <h2>❌ Reclamos No Finalizados</h2>
+        <span class="value">{{ reclamosNoFinalizados }}</span>
+      </div>
+
+      <div class="card">
+        <h2>📊 Tipo de Reclamo más Frecuente</h2>
+        <span class="value"
+          >{{ descripcionTipoReclamoFrecuente }} ({{
+          cantidadTipoReclamoFrecuente }})</span
+        >
+      </div>
+
+      <div class="footer">
+        <p>Programación 3 - Año 2024</p>
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,5 +1,7 @@
 import ReclamosService from "../services/reclamosService.js";
 
+const formatosPermitidos = ["pdf", "csv"];
+
 export default class ReclamosController {
   constructor() {
     this.service = new ReclamosService();
@@ -83,7 +85,10 @@ export default class ReclamosController {
     }
 
     try {
-      const modificacionReclamo = await this.service.modificar(idReclamo, datos);
+      const modificacionReclamo = await this.service.modificar(
+        idReclamo,
+        datos
+      );
 
       res.status(200).send({
         estado: "OK",
@@ -108,7 +113,10 @@ export default class ReclamosController {
     }
 
     try {
-      const cancelarReclamo = await this.service.cancelar({ idReclamo, idUsuario });
+      const cancelarReclamo = await this.service.cancelar({
+        idReclamo,
+        idUsuario,
+      });
 
       res.status(200).send({
         estado: "OK",
@@ -135,7 +143,11 @@ export default class ReclamosController {
     }
 
     try {
-      const estadoReclamo = await this.service.cambiarEstado({ idReclamo, idUsuario, estado });
+      const estadoReclamo = await this.service.cambiarEstado({
+        idReclamo,
+        idUsuario,
+        estado,
+      });
 
       res.status(200).send({
         estado: "OK",
@@ -203,6 +215,50 @@ export default class ReclamosController {
       res.status(500).send({
         mensaje: "Ha ocurrido un error. Intentelo de nuevo más tarde",
       });
+    }
+  };
+
+  informe = async (req, res) => {
+    try {
+      //el formato viene por query param
+      const formato = req.query.formato;
+      
+      if (!formato || !formatosPermitidos.includes(formato)) {
+        return res.status(400).send({
+          estado: "Falla",
+          mensaje: "Formato invalido para el informe",
+        });
+      }
+
+      //si son los permitidos
+      //generar informe
+
+      //lo que nos retorna el servicio
+      const { buffer, path, headers } =
+        await this.service.generarInforme(formato);
+
+      //settear cabecera de respuesta
+      res.set(headers);
+
+      if (formato === "pdf") {
+        //respuesta con metodo end que me permite enviar datos binarios
+        res.status(200).end(buffer);
+      }else if (formato === "csv") {
+        //respuesta para la descarga. Pasamos una funcion de callback en el metodo end por posibles errores
+        res.status(200).download(path, (err) => {
+          if (err) {
+            res.status(400).send({
+              estado: "Falla",
+              mensaje: "No se pudo generar el informe.",
+            });
+          }
+        });
+      }
+    } catch (error){
+      console.error(error)
+      res.status(500).send({
+        estado: "Falla", mensaje: "Error interno del servidor"
+      })
     }
   };
 }

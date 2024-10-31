@@ -118,10 +118,11 @@ export default class ReclamosController {
         idUsuario,
       });
 
-      res.status(200).send({
-        estado: "OK",
-        data: cancelarReclamo,
-      });
+      if (!cancelarReclamo.estado) {
+        res.status(400).send({ estado: "ERROR", mensaje:cancelarReclamo.mensaje });
+      } else {
+        res.status(200).send({ estado: "OK", mensaje: cancelarReclamo.mensaje });
+      }
     } catch (error) {
       console.log(error);
       res.status(500).send({
@@ -149,10 +150,11 @@ export default class ReclamosController {
         estado,
       });
 
-      res.status(200).send({
-        estado: "OK",
-        data: estadoReclamo,
-      });
+      if (!estadoReclamo.estado) {
+        res.status(400).send({ estado: "ERROR", mensaje:estadoReclamo.mensaje });
+      } else {
+        res.status(200).send({ estado: "OK", mensaje: estadoReclamo.mensaje });
+      }
     } catch (error) {
       console.log(error);
       res.status(500).send({
@@ -220,36 +222,28 @@ export default class ReclamosController {
 
   informe = async (req, res) => {
     try {
-      //el formato viene por query param
       const formato = req.query.formato;
       
       if (!formato || !formatosPermitidos.includes(formato)) {
         return res.status(400).send({
-          estado: "Falla",
+          estado: "ERROR",
           mensaje: "Formato invalido para el informe",
         });
       }
 
-      //si son los permitidos
-      //generar informe
-
-      //lo que nos retorna el servicio
       const { buffer, path, headers } =
         await this.service.generarInforme(formato);
 
-      //settear cabecera de respuesta
       res.set(headers);
 
       if (formato === "pdf") {
-        //respuesta con metodo end que me permite enviar datos binarios
         res.status(200).end(buffer);
       }else if (formato === "csv") {
-        //respuesta para la descarga. Pasamos una funcion de callback en el metodo end por posibles errores
         res.status(200).download(path, (err) => {
           if (err) {
             res.status(400).send({
-              estado: "Falla",
-              mensaje: "No se pudo generar el informe.",
+              estado: "ERROR",
+              mensaje: "No se pudo generar el informe",
             });
           }
         });
@@ -257,7 +251,7 @@ export default class ReclamosController {
     } catch (error){
       console.error(error)
       res.status(500).send({
-        estado: "Falla", mensaje: "Error interno del servidor"
+        mensaje: "Ha ocurrido un error. Intentelo de nuevo más tarde",
       })
     }
   };

@@ -15,7 +15,7 @@ export default class Reclamos {
 
   buscarId = async (idReclamo) => {
     const sql =
-      "SELECT r.idReclamo, r.asunto, r.descripcion, r.fechaCreado, r.fechaFinalizado, r.fechaCancelado,re.idReclamoEstado, re.descripcion AS 'reclamoEstado', rt.descripcion AS 'reclamoTipo', r.idUsuarioCreador, u.nombre AS 'usuarioCreador', u.correoElectronico FROM reclamos AS r JOIN reclamos_estado AS re ON re.idReclamoEstado = r.idReclamoEstado JOIN reclamos_tipo AS rt ON r.idReclamoTipo = rt.idReclamoTipo JOIN usuarios AS u ON r.idUsuarioCreador = u.idUsuario WHERE idReclamo = ?";
+      "SELECT r.idReclamo, r.asunto, r.descripcion, r.fechaCreado, r.fechaFinalizado, r.fechaCancelado,re.idReclamoEstado, re.descripcion AS 'reclamoEstado', rt.idReclamoTipo, rt.descripcion AS 'reclamoTipo', r.idUsuarioCreador, u.nombre AS 'usuarioCreador', u.correoElectronico FROM reclamos AS r JOIN reclamos_estado AS re ON re.idReclamoEstado = r.idReclamoEstado JOIN reclamos_tipo AS rt ON r.idReclamoTipo = rt.idReclamoTipo JOIN usuarios AS u ON r.idUsuarioCreador = u.idUsuario WHERE idReclamo = ?";
     const [resultado] = await conexion.query(sql, [idReclamo]);
     return resultado.length > 0 ? resultado[0] : null;
   };

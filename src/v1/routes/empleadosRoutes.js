@@ -7,9 +7,20 @@ const router = express.Router();
 
 const empleadosController = new EmpleadosController();
 
-router.get("/", empleadosController.buscarTodos);
-router.get("/:idEmpleado", validarIdEmpleado, manejarErrores, empleadosController.buscarId);
-router.post("/", validarEmpleados, manejarErrores, empleadosController.crear);
-router.patch("/:idEmpleado", manejarErrores, empleadosController.modificar);
+router.get("/", empleadosController.buscarTodos
+  //#swagger.description = 'Buscar todos los empleados'  
+);
+router.get("/:idEmpleado", validarIdEmpleado, manejarErrores, empleadosController.buscarId
+  //#swagger.description = 'Buscar por empleado por ID'  
+);
+router.post("/", validarEmpleados, manejarErrores, empleadosController.crear
+  /*
+  #swagger.description = 'Crear empleado'  
+  #swagger.path = '/empleados'
+  */
+);
+router.patch("/:idEmpleado", manejarErrores, empleadosController.modificar
+  //#swagger.description = 'Modificar empleado'  
+);
 
 export { router };

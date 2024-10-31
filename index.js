@@ -4,7 +4,7 @@ import cors from "cors";
 import helmet from "helmet";
 import { validateContentType } from "./src/middlewares/validarContentType.js";
 import swaggerUi from "swagger-ui-express";
-import swaggerFile  from './src/utils/swagger-output.json' assert { type: "json" };
+import swaggerFile  from './src/utils/swagger-output.json' with { type: "json" };
 //import swaggerJsdoc from "swagger-jsdoc";
 //import { swaggerConfig } from "./src/config/swaggerConfig.js";
 import session from "express-session";

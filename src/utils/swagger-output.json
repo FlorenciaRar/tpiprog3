@@ -1,19 +1,19 @@
 {
-  "openapi": "3.0.0",
+  "swagger": "2.0",
   "info": {
     "title": "Api Reclamos",
     "description": "Api Reclamos",
     "version": "1.0.0"
   },
-  "servers": [
-    {
-      "url": "http://localhost:3555/"
-    }
+  "host": "localhost:3555",
+  "basePath": "/api/v1",
+  "schemes": [
+    "http"
   ],
   "paths": {
     "/login": {
       "post": {
-        "description": "",
+        "description": "Login",
         "responses": {
           "200": {
             "description": "OK"
@@ -32,24 +32,119 @@
     },
     "/": {
       "get": {
-        "description": "",
+        "description": "Descargar CSV",
+        "produces": [
+          "text/csv"
+        ],
         "responses": {
           "200": {
             "description": "OK"
           },
-          "401": {
-            "description": "Unauthorized"
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/{idEmpleado}": {
+      "get": {
+        "description": "Buscar por empleado por ID",
+        "parameters": [
+          {
+            "name": "idEmpleado",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
           },
-          "403": {
-            "description": "Forbidden"
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not Found"
           },
           "500": {
             "description": "Internal Server Error"
           }
         }
       },
+      "patch": {
+        "description": "Modificar empleado",
+        "parameters": [
+          {
+            "name": "idEmpleado",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "contrasenia": {
+                  "example": "any"
+                },
+                "idUsuarioTipo": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/empleados": {
       "post": {
-        "description": "",
+        "description": "Crear empleado",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "nombre": {
+                  "example": "any"
+                },
+                "apellido": {
+                  "example": "any"
+                },
+                "correoElectronico": {
+                  "example": "any"
+                },
+                "contrasenia": {
+                  "example": "any"
+                },
+                "imagen": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
         "responses": {
           "201": {
             "description": "Created"
@@ -57,177 +152,77 @@
           "400": {
             "description": "Bad Request"
           },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "403": {
-            "description": "Forbidden"
-          },
           "500": {
             "description": "Internal Server Error"
-          }
-        },
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "nombre": {
-                    "example": "any"
-                  },
-                  "apellido": {
-                    "example": "any"
-                  },
-                  "correoElectronico": {
-                    "example": "any"
-                  },
-                  "contrasenia": {
-                    "example": "any"
-                  },
-                  "imagen": {
-                    "example": "any"
-                  },
-                  "idReclamoTipo": {
-                    "example": "any"
-                  },
-                  "descripcion": {
-                    "example": "any"
-                  },
-                  "asunto": {
-                    "example": "any"
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "patch": {
-        "description": "",
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "403": {
-            "description": "Forbidden"
-          },
-          "404": {
-            "description": "Not Found"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        },
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "contrasenia": {
-                    "example": "any"
-                  }
-                }
-              }
-            }
           }
         }
       }
     },
-    "/{idEmpleado}": {
+    "/oficinas": {
       "get": {
-        "description": "",
+        "description": "Buscar todas la oficinas",
         "parameters": [
           {
-            "name": "idEmpleado",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
+            "name": "limit",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "type": "string"
           }
         ],
         "responses": {
           "200": {
             "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "404": {
-            "description": "Not Found"
           },
           "500": {
             "description": "Internal Server Error"
           }
         }
       },
-      "patch": {
-        "description": "",
+      "post": {
+        "description": "Crear oficina",
         "parameters": [
           {
-            "name": "idEmpleado",
-            "in": "path",
-            "required": true,
+            "name": "body",
+            "in": "body",
             "schema": {
-              "type": "string"
+              "type": "object",
+              "properties": {
+                "nombre": {
+                  "example": "any"
+                },
+                "idReclamoTipo": {
+                  "example": "any"
+                }
+              }
             }
           }
         ],
         "responses": {
-          "200": {
-            "description": "OK"
+          "201": {
+            "description": "Created"
           },
           "400": {
             "description": "Bad Request"
           },
-          "403": {
-            "description": "Forbidden"
-          },
-          "404": {
-            "description": "Not Found"
-          },
           "500": {
             "description": "Internal Server Error"
-          }
-        },
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "contrasenia": {
-                    "example": "any"
-                  },
-                  "idUsuarioTipo": {
-                    "example": "any"
-                  }
-                }
-              }
-            }
           }
         }
       }
     },
     "/{idOficina}": {
       "get": {
-        "description": "",
+        "description": "Buscar oficina por ID",
         "parameters": [
           {
             "name": "idOficina",
             "in": "path",
             "required": true,
-            "schema": {
-              "type": "string"
-            }
+            "type": "string"
           }
         ],
         "responses": {
@@ -246,15 +241,13 @@
         }
       },
       "patch": {
-        "description": "",
+        "description": "Modificar oficina",
         "parameters": [
           {
             "name": "idOficina",
             "in": "path",
             "required": true,
-            "schema": {
-              "type": "string"
-            }
+            "type": "string"
           }
         ],
         "responses": {
@@ -272,15 +265,13 @@
     },
     "/{idOficina}/empleados/": {
       "get": {
-        "description": "",
+        "description": "Empleaddos por oficina",
         "parameters": [
           {
             "name": "idOficina",
             "in": "path",
             "required": true,
-            "schema": {
-              "type": "string"
-            }
+            "type": "string"
           }
         ],
         "responses": {
@@ -298,7 +289,24 @@
     },
     "/agregar/empleados/": {
       "post": {
-        "description": "",
+        "description": "Agregar empleado a oficina",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "idOficina": {
+                  "example": "any"
+                },
+                "empleados": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK"
@@ -311,30 +319,30 @@
           },
           "500": {
             "description": "Internal Server Error"
-          }
-        },
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "idOficina": {
-                    "example": "any"
-                  },
-                  "empleados": {
-                    "example": "any"
-                  }
-                }
-              }
-            }
           }
         }
       }
     },
     "/quitar/empleados/": {
       "patch": {
-        "description": "",
+        "description": "Quitar empleado de oficina",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "idOficina": {
+                  "example": "any"
+                },
+                "empleados": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK"
@@ -348,37 +356,89 @@
           "500": {
             "description": "Internal Server Error"
           }
-        },
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "idOficina": {
-                    "example": "any"
-                  },
-                  "empleados": {
-                    "example": "any"
-                  }
+        }
+      }
+    },
+    "/reclamos": {
+      "get": {
+        "description": "Buscar todos los reclamos",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "post": {
+        "description": "Crear reclamos",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "asunto": {
+                  "example": "any"
+                },
+                "descripcion": {
+                  "example": "any"
+                },
+                "idReclamoTipo": {
+                  "example": "any"
                 }
               }
             }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal Server Error"
           }
         }
       }
     },
     "/{idReclamoEstado}": {
       "get": {
-        "description": "",
+        "description": "Buscar estado de reclamos por ID",
         "parameters": [
           {
             "name": "idReclamoEstado",
             "in": "path",
             "required": true,
-            "schema": {
-              "type": "string"
-            }
+            "type": "string"
           }
         ],
         "responses": {
@@ -397,15 +457,13 @@
         }
       },
       "patch": {
-        "description": "",
+        "description": "Modificar estado de reclamo",
         "parameters": [
           {
             "name": "idReclamoEstado",
             "in": "path",
             "required": true,
-            "schema": {
-              "type": "string"
-            }
+            "type": "string"
           }
         ],
         "responses": {
@@ -423,15 +481,13 @@
     },
     "/{idReclamo}": {
       "patch": {
-        "description": "",
+        "description": "Modificar un reclamo",
         "parameters": [
           {
             "name": "idReclamo",
             "in": "path",
             "required": true,
-            "schema": {
-              "type": "string"
-            }
+            "type": "string"
           }
         ],
         "responses": {
@@ -455,7 +511,7 @@
     },
     "/usuario": {
       "get": {
-        "description": "",
+        "description": "Ver reclamos por usuario",
         "responses": {
           "200": {
             "description": "OK"
@@ -480,15 +536,13 @@
     },
     "/cancelacion/{idReclamo}/": {
       "patch": {
-        "description": "",
+        "description": "Cancelar un reclamo por ID",
         "parameters": [
           {
             "name": "idReclamo",
             "in": "path",
             "required": true,
-            "schema": {
-              "type": "string"
-            }
+            "type": "string"
           }
         ],
         "responses": {
@@ -512,7 +566,7 @@
     },
     "/oficina": {
       "get": {
-        "description": "",
+        "description": "Reclamos por empleado",
         "responses": {
           "200": {
             "description": "OK"
@@ -537,14 +591,24 @@
     },
     "/estado/{idReclamo}/": {
       "patch": {
-        "description": "",
+        "description": "Cambiar estado de un reclamo",
         "parameters": [
           {
             "name": "idReclamo",
             "in": "path",
             "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
             "schema": {
-              "type": "string"
+              "type": "object",
+              "properties": {
+                "idReclamoEstado": {
+                  "example": "any"
+                }
+              }
             }
           }
         ],
@@ -564,34 +628,59 @@
           "500": {
             "description": "Internal Server Error"
           }
-        },
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "idReclamoEstado": {
-                    "example": "any"
-                  }
+        }
+      }
+    },
+    "/reclamos-tipo": {
+      "get": {
+        "description": "Buscar todos los tipos de reclamo",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "post": {
+        "description": "Crear tipo de reclamo",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "descripcion": {
+                  "example": "any"
                 }
               }
             }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "500": {
+            "description": "Internal Server Error"
           }
         }
       }
     },
     "/{idReclamoTipo}": {
       "get": {
-        "description": "",
+        "description": "Buscar reclamo por ID",
         "parameters": [
           {
             "name": "idReclamoTipo",
             "in": "path",
             "required": true,
-            "schema": {
-              "type": "string"
-            }
+            "type": "string"
           }
         ],
         "responses": {
@@ -610,15 +699,13 @@
         }
       },
       "patch": {
-        "description": "",
+        "description": "Modificar un tipo de reclamo",
         "parameters": [
           {
             "name": "idReclamoTipo",
             "in": "path",
             "required": true,
-            "schema": {
-              "type": "string"
-            }
+            "type": "string"
           }
         ],
         "responses": {
@@ -634,17 +721,117 @@
         }
       }
     },
+    "/usuarios": {
+      "get": {
+        "description": "Buscar todos los usuarios",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "post": {
+        "description": "Crear usuario",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "nombre": {
+                  "example": "any"
+                },
+                "apellido": {
+                  "example": "any"
+                },
+                "correoElectronico": {
+                  "example": "any"
+                },
+                "contrasenia": {
+                  "example": "any"
+                },
+                "imagen": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "patch": {
+        "description": "Modificar usuario",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "contrasenia": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
     "/{idUsuario}": {
       "get": {
-        "description": "",
+        "description": "Buscar usuario por ID",
         "parameters": [
           {
             "name": "idUsuario",
             "in": "path",
             "required": true,
-            "schema": {
-              "type": "string"
-            }
+            "type": "string"
           }
         ],
         "responses": {

@@ -1,11 +1,13 @@
 import swaggerAutogen from 'swagger-autogen';
 
-const doc = {  
+const doc = {
+
   info: {
     title: 'Api Reclamos',
     description: 'Api Reclamos'
   },
-  host: 'localhost:3555'
+  host: 'localhost:3555',
+   basePath: '/api/v1'
 };
 
 const outputFile = './swagger-output.json';

@@ -29,7 +29,7 @@ app.use(express.json());
 
 app.use(cors());
 app.use(helmet());
-//app.use(validateContentType);
+app.use(validateContentType);
 
 // app.use(
 //   session({

@@ -90,7 +90,7 @@
                 "contrasenia": {
                   "example": "any"
                 },
-                "idTipoUsuario": {
+                "idUsuarioTipo": {
                   "example": "any"
                 }
               }

@@ -70,6 +70,13 @@ export default class usuariosController {
     const imagen  = req.file ? req.file.filename : null;            
     const datos = { ...req.body, imagen};
 
+    if (req.fileValidationError) {
+      return res.status(400).send({
+          estado: "ERROR",
+          mensaje: req.fileValidationError
+      });
+  }
+
     if (!Object.keys(datos).length) {
       return res.status(400).send({
         estado: "ERROR",

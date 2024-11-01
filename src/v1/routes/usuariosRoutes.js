@@ -4,14 +4,11 @@ import { verificarTipoUsuario } from "../../middlewares/roleMiddleware.js";
 import { manejarErrores } from "../../middlewares/manejarErrores.js";
 import { validarIdUsuario, validarUsuarios } from "../../middlewares/validaciones.js";
 import { authenticateJWT } from "../../middlewares/authMiddleware.js";
-import multer from 'multer';
-import { storage } from '../../config/multer.js';
+import { upload } from '../../config/multer.js';
 
 const router = express.Router();
 
 const usuariosController = new UsuariosController();
-
-const upload = multer( { storage } );
 
 router.get("/", authenticateJWT, verificarTipoUsuario([1]), usuariosController.buscarTodos
 /*#swagger.description = 'Buscar todos los usuarios'

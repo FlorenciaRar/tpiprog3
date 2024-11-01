@@ -14,9 +14,9 @@ export default class Empleados {
     return resultado.length > 0 ? resultado[0] : null;
   };
 
-  buscarEnOficina = async ({ idUsuario, idOficina }) => {
+  buscarEnOficina = async ( idUsuario, idOficina ) => {
     const sql =
-      "SELECT u.idUsuario, u.nombre, u.apellido, u.correoElectronico, u.idUsuarioTipo FROM usuarios AS u JOIN usuarios_oficinas AS uo ON u.idUsuario = uo.idUsuario JOIN oficinas AS o ON uo.idOficina = o.idOficina WHERE u.idUsuario = ? AND uo.idOficina = ? AND uo.activo = 1;";
+      "SELECT u.idUsuario, u.nombre, u.apellido, u.correoElectronico, u.idUsuarioTipo, o.idOficina, o.nombre AS 'oficina' FROM usuarios AS u JOIN usuarios_oficinas AS uo ON u.idUsuario = uo.idUsuario JOIN oficinas AS o ON uo.idOficina = o.idOficina WHERE uo.idUsuario = ? AND uo.idOficina = ? AND uo.activo = 1;";
     const [resultado] = await conexion.query(sql, [idUsuario, idOficina]);
     return resultado.length > 0 ? resultado[0] : null;
   };

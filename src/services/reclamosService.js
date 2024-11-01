@@ -3,12 +3,14 @@ import { enviarCorreo } from "../utils/enviarCorreo.js";
 import EmpleadosService from "./empleadosService.js";
 import UsuariosService from "./usuariosService.js";
 import InformeService from "./informeService.js";
+import OficinasService from "./oficinasService.js";
 
 export default class ReclamosService {
   constructor() {
     this.reclamos = new Reclamos();
     this.usuariosService = new UsuariosService();
     this.empleadosService = new EmpleadosService();
+    this.oficinasService = new OficinasService();
     this.informes = new InformeService();
   }
 
@@ -44,7 +46,7 @@ export default class ReclamosService {
     }
 
     if (existeReclamo.idReclamoEstado !== 1) {
-      return { estado: false, mensaje: "El reclamo no se peude cancelar" };
+      return { estado: false, mensaje: "El reclamo no se puede cancelar" };
     }
 
     let datos = {
@@ -70,15 +72,26 @@ export default class ReclamosService {
   };
 
   cambiarEstado = async ({ idReclamo, idUsuario, estado }) => {
-    const existeReclamo = await this.reclamos.buscarId(idReclamo);
+    const reclamo = await this.reclamos.buscarId(idReclamo);
     if (
-      existeReclamo === null ||
-      existeReclamo.idReclamoEstado === 3 ||
-      existeReclamo.idReclamoEstado === 4
+      reclamo === null ||
+      reclamo.idReclamoEstado === 3 ||
+      reclamo.idReclamoEstado === 4
     ) {
       return {
         estado: false,
         mensaje: "El reclamo no existe o no se puede cambiar su estado",
+      };
+    }
+
+    const oficina = await this.oficinasService.buscarOficinaPorReclamoTipo(reclamo.idReclamoTipo);
+
+    const empleado = await this.empleadosService.buscarEnOficina(idUsuario, oficina.idOficina);
+
+    if(!empleado){
+      return {
+        estado: false,
+        mensaje: "El empleado no puede modificar este reclamo",
       };
     }
 

@@ -13,12 +13,12 @@ export default class EmpleadosService {
     return this.empleados.buscarId(empleado);
   };
 
-  buscarEnOficina = async (idUsuario) => {
+  buscarEnOficina = async (idUsuario, idOficina) => {
     const extisteEmpleado = await this.empleados.buscarId(idUsuario);
     if (!extisteEmpleado) {
       return { estado: false, mensaje: "No existe el empleado" };
     }
-    return this.empleados.buscarEnOficina(idUsuario);
+    return this.empleados.buscarEnOficina(idUsuario, idOficina);
   };
 
   crear = (empleado) => {

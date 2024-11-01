@@ -19,6 +19,13 @@ export default class Oficinas {
     return resultado.length > 0 ? resultado[0] : null;
   };
 
+  buscarOficinaPorReclamoTipo = async (idReclamoTipo) =>{
+    const sql =
+      "SELECT o.idOficina, o.nombre, o.idReclamoTipo FROM oficinas AS o WHERE idReclamoTipo = ? AND o.activo = 1";
+    const [resultado] = await conexion.query(sql, [idReclamoTipo]);
+    return resultado.length > 0 ? resultado[0] : null;
+  }
+
   crear = async ({ nombre, idReclamoTipo }) => {
     const sql = "INSERT INTO oficinas (nombre, idReclamoTipo, activo) VALUES  (?, ?, 1);";
     const [resultado] = await conexion.query(sql, [nombre, idReclamoTipo]);

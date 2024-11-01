@@ -82,7 +82,7 @@ export default class EmpleadosController {
       });
     }
 
-    if (datos.contrasenia || datos.idUsuarioTipo) {
+    if (datos.contrasenia || datos.idTipoUsuario) {
       return res.status(403).send({
         estado: "ERROR",
         mensaje: "Alguno de los campos no se puede modificar",

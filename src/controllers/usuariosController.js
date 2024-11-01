@@ -40,7 +40,8 @@ export default class usuariosController {
     }
   };
 
-  crear = async (req, res) => {
+  crear = async (req, res) => {   
+    
     const { nombre, apellido, correoElectronico, contrasenia, imagen } = req.body;
     try {
       const usuario = {
@@ -66,7 +67,8 @@ export default class usuariosController {
 
   modificar = async (req, res) => {
     const idUsuario = req.user.idUsuario;
-    const datos = req.body;
+    const imagen  = req.file ? req.file.filename : null;            
+    const datos = { ...req.body, imagen};
 
     if (!Object.keys(datos).length) {
       return res.status(400).send({

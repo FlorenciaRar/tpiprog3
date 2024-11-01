@@ -8,14 +8,14 @@ export default class Usuarios {
   };
 
   buscarId = async (idUsuario) => {
-    const sql = "SELECT idUsuario, nombre, apellido, correoElectronico, idUsuarioTipo FROM usuarios WHERE idUsuario = ? AND activo = 1;";
+    const sql = "SELECT idUsuario, nombre, apellido, correoElectronico, idTipoUsuario FROM usuarios WHERE idUsuario = ? AND activo = 1;";
     const [resultado] = await conexion.query(sql, [idUsuario]);
     return resultado.length > 0 ? resultado[0] : null;
   };
 
   crear = async ({ nombre, apellido, correoElectronico, contrasenia, imagen }) => {
     const sql =
-      "INSERT INTO usuarios (nombre, apellido, correoElectronico, contrasenia, idUsuarioTipo, imagen, activo) VALUES  (?, ?, ?, SHA2(?, 256), 3, ?, 1);";
+      "INSERT INTO usuarios (nombre, apellido, correoElectronico, contrasenia, idTipoUsuario, imagen, activo) VALUES  (?, ?, ?, SHA2(?, 256), 3, ?, 1);";
     const [resultado] = await conexion.query(sql, [nombre, apellido, correoElectronico, contrasenia, imagen]);
 
     if (resultado.affectedRows === 0) {
@@ -39,7 +39,7 @@ export default class Usuarios {
 
   buscarLogin = async ({ correo, contrasenia }) => {
     const sql =
-      "SELECT idUsuario, nombre, apellido, correoElectronico, idUsuarioTipo, imagen FROM usuarios WHERE correoElectronico = ? AND contrasenia = SHA2(?, 256) AND activo = 1;";
+      "SELECT idUsuario, nombre, apellido, correoElectronico, idTipoUsuario, imagen FROM usuarios WHERE correoElectronico = ? AND contrasenia = SHA2(?, 256) AND activo = 1;";
     const [resultado] = await conexion.query(sql, [correo, contrasenia]);
     return resultado.length > 0 ? resultado[0] : null;
   };

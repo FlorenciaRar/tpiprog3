@@ -13,6 +13,10 @@ export default class UsuariosService {
     return this.usuarios.buscarId(usuario);
   };
 
+  buscarUsuarioPorMail = (usuario) => {
+    return this.usuarios.buscarUsuarioPorMail(usuario);
+  };
+
   crear = async (usuario) => {
     const existeUsuario = await this.usuarios.buscarUsuarioPorMail(usuario.correoElectronico);
     if (existeUsuario) {

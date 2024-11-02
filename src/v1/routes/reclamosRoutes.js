@@ -15,7 +15,6 @@ router.get("/", verificarTipoUsuario([1]), reclamosController.buscarTodos);
 
 router.patch("/:idReclamo", verificarTipoUsuario([1]), manejarErrores, reclamosController.modificar);
 
-// Falta: Info estadistica
 router.get("/informe", verificarTipoUsuario([1]), manejarErrores, reclamosController.informe);
 
 // CLIENTES

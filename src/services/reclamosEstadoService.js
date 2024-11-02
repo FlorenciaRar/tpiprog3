@@ -17,7 +17,13 @@ export default class ReclamosEstadoService {
     return this.reclamosEstado.crear(reclamoEstado);
   };
 
-  modificar = (idReclamoEstado, reclamoEstado) => {
-    return this.reclamosEstado.modificar(idReclamoEstado, reclamoEstado);
+  modificar = async (idReclamoEstado, reclamoEstado) => {
+    const extisteReclamoEstado = await this.reclamosEstado.buscarId(idReclamoEstado);
+    if (!extisteReclamoEstado) {
+      return { estado: false, mensaje: "No existe el reclamo estado" };
+    }
+
+    const modificacionReclamo = await this.reclamosEstado.modificar(idReclamoEstado, reclamoEstado);
+    return { estado: true, data: modificacionReclamo };
   };
 }

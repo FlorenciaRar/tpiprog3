@@ -28,10 +28,11 @@ export default class ReclamosEstadoController {
     try {
       const reclamoEstado = await this.service.buscarId(idReclamoEstado);
 
-      res.status(200).send({
-        estado: "OK",
-        data: reclamoEstado,
-      });
+      if (!reclamoEstado) {
+        res.status(404).send({ estado: "ERROR", mensaje: "ReclamoEstado no encontrado" });
+      } else {
+        res.status(200).send({ estado: "OK", data: reclamoEstado });
+      }
     } catch (error) {
       res.status(500).send({
         mensaje: "Ha ocurrido un error. Intentelo de nuevo más tarde",
@@ -41,13 +42,6 @@ export default class ReclamosEstadoController {
 
   crear = async (req, res) => {
     const { descripcion } = req.body;
-
-    if (!descripcion) {
-      return res.status(400).send({
-        estado: "ERROR",
-        mensaje: "Descripción requerida",
-      });
-    }
 
     try {
       const reclamoEstado = { descripcion };
@@ -68,6 +62,13 @@ export default class ReclamosEstadoController {
     const idReclamoEstado = req.params.idReclamoEstado;
     const datos = req.body;
 
+    if (!Object.keys(datos).length) {
+      return res.status(400).send({
+        estado: "ERROR",
+        mensaje: "Debe modificar al menos un campo",
+      });
+    }
+
     if (idReclamoEstado === undefined || idReclamoEstado === null) {
       return res.status(400).send({
         estado: "ERROR",
@@ -77,10 +78,11 @@ export default class ReclamosEstadoController {
 
     try {
       const modificacionReclamoEstado = await this.service.modificar(idReclamoEstado, datos);
-      res.status(200).send({
-        estado: "OK",
-        data: modificacionReclamoEstado,
-      });
+      if (!modificacionReclamoEstado.estado) {
+        res.status(400).send({ estado: "ERROR", mensaje: modificacionReclamoEstado.mensaje });
+      } else {
+        res.status(200).send({ estado: "OK", data: modificacionReclamoEstado.data });
+      }
     } catch (error) {
       res.status(500).send({
         mensaje: "Ha ocurrido un error. Intentelo de nuevo más tarde",

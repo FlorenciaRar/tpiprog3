@@ -1,41 +1,77 @@
 import express from "express";
 import ReclamosController from "../../controllers/reclamosController.js";
-import { esAdmin, esCliente, esEmpleado } from "../../middlewares/validarUsuarios.js";
+import { verificarTipoUsuario } from "../../middlewares/roleMiddleware.js";
+import { validarCambioEstado, validarIdReclamo, validarReclamos } from "../../middlewares/validaciones.js";
+import { manejarErrores } from "../../middlewares/manejarErrores.js";
 
 const router = express.Router();
 
 const reclamosController = new ReclamosController();
 
 // ADMIN
+router.get(
+  "/",
+  verificarTipoUsuario([1]),
+  reclamosController.buscarTodos
+  /*
+  #swagger.description = 'Buscar todos los reclamos'  
+  #swagger.path = '/reclamos'
+  */
+);
 
-router.get("/", reclamosController.buscarTodos);
+router.patch(
+  "/:idReclamo",
+  verificarTipoUsuario([1]),
+  manejarErrores,
+  reclamosController.modificar
+  //#swagger.description = 'Modificar un reclamo'
+);
 
-// router.get("/:idReclamo", reclamosController.buscarId); // Todavia no se
-
-// router.patch("/:idReclamo", reclamosController.modificar); // Mepa que no va
-
-// Falta: Info estadistica
-
-// Falta: Descargar informes
+router.get("/informe", verificarTipoUsuario([1]), manejarErrores, reclamosController.informe);
 
 // CLIENTES
-router.get("/usuario", esCliente, reclamosController.buscarUsuario); // Reclamos por usuario
+router.get(
+  "/usuario",
+  verificarTipoUsuario([3]),
+  reclamosController.buscarReclamosUsuario
+  //#swagger.description = 'Ver reclamos por usuario'
+); // Reclamos por usuario
 
-router.post("/", esCliente, reclamosController.crear);
+router.post(
+  "/",
+  verificarTipoUsuario([3]),
+  validarReclamos,
+  manejarErrores,
+  reclamosController.crear
+  /*
+#swagger.description = 'Crear reclamos'
+#swagger.path = '/reclamos'
+*/
+);
 
-router.patch("/:idReclamo/cancelar", esCliente, reclamosController.cancelar); // Cancelar un reclamo
-// Verificar que sea propio LISTO
-// Verificar que no este finalizado
+router.patch(
+  "/cancelacion/:idReclamo/",
+  verificarTipoUsuario([3]),
+  manejarErrores,
+  reclamosController.cancelar
+  //#swagger.description = 'Cancelar un reclamo por ID'
+); // Cancelar un reclamo
 
 // EMPLEADOS
+router.get(
+  "/oficina",
+  verificarTipoUsuario([2]),
+  reclamosController.buscarReclamosOficina
+  //#swagger.description = 'Reclamos por empleado'
+); //Reclamos por empleado
 
-router.get("/oficina", esEmpleado, reclamosController.buscarOficina); //Reclamos por empleado
-
-router.patch("/:idReclamo/estado", esEmpleado, reclamosController.cambiarEstado); // Cambiar estado de un reclamo
-// Verificar que no pueda poner estado cancelado LISTO
-// Verificar que solo modifique estado LISTO
-// Verificar que el reclamo no este cancelado LISTO
-// Verificar que exista LISTO
-// Verificar qeu no pueda cambiarlo si no es de su oficina
+router.patch(
+  "/estado/:idReclamo/",
+  verificarTipoUsuario([2]),
+  validarCambioEstado,
+  manejarErrores,
+  reclamosController.cambiarEstado
+  //#swagger.description = 'Cambiar estado de un reclamo'
+); // Cambiar estado de un reclamo
 
 export { router };

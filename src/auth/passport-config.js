@@ -1,57 +1,43 @@
 import passport from "passport";
+import { ExtractJwt, Strategy } from "passport-jwt";
 import { Strategy as LocalStrategy } from "passport-local";
-import { conexion } from "../database/conexion.js";
-import crypto from "crypto";
+import UsuariosService from "../services/usuariosService.js";
 
-passport.use(
-  new LocalStrategy(
-    {
-      usernameField: "correo",
-      passwordField: "contrasenia",
-    },
-    async (correo, contrasenia, done) => {
-      try {
-        const sql = "SELECT * FROM usuarios WHERE correoElectronico = ?";
-        const [result] = await conexion.query(sql, [correo]);
+export const estrategia = new LocalStrategy(
+  {
+    usernameField: "correo",
+    passwordField: "contrasenia",
+  },
+  async (correo, contrasenia, done) => {
+    try {
+      const service = new UsuariosService();
+      const usuario = await service.buscarLogin({ correo, contrasenia });
 
-        if (result.length === 0) {
-          console.warn("Usuario no encontrado:", correo);
-          return done(null, false, { message: "Usuario no encontrado" });
-        }
-
-        const usuario = result[0];
-
-        const hash = crypto.createHash("sha256").update(contrasenia).digest("hex");
-        if (hash === usuario.contrasenia) {
-          console.log("Contraseña correcta para el usuario:", correo);
-          return done(null, usuario);
-        } else {
-          console.warn("Contraseña incorrecta para el usuario:", correo);
-          return done(null, false, { message: "Credenciales incorrectas" });
-        }
-      } catch (err) {
-        console.error("Error en la autenticación:", err);
-        return done(err);
+      if (!usuario) {
+        console.warn("Usuario no encontrado:", correo);
+        return done(null, false, { mensaje: "Datos incorrectos" });
+      } else {
+        return done(null, usuario, { mensaje: "Bienvenido" });
       }
+    } catch (err) {
+      console.error("Error en la autenticación:", err);
+      return done(err);
     }
-  )
+  }
 );
 
-// passport.serializeUser((usuario, done) => {
-//   done(null, usuario.idUsuario);
-// });
+const opts = {
+  jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+  secretOrKey: process.env.JWT_SECRET,
+};
 
-// passport.deserializeUser(async (id, done) => {
-//   try {
-//     const sql = "SELECT * FROM usuarios WHERE idUsuario = ?";
-//     const [result] = await conexion.query(sql, [id]);
-//     if (result.length === 0) {
-//       return done(new Error("Usuario no encontrado"));
-//     }
-//     done(null, result[0]);
-//   } catch (err) {
-//     done(err);
-//   }
-// });
+export const validacion = new Strategy(opts, async (jwt_payload, done) => {
+  const service = new UsuariosService();
+  const usuario = await service.buscarId(jwt_payload.id);
 
-export default passport;
+  if (usuario) {
+    return done(null, usuario);
+  } else {
+    return done(null, false);
+  }
+});

@@ -1,25 +1,44 @@
 import express from "express";
 import OficinasController from "../../controllers/oficinasController.js";
-import { esEmpleado } from "../../middlewares/validarUsuarios.js";
+import { manejarErrores } from "../../middlewares/manejarErrores.js";
+import { validarAgregarQuitarEmpleado, validarOficinas } from "../../middlewares/validaciones.js";
 
 const router = express.Router();
 
 const oficinasController = new OficinasController();
 
-router.get("/", oficinasController.buscarTodos);
+router.get("/", oficinasController.buscarTodos
+  /*
+  #swagger.description = 'Buscar todas la oficinas'  
+  #swagger.path = '/oficinas'
+  */
+);
 
-router.get("/:idOficina", oficinasController.buscarId);
+router.get("/:idOficina", oficinasController.buscarId
+  //#swagger.description = 'Buscar oficina por ID'
+);
 
-router.post("/", oficinasController.crear);
+router.post("/", validarOficinas, manejarErrores, oficinasController.crear
+  /*
+  #swagger.description = 'Crear oficina'
+  #swagger.path = '/oficinas'
+  */
+);
 
-router.patch("/:idOficina", oficinasController.modificar);
+router.patch("/:idOficina", manejarErrores, oficinasController.modificar
+  //#swagger.description = 'Modificar oficina'
+);
 
-router.get("/:idOficina/empleados/", oficinasController.buscarEmpleados); // Empleados por oficina
+router.get("/:idOficina/empleados/", oficinasController.buscarEmpleados
+  //#swagger.description = 'Empleaddos por oficina'
+); // Empleados por oficina
 
-// Agregar empleado a oficina
-// router.post("/empleados/", oficinasController.agregarEmpleados);
+router.post("/agregar/empleados/", validarAgregarQuitarEmpleado, manejarErrores, oficinasController.agregarEmpleados
+  //#swagger.description = 'Agregar empleado a oficina'
+); // Agregar empleado a oficina
 
-// Quitar empleado de oficina
-// router.patch("/empleados/", oficinasController.quitarEmpleados);
+router.patch("/quitar/empleados/", validarAgregarQuitarEmpleado, manejarErrores, oficinasController.quitarEmpleados
+  //#swagger.description = 'Quitar empleado de oficina'
+); // Quitar empleado de oficina
 
 export { router };

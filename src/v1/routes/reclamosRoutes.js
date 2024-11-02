@@ -11,11 +11,8 @@ const reclamosController = new ReclamosController();
 // ADMIN
 router.get("/", verificarTipoUsuario([1]), reclamosController.buscarTodos);
 
-// router.get("/:idReclamo", verificarTipoUsuario([1]), validarIdReclamo, manejarErrores, reclamosController.buscarId);
-
 router.patch("/:idReclamo", verificarTipoUsuario([1]), manejarErrores, reclamosController.modificar);
 
-// Falta: Info estadistica
 router.get("/informe", verificarTipoUsuario([1]), manejarErrores, reclamosController.informe);
 
 // CLIENTES

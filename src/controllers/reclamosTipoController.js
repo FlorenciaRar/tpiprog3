@@ -77,10 +77,11 @@ export default class ReclamosTipoController {
 
     try {
       const modificacionReclamoTipo = await this.service.modificar(idReclamoTipo, datos);
-      res.status(200).send({
-        estado: "OK",
-        data: modificacionReclamoTipo,
-      });
+      if (!modificacionReclamoTipo.estado) {
+        res.status(400).send({ estado: "ERROR", mensaje: modificacionReclamoTipo.mensaje });
+      } else {
+        res.status(200).send({ estado: "OK", data: modificacionReclamoTipo.data });
+      }
     } catch (error) {
       res.status(500).send({
         mensaje: "Ha ocurrido un error. Intentelo de nuevo más tarde",

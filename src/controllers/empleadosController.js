@@ -52,12 +52,12 @@ export default class EmpleadosController {
       };
       const creacionEmpleado = await this.service.crear(empleado);
 
-      res.status(201).send({
-        estado: "OK",
-        data: creacionEmpleado,
-      });
+      if (!creacionEmpleado.estado) {
+        res.status(400).send({ estado: "ERROR", mensaje: creacionEmpleado.mensaje });
+      } else {
+        res.status(201).send({ estado: "OK", data: creacionEmpleado.data });
+      }
     } catch (error) {
-      console.log(error);
       res.status(500).send({
         mensaje: "Ha ocurrido un error. Intentelo de nuevo más tarde",
       });
@@ -95,12 +95,11 @@ export default class EmpleadosController {
         datos,
       });
       if (!modificacionEmpleado) {
-        res.status(404).send({ estado: "ERROR", mensaje: "El empleado no se pudo modificar" });
+        res.status(400).send({ estado: "ERROR", mensaje: "El empleado no se pudo modificar" });
       } else {
         res.status(200).send({ estado: "OK", data: modificacionEmpleado });
       }
     } catch (error) {
-      console.log(error);
       res.status(500).send({
         mensaje: "Ha ocurrido un error. Intentelo de nuevo más tarde",
       });

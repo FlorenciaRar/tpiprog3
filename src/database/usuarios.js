@@ -52,6 +52,12 @@ export default class Usuarios {
     return resultado.length > 0 ? resultado[0] : null;
   };
 
+  buscarImagen = async (idUsuario) => {
+    const sql = "SELECT idUsuario, imagen FROM usuarios WHERE idUsuario = ? AND activo = 1;";
+    const [resultado] = await conexion.query(sql, [idUsuario]);
+    return resultado.length > 0 ? resultado[0] : null;
+  };
+
   buscarUsuarioPorMail = async (correo) => {
     const sql = "SELECT idUsuario, nombre, apellido, correoElectronico, idUsuarioTipo FROM usuarios WHERE correoElectronico = ? AND activo = 1;";
     const [resultado] = await conexion.query(sql, [correo]);

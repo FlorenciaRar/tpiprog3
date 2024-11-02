@@ -48,4 +48,8 @@ export default class UsuariosService {
   buscarLogin = (usuario) => {
     return this.usuarios.buscarLogin(usuario);
   };
+
+  buscarImagen = (usuario) => {
+    return this.usuarios.buscarImagen(usuario);
+  };
 }

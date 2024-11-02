@@ -1,4 +1,10 @@
 import UsuariosService from "../services/usuariosService.js";
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 export default class usuariosController {
   constructor() {
@@ -40,7 +46,8 @@ export default class usuariosController {
     }
   };
 
-  crear = async (req, res) => {
+  crear = async (req, res) => {   
+    
     const { nombre, apellido, correoElectronico, contrasenia, imagen } = req.body;
     try {
       const usuario = {
@@ -66,7 +73,15 @@ export default class usuariosController {
 
   modificar = async (req, res) => {
     const idUsuario = req.user.idUsuario;
-    const datos = req.body;
+    const imagen  = req.file ? req.file.filename : null;            
+    const datos = { ...req.body, imagen};
+
+    if (req.fileValidationError) {
+      return res.status(400).send({
+          estado: "ERROR",
+          mensaje: req.fileValidationError
+      });
+  }
 
     if (!Object.keys(datos).length) {
       return res.status(400).send({
@@ -135,4 +150,43 @@ export default class usuariosController {
       });
     }
   };
+
+buscarImagen = async (req, res) => {
+    const idUsuario = req.params.idUsuario;    
+    if (!idUsuario) {
+        return res.status(400).send({
+            estado: "ERROR",
+            mensaje: "Datos requeridos",
+        });
+    }
+
+    try {
+        const usuario = await this.service.buscarImagen(idUsuario);        
+        if (!usuario || !usuario.imagen) {
+            return res.status(404).send({
+                estado: "ERROR",
+                mensaje: "Usuario o imagen no encontrado",
+            });
+        }
+        //comprueba que el archivo exista en el directorio
+        const imagePath = path.join(__dirname, '..', 'publico', usuario.imagen);
+
+        if (!fs.existsSync(imagePath)) {
+            return res.status(404).send({
+                estado: "ERROR",
+                mensaje: "Imagen no encontrada",
+            });
+        }
+        console.log(imagePath);
+        //res.sendFile(imagePath);
+        res.status(200).send({ estado: "OK", data: usuario });
+    } catch (error) {
+      console.log(error);
+        res.status(500).send({
+            estado: "ERROR",
+            mensaje: "Ha ocurrido un error. Intentelo de nuevo más tarde",
+        });
+    }
+};
+  
 }

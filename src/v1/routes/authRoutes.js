@@ -4,6 +4,8 @@ import { validarLogin } from "../../middlewares/validationMiddleware.js";
 
 const router = express.Router();
 
-router.post("/login", validarLogin, login);
+router.post("/login", validarLogin, login
+  //#swagger.description = 'Login'  
+ );
 
 export default router;

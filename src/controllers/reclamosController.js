@@ -119,9 +119,13 @@ export default class ReclamosController {
       });
 
       if (!cancelarReclamo.estado) {
-        res.status(400).send({ estado: "ERROR", mensaje:cancelarReclamo.mensaje });
+        res
+          .status(400)
+          .send({ estado: "ERROR", mensaje: cancelarReclamo.mensaje });
       } else {
-        res.status(200).send({ estado: "OK", mensaje: cancelarReclamo.mensaje });
+        res
+          .status(200)
+          .send({ estado: "OK", mensaje: cancelarReclamo.mensaje });
       }
     } catch (error) {
       console.log(error);
@@ -151,7 +155,9 @@ export default class ReclamosController {
       });
 
       if (!estadoReclamo.estado) {
-        res.status(400).send({ estado: "ERROR", mensaje:estadoReclamo.mensaje });
+        res
+          .status(400)
+          .send({ estado: "ERROR", mensaje: estadoReclamo.mensaje });
       } else {
         res.status(200).send({ estado: "OK", mensaje: estadoReclamo.mensaje });
       }
@@ -223,7 +229,7 @@ export default class ReclamosController {
   informe = async (req, res) => {
     try {
       const formato = req.query.formato;
-      
+
       if (!formato || !formatosPermitidos.includes(formato)) {
         return res.status(400).send({
           estado: "ERROR",
@@ -231,14 +237,15 @@ export default class ReclamosController {
         });
       }
 
-      const { buffer, path, headers } =
-        await this.service.generarInforme(formato);
+      const { buffer, path, headers } = await this.service.generarInforme(
+        formato
+      );
 
       res.set(headers);
 
       if (formato === "pdf") {
         res.status(200).end(buffer);
-      }else if (formato === "csv") {
+      } else if (formato === "csv") {
         res.status(200).download(path, (err) => {
           if (err) {
             res.status(400).send({
@@ -248,11 +255,11 @@ export default class ReclamosController {
           }
         });
       }
-    } catch (error){
-      console.error(error)
+    } catch (error) {
+      console.error(error);
       res.status(500).send({
         mensaje: "Ha ocurrido un error. Intentelo de nuevo más tarde",
-      })
+      });
     }
   };
 }

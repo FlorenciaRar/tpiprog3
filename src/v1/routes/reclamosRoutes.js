@@ -1,7 +1,11 @@
 import express from "express";
 import ReclamosController from "../../controllers/reclamosController.js";
 import { verificarTipoUsuario } from "../../middlewares/roleMiddleware.js";
-import { validarCambioEstado, validarIdReclamo, validarReclamos } from "../../middlewares/validaciones.js";
+import {
+  validarCambioEstado,
+  validarIdReclamo,
+  validarReclamos,
+} from "../../middlewares/validaciones.js";
 import { manejarErrores } from "../../middlewares/manejarErrores.js";
 
 const router = express.Router();
@@ -27,7 +31,12 @@ router.patch(
   //#swagger.description = 'Modificar un reclamo'
 );
 
-router.get("/informe", verificarTipoUsuario([1]), manejarErrores, reclamosController.informe);
+router.get(
+  "/informe",
+  verificarTipoUsuario([1]),
+  manejarErrores,
+  reclamosController.informe
+);
 
 // CLIENTES
 router.get(

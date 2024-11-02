@@ -2,12 +2,16 @@ import Reclamos from "../database/reclamos.js";
 import { enviarCorreo } from "../utils/enviarCorreo.js";
 import EmpleadosService from "./empleadosService.js";
 import UsuariosService from "./usuariosService.js";
+import InformeService from "./informeService.js";
+import OficinasService from "./oficinasService.js";
 
 export default class ReclamosService {
   constructor() {
     this.reclamos = new Reclamos();
     this.usuariosService = new UsuariosService();
     this.empleadosService = new EmpleadosService();
+    this.oficinasService = new OficinasService();
+    this.informes = new InformeService();
   }
 
   buscarTodos = (reclamoQuerys) => {
@@ -42,7 +46,7 @@ export default class ReclamosService {
     }
 
     if (existeReclamo.idReclamoEstado !== 1) {
-      return { estado: false, mensaje: "El reclamo no se peude cancelar" };
+      return { estado: false, mensaje: "El reclamo no se puede cancelar" };
     }
 
     let datos = {
@@ -58,16 +62,37 @@ export default class ReclamosService {
 
     const usuario = await this.usuariosService.buscarId(idUsuario);
     if (!usuario) {
-      return { estado: false, mensaje: "No se encontraron los datos del usuario" };
+      return {
+        estado: false,
+        mensaje: "No se encontraron los datos del usuario",
+      };
     }
 
     return this.reclamos.buscarId(idReclamo), enviarCorreo(modificarReclamo);
   };
 
   cambiarEstado = async ({ idReclamo, idUsuario, estado }) => {
-    const existeReclamo = await this.reclamos.buscarId(idReclamo);
-    if (existeReclamo === null || existeReclamo.idReclamoEstado === 3 || existeReclamo.idReclamoEstado === 4) {
-      return { estado: false, mensaje: "El reclamo no existe o no se puede cambiar su estado" };
+    const reclamo = await this.reclamos.buscarId(idReclamo);
+    if (
+      reclamo === null ||
+      reclamo.idReclamoEstado === 3 ||
+      reclamo.idReclamoEstado === 4
+    ) {
+      return {
+        estado: false,
+        mensaje: "El reclamo no existe o no se puede cambiar su estado",
+      };
+    }
+
+    const oficina = await this.oficinasService.buscarOficinaPorReclamoTipo(reclamo.idReclamoTipo);
+
+    const empleado = await this.empleadosService.buscarEnOficina(idUsuario, oficina.idOficina);
+
+    if(!empleado){
+      return {
+        estado: false,
+        mensaje: "El empleado no puede modificar este reclamo",
+      };
     }
 
     let datos = {
@@ -81,9 +106,14 @@ export default class ReclamosService {
       return { estado: false, mensaje: "El reclamo no se pudo modificar" };
     }
 
-    const usuario = await this.usuariosService.buscarId(modificarReclamo.idUsuarioCreador);
+    const usuario = await this.usuariosService.buscarId(
+      modificarReclamo.idUsuarioCreador
+    );
     if (!usuario) {
-      return { estado: false, mensaje: "No se encontraron los datos del usuario" };
+      return {
+        estado: false,
+        mensaje: "No se encontraron los datos del usuario",
+      };
     }
 
     return this.reclamos.buscarId(idReclamo), enviarCorreo(modificarReclamo);
@@ -103,5 +133,54 @@ export default class ReclamosService {
       return { estado: false, mensaje: "El usuario no existe" };
     }
     return this.reclamos.buscarReclamosOficina(idUsuario);
+  };
+
+  generarInforme = async (formato) => {
+    if (formato === "pdf") {
+      return await this.reportePdf();
+    } else if (formato === "csv") {
+      return await this.reporteCsv();
+    }
+  };
+
+  reportePdf = async (formato) => {
+    const datosReporte = await this.reclamos.buscarDatosReportePdf();
+
+    if (!datosReporte || datosReporte.length === 0) {
+      return { estado: false, mensaje: "Sin datos para el reporte" };
+    }
+
+    const pdf = await this.informes.informeReclamoPdf(datosReporte);
+
+    return {
+      //datos binarios del archivo pdf
+      buffer: pdf,
+      //cabecera de respuesta al cliente
+      headers: {
+        "Content-Type": "application/pdf",
+
+        //inline significa que el cliente va a intentar abrir el pdf
+        "Content-Disposition": 'inline; filename="reporte.pdf"',
+      },
+    };
+  };
+
+  reporteCsv = async () => {
+    const datosReporte = await this.reclamos.buscarDatosReporteCsv();
+
+    if (!datosReporte || datosReporte.length === 0) {
+      return { estado: false, mensaje: "Sin datos para el reporte" };
+    }
+    
+    const csv = await this.informes.informeReclamoCsv(datosReporte);
+ 
+    return {
+      path: csv,
+      headers: {
+        "Content-Type": "text/csv",
+        //En este caso se va a descargar el archivo, no abrirse
+        "Content-Disposition": 'attachment; filename="reporte.csv"',
+      },
+    };
   };
 }

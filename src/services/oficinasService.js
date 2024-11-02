@@ -15,6 +15,10 @@ export default class OficinasService {
     return this.oficinas.buscarId(oficina);
   };
 
+  buscarOficinaPorReclamoTipo = (idReclamoTipo) => {
+    return this.oficinas.buscarOficinaPorReclamoTipo(idReclamoTipo);
+  };
+
   crear = (oficina) => {
     return this.oficinas.crear(oficina);
   };

@@ -1,5 +1,7 @@
 import ReclamosService from "../services/reclamosService.js";
 
+const formatosPermitidos = ["pdf", "csv"];
+
 export default class ReclamosController {
   constructor() {
     this.service = new ReclamosService();
@@ -83,7 +85,10 @@ export default class ReclamosController {
     }
 
     try {
-      const modificacionReclamo = await this.service.modificar(idReclamo, datos);
+      const modificacionReclamo = await this.service.modificar(
+        idReclamo,
+        datos
+      );
 
       res.status(200).send({
         estado: "OK",
@@ -108,12 +113,16 @@ export default class ReclamosController {
     }
 
     try {
-      const cancelarReclamo = await this.service.cancelar({ idReclamo, idUsuario });
-
-      res.status(200).send({
-        estado: "OK",
-        data: cancelarReclamo,
+      const cancelarReclamo = await this.service.cancelar({
+        idReclamo,
+        idUsuario,
       });
+
+      if (!cancelarReclamo.estado) {
+        res.status(400).send({ estado: "ERROR", mensaje:cancelarReclamo.mensaje });
+      } else {
+        res.status(200).send({ estado: "OK", mensaje: cancelarReclamo.mensaje });
+      }
     } catch (error) {
       console.log(error);
       res.status(500).send({
@@ -135,12 +144,17 @@ export default class ReclamosController {
     }
 
     try {
-      const estadoReclamo = await this.service.cambiarEstado({ idReclamo, idUsuario, estado });
-
-      res.status(200).send({
-        estado: "OK",
-        data: estadoReclamo,
+      const estadoReclamo = await this.service.cambiarEstado({
+        idReclamo,
+        idUsuario,
+        estado,
       });
+
+      if (!estadoReclamo.estado) {
+        res.status(400).send({ estado: "ERROR", mensaje:estadoReclamo.mensaje });
+      } else {
+        res.status(200).send({ estado: "OK", mensaje: estadoReclamo.mensaje });
+      }
     } catch (error) {
       console.log(error);
       res.status(500).send({
@@ -203,6 +217,42 @@ export default class ReclamosController {
       res.status(500).send({
         mensaje: "Ha ocurrido un error. Intentelo de nuevo más tarde",
       });
+    }
+  };
+
+  informe = async (req, res) => {
+    try {
+      const formato = req.query.formato;
+      
+      if (!formato || !formatosPermitidos.includes(formato)) {
+        return res.status(400).send({
+          estado: "ERROR",
+          mensaje: "Formato invalido para el informe",
+        });
+      }
+
+      const { buffer, path, headers } =
+        await this.service.generarInforme(formato);
+
+      res.set(headers);
+
+      if (formato === "pdf") {
+        res.status(200).end(buffer);
+      }else if (formato === "csv") {
+        res.status(200).download(path, (err) => {
+          if (err) {
+            res.status(400).send({
+              estado: "ERROR",
+              mensaje: "No se pudo generar el informe",
+            });
+          }
+        });
+      }
+    } catch (error){
+      console.error(error)
+      res.status(500).send({
+        mensaje: "Ha ocurrido un error. Intentelo de nuevo más tarde",
+      })
     }
   };
 }

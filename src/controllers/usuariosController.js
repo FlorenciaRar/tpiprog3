@@ -59,12 +59,12 @@ export default class usuariosController {
       };
       const creacionUsuario = await this.service.crear(usuario);
 
-      res.status(201).send({
-        estado: "OK",
-        data: creacionUsuario,
-      });
+      if (!creacionUsuario.estado) {
+        res.status(400).send({ estado: "ERROR", mensaje: creacionUsuario.mensaje });
+      } else {
+        res.status(201).send({ estado: "OK", data: creacionUsuario.data });
+      }
     } catch (error) {
-      console.log(error);
       res.status(500).send({
         mensaje: "Ha ocurrido un error. Intentelo de nuevo más tarde",
       });
@@ -97,10 +97,10 @@ export default class usuariosController {
       });
     }
 
-    if (datos.contrasenia) {
+    if (datos.contrasenia || datos.idUsuarioTipo) {
       return res.status(403).send({
         estado: "ERROR",
-        mensaje: "El campo contraseña no se puede modificar",
+        mensaje: "Alguno de los campos no se puede modificar",
       });
     }
 
@@ -109,10 +109,39 @@ export default class usuariosController {
         idUsuario,
         datos,
       });
-      if (!modificacionUsuario) {
+      if (!modificacionUsuario.estado) {
         res.status(404).send({ estado: "ERROR", mensaje: "El usuario no se pudo modificar" });
       } else {
-        res.status(200).send({ estado: "OK", data: modificacionUsuario });
+        res.status(200).send({ estado: "OK", data: modificacionUsuario.data });
+      }
+    } catch (error) {
+      res.status(500).send({
+        error,
+        mensaje: "Ha ocurrido un error. Intentelo de nuevo más tarde",
+      });
+    }
+  };
+
+  modificarContrasenia = async (req, res) => {
+    const idUsuario = req.user.idUsuario;
+    const datos = req.body.contrasenia;
+
+    if (idUsuario === undefined || idUsuario === null) {
+      return res.status(400).send({
+        estado: "ERROR",
+        mensaje: "Id requerida",
+      });
+    }
+
+    try {
+      const modificacionUsuario = await this.service.modificarContrasenia({
+        idUsuario,
+        datos,
+      });
+      if (!modificacionUsuario.estado) {
+        res.status(404).send({ estado: "ERROR", mensaje: "No se pudo modificar la contrasenia" });
+      } else {
+        res.status(200).send({ estado: "OK", data: modificacionUsuario.data });
       }
     } catch (error) {
       res.status(500).send({

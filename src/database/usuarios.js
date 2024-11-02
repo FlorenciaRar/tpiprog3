@@ -30,9 +30,17 @@ export default class Usuarios {
     const [resultado] = await conexion.query(sql, [datos, idUsuario]);
 
     if (resultado.affectedRows === 0) {
-      return res.status(400).json({
-        mensaje: "Ocurrió un error modificando el usuario",
-      });
+      return "Ocurrió un error modificando el usuario";
+    }
+    return this.buscarId(idUsuario);
+  };
+
+  modificarContrasenia = async ({ datos, idUsuario }) => {
+    const sql = "UPDATE usuarios SET contrasenia = SHA2(?, 256) WHERE idUsuario = ? AND activo = 1";
+    const [resultado] = await conexion.query(sql, [datos, idUsuario]);
+
+    if (resultado.affectedRows === 0) {
+      return "Ocurrió un error modificando el usuario";
     }
     return this.buscarId(idUsuario);
   };
@@ -45,9 +53,14 @@ export default class Usuarios {
   };
 
   buscarImagen = async (idUsuario) => {
-    const sql =
-      "SELECT idUsuario, imagen FROM usuarios WHERE idUsuario = ? AND activo = 1;";      
-    const [resultado] = await conexion.query(sql, [idUsuario]);    
+    const sql = "SELECT idUsuario, imagen FROM usuarios WHERE idUsuario = ? AND activo = 1;";
+    const [resultado] = await conexion.query(sql, [idUsuario]);
+    return resultado.length > 0 ? resultado[0] : null;
+  };
+
+  buscarUsuarioPorMail = async (correo) => {
+    const sql = "SELECT idUsuario, nombre, apellido, correoElectronico, idUsuarioTipo FROM usuarios WHERE correoElectronico = ? AND activo = 1;";
+    const [resultado] = await conexion.query(sql, [correo]);
     return resultado.length > 0 ? resultado[0] : null;
   };
 }

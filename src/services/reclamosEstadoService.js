@@ -18,10 +18,12 @@ export default class ReclamosEstadoService {
   };
 
   modificar = async (idReclamoEstado, reclamoEstado) => {
-    const extisteReclamoEstado = await this.oficinas.buscarId(idReclamoEstado);
+    const extisteReclamoEstado = await this.reclamosEstado.buscarId(idReclamoEstado);
     if (!extisteReclamoEstado) {
       return { estado: false, mensaje: "No existe el reclamo estado" };
     }
-    return this.reclamosEstado.modificar(idReclamoEstado, reclamoEstado);
+
+    const modificacionReclamo = await this.reclamosEstado.modificar(idReclamoEstado, reclamoEstado);
+    return { estado: true, data: modificacionReclamo };
   };
 }

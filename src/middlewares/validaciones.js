@@ -2,7 +2,7 @@ import { body, check, param } from "express-validator";
 
 export const validarReclamosEstado = [body("descripcion").notEmpty().withMessage("La descripcion es requerida")];
 
-export const validarReclamosTipo = [body("descripcion").notEmpty().withMessage("La descripcion requerido")];
+export const validarReclamosTipo = [body("descripcion").notEmpty().withMessage("La descripcion es requerida")];
 
 export const validarOficinas = [
   body("nombre").notEmpty().withMessage("El nombre es requerido"),
@@ -43,3 +43,5 @@ export const validarAgregarQuitarEmpleado = [
 export const validarCambioEstado = [
   body("idReclamoEstado").notEmpty().withMessage("El campo no puede estar vacío").not().equals("3").withMessage("Estado no válido"),
 ];
+
+export const validarCambioContrasenia = [body("contrasenia").notEmpty().withMessage("El campo no puede estar vacío")];

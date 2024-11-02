@@ -22,6 +22,8 @@ export default class ReclamosTipoService {
     if (existeReclamoTipo === null) {
       return { estado: false, mensaje: "El reclamo tipo no existe" };
     }
-    return this.reclamosTipo.modificar(idReclamoTipo, reclamoTipo);
+
+    const modificacionReclamoTipo = await this.reclamosTipo.modificar(idReclamoTipo, reclamoTipo);
+    return { estado: true, data: modificacionReclamoTipo };
   };
 }

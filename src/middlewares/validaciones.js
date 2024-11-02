@@ -43,3 +43,5 @@ export const validarAgregarQuitarEmpleado = [
 export const validarCambioEstado = [
   body("idReclamoEstado").notEmpty().withMessage("El campo no puede estar vacío").not().equals("3").withMessage("Estado no válido"),
 ];
+
+export const validarCambioContrasenia = [body("contrasenia").notEmpty().withMessage("El campo no puede estar vacío")];

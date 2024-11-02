@@ -2,7 +2,7 @@ import { body, check, param } from "express-validator";
 
 export const validarReclamosEstado = [body("descripcion").notEmpty().withMessage("La descripcion es requerida")];
 
-export const validarReclamosTipo = [body("descripcion").notEmpty().withMessage("La descripcion requerido")];
+export const validarReclamosTipo = [body("descripcion").notEmpty().withMessage("La descripcion es requerida")];
 
 export const validarOficinas = [
   body("nombre").notEmpty().withMessage("El nombre es requerido"),

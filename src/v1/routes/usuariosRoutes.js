@@ -31,4 +31,8 @@ router.patch("/:idUsuario", authenticateJWT, upload.single('imagen'), verificarT
 */
 );
 
+router.get("/imagen/:idUsuario", authenticateJWT, verificarTipoUsuario([1]), validarIdUsuario, manejarErrores, usuariosController.buscarImagen
+//#swagger.description = 'Buscar imagen por usuario por ID'
+);
+
 export { router };

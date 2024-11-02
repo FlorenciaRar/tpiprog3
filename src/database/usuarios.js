@@ -46,8 +46,8 @@ export default class Usuarios {
 
   buscarImagen = async (idUsuario) => {
     const sql =
-      "SELECT idUsuario, nombre, apellido, correoElectronico, idUsuarioTipo, imagen FROM usuarios WHERE correoElectronico = ? AND contrasenia = SHA2(?, 256) AND activo = 1;";
-    const [resultado] = await conexion.query(sql, [correo, contrasenia]);
+      "SELECT idUsuario, imagen FROM usuarios WHERE idUsuario = ? AND activo = 1;";      
+    const [resultado] = await conexion.query(sql, [idUsuario]);    
     return resultado.length > 0 ? resultado[0] : null;
   };
 }

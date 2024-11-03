@@ -71,8 +71,8 @@ export default class Reclamos {
       reclamosNoFinalizados: result[0][0].reclamosNoFinalizados,
       reclamosFinalizados: result[0][0].reclamosFinalizados,
       descripcionTipoReclamoFrecuente:
-        result[0][0].descripcionTipoRreclamoFrecuente, //modificado para que coincida con el nombre de la bd
-      cantidadTipoReclamoFrecuente: result[0][0].cantidadTipoRreclamoFrecuente, //modificado para que coincida con el nombre de la bd
+        result[0][0].descripcionTipoReclamoFrecuente, //modificado para que coincida con el nombre de la bd
+      cantidadTipoReclamoFrecuente: result[0][0].cantidadTipoReclamoFrecuente, //modificado para que coincida con el nombre de la bd
     };
 
     return datosReporte;

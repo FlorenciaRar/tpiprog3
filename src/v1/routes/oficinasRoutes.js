@@ -1,22 +1,44 @@
 import express from "express";
 import OficinasController from "../../controllers/oficinasController.js";
+import { manejarErrores } from "../../middlewares/manejarErrores.js";
+import { validarAgregarQuitarEmpleado, validarOficinas } from "../../middlewares/validaciones.js";
 
 const router = express.Router();
 
 const oficinasController = new OficinasController();
 
-router.get("/", oficinasController.buscarTodos);
-router.get("/:idOficina", oficinasController.buscarId);
-router.post("/", oficinasController.crear);
-router.patch("/:idOficina", oficinasController.modificar);
+router.get("/", oficinasController.buscarTodos
+  /*
+  #swagger.description = 'Buscar todas la oficinas'  
+  #swagger.path = '/oficinas'
+  */
+);
 
-// Empleados por oficina
-router.get("/:idOficina/empleados/", oficinasController.buscarEmpleados);
+router.get("/:idOficina", oficinasController.buscarId
+  //#swagger.description = 'Buscar oficina por ID'
+);
 
-// Agregar empleado a oficina
-// router.post("/empleados/", oficinasController.agregarEmpleados);
+router.post("/", validarOficinas, manejarErrores, oficinasController.crear
+  /*
+  #swagger.description = 'Crear oficina'
+  #swagger.path = '/oficinas'
+  */
+);
 
-// Quitar empleado de oficina
-// router.patch("/empleados/", oficinasController.quitarEmpleados);
+router.patch("/:idOficina", manejarErrores, oficinasController.modificar
+  //#swagger.description = 'Modificar oficina'
+);
+
+router.get("/:idOficina/empleados/", oficinasController.buscarEmpleados
+  //#swagger.description = 'Empleaddos por oficina'
+); // Empleados por oficina
+
+router.post("/agregar/empleados/", validarAgregarQuitarEmpleado, manejarErrores, oficinasController.agregarEmpleados
+  //#swagger.description = 'Agregar empleado a oficina'
+); // Agregar empleado a oficina
+
+router.patch("/quitar/empleados/", validarAgregarQuitarEmpleado, manejarErrores, oficinasController.quitarEmpleados
+  //#swagger.description = 'Quitar empleado de oficina'
+); // Quitar empleado de oficina
 
 export { router };

@@ -27,11 +27,11 @@ export default class ReclamosTipoController {
     }
     try {
       const reclamoTipo = await this.service.buscarId(idReclamoTipo);
-
-      res.status(200).send({
-        estado: "OK",
-        data: reclamoTipo,
-      });
+      if (!reclamoTipo) {
+        res.status(404).send({ estado: "ERROR", mensaje: "ReclamoTipo no encontrado" });
+      } else {
+        res.status(200).send({ estado: "OK", data: reclamoTipo });
+      }
     } catch (error) {
       res.status(500).send({
         mensaje: "Ha ocurrido un error. Intentelo de nuevo más tarde",
@@ -41,13 +41,6 @@ export default class ReclamosTipoController {
 
   crear = async (req, res) => {
     const { descripcion } = req.body;
-
-    if (!descripcion) {
-      return res.status(400).send({
-        estado: "ERROR",
-        mensaje: "Descripción requerida",
-      });
-    }
 
     try {
       const reclamoTipo = { descripcion };
@@ -66,7 +59,14 @@ export default class ReclamosTipoController {
 
   modificar = async (req, res) => {
     const idReclamoTipo = req.params.idReclamoTipo;
-    const {descripcion, activo} = req.body;
+    const datos = req.body;
+
+    if (!Object.keys(datos).length) {
+      return res.status(400).send({
+        estado: "ERROR",
+        mensaje: "Debe modificar al menos un campo",
+      });
+    }
 
     if (idReclamoTipo === undefined || idReclamoTipo === null) {
       return res.status(400).send({
@@ -74,30 +74,18 @@ export default class ReclamosTipoController {
         mensaje: "Id requerida",
       });
     }
-    if (!descripcion) {
-      return res.status(400).send({
-        estado: "ERROR",
-        mensaje: "Descripción requerida",
-      });
-    }
-    if (activo === undefined || activo === null) {
-      return res.status(400).send({
-        estado: "ERROR",
-        mensaje: "Campo activo requerido",
-      });
-    }
 
     try {
-      const modificacionReclamoTipo = await this.service.modificar(idReclamoTipo, { descripcion, activo });
-      res.status(200).send({
-        estado: "OK",
-        data: modificacionReclamoTipo,
-      });
+      const modificacionReclamoTipo = await this.service.modificar(idReclamoTipo, datos);
+      if (!modificacionReclamoTipo.estado) {
+        res.status(400).send({ estado: "ERROR", mensaje: modificacionReclamoTipo.mensaje });
+      } else {
+        res.status(200).send({ estado: "OK", data: modificacionReclamoTipo.data });
+      }
     } catch (error) {
       res.status(500).send({
         mensaje: "Ha ocurrido un error. Intentelo de nuevo más tarde",
       });
     }
   };
-
 }

@@ -12,5 +12,5 @@ export const swaggerConfig ={
             },
         ],
     },
-    apis: ['./src/api/v1/*.js'], 
+    apis: ['./src/v1/routes/*.js'], 
 };

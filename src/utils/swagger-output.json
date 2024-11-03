@@ -7,9 +7,7 @@
   },
   "host": "localhost:3555",
   "basePath": "/api/v1",
-  "schemes": [
-    "http"
-  ],
+  "schemes": ["http"],
   "paths": {
     "/login": {
       "post": {
@@ -33,9 +31,7 @@
     "/": {
       "get": {
         "description": "Descargar CSV",
-        "produces": [
-          "text/csv"
-        ],
+        "produces": ["text/csv"],
         "responses": {
           "200": {
             "description": "OK"

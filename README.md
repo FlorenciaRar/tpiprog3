@@ -1,4 +1,4 @@
-# Proyecto final integrador de programación 3 - Primera entrega
+# Proyecto final integrador de programación 3
 
 ## Integrantes:
 - Aquino, María Carla

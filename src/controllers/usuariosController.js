@@ -177,9 +177,14 @@ buscarImagen = async (req, res) => {
                 mensaje: "Imagen no encontrada",
             });
         }
-        console.log(imagePath);
-        //res.sendFile(imagePath);
-        res.status(200).send({ estado: "OK", data: usuario });
+
+        const usuarioYFoto = {
+          idUsuario:usuario.idUsuario,
+          imagePath:imagePath
+        }
+        
+        res.sendFile(imagePath);
+        //res.status(200).send({ estado: "OK", data: usuarioYFoto });
     } catch (error) {
       console.log(error);
         res.status(500).send({

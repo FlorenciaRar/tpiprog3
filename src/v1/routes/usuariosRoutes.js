@@ -41,7 +41,7 @@ router.post(
 */
 );
 router.patch(
-  "/:idUsuario",
+  "/",
   authenticateJWT,
   upload.single("imagen"),
   verificarTipoUsuario([1, 3]),

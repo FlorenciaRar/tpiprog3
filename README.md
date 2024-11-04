@@ -7,6 +7,9 @@
 - Romero, Ana Belén
 - Strugo, Florencia
 
+## Entrega final
+Para la entrega final del trabajo integrador se terminaron de programar todos los endpoints. Se trabajó en la autenticación, autorización y validación de los mismos. Se hizo énfasis en todos los controles que debe respetar cada endpoint para arrojar los resultados esperados. Al igual que en la primer entrega se buscó seguir las mejores prácticas desarrolladas a lo largo de la cursada.
+
 ## Primera entrega
 En esta primera entrega del trabajo final integrador se programaron la mayoría de los endpoints siguiendo los requerimientos de la consigna. Se separaron los archivos por tabla y por capa, teniendo en cuenta las mejores prácticas vistas en clase, quedando el trabajo separado en rutas, controladores, servicios y bases de datos. También se trabajó en el sistema de notificaciones.
 

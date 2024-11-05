@@ -34,7 +34,6 @@ router.patch(
 router.get(
   "/informe",
   verificarTipoUsuario([1]),
-  manejarErrores,
   reclamosController.informe
 );
 

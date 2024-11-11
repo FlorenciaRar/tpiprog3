@@ -29,7 +29,9 @@ export default class EmpleadosController {
       const empleado = await this.service.buscarId(idEmpleado);
 
       if (!empleado) {
-        res.status(404).send({ estado: "ERROR", mensaje: "Empleado no encontrado" });
+        res
+          .status(404)
+          .send({ estado: "ERROR", mensaje: "Empleado no encontrado" });
       } else {
         res.status(200).send({ estado: "OK", data: empleado });
       }
@@ -41,7 +43,8 @@ export default class EmpleadosController {
   };
 
   crear = async (req, res) => {
-    const { nombre, apellido, correoElectronico, contrasenia, imagen } = req.body;
+    const { nombre, apellido, correoElectronico, contrasenia, imagen } =
+      req.body;
     try {
       const empleado = {
         nombre,
@@ -53,7 +56,9 @@ export default class EmpleadosController {
       const creacionEmpleado = await this.service.crear(empleado);
 
       if (!creacionEmpleado.estado) {
-        res.status(400).send({ estado: "ERROR", mensaje: creacionEmpleado.mensaje });
+        res
+          .status(400)
+          .send({ estado: "ERROR", mensaje: creacionEmpleado.mensaje });
       } else {
         res.status(201).send({ estado: "OK", data: creacionEmpleado.data });
       }
@@ -95,7 +100,10 @@ export default class EmpleadosController {
         datos,
       });
       if (!modificacionEmpleado) {
-        res.status(400).send({ estado: "ERROR", mensaje: "El empleado no se pudo modificar" });
+        res.status(400).send({
+          estado: "ERROR",
+          mensaje: "El empleado no se pudo modificar",
+        });
       } else {
         res.status(200).send({ estado: "OK", data: modificacionEmpleado });
       }

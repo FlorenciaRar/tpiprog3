@@ -1,10 +1,12 @@
 import Oficinas from "../database/oficinas.js";
 import EmpleadosService from "./empleadosService.js";
+import InformeService from "./informeService.js";
 
 export default class OficinasService {
   constructor() {
     this.oficinas = new Oficinas();
     this.empleadosService = new EmpleadosService();
+    this.informeEmpleados = new InformeService();
   }
 
   buscarTodos = (oficinaQuerys) => {
@@ -52,7 +54,10 @@ export default class OficinasService {
       }
     }
 
-    return await this.oficinas.agregarEmpleados({ idOficina, empleadosExistentes });
+    return await this.oficinas.agregarEmpleados({
+      idOficina,
+      empleadosExistentes,
+    });
   };
 
   quitarEmpleados = async ({ idOficina, empleados }) => {
@@ -68,6 +73,29 @@ export default class OficinasService {
       }
     }
 
-    return await this.oficinas.quitarEmpleados({ idOficina, empleadosExistentes });
+    return await this.oficinas.quitarEmpleados({
+      idOficina,
+      empleadosExistentes,
+    });
+  };
+
+  contarUsuariosPorOficina = async () => {
+    const empleadoReporte = await this.oficinas.contarUsuariosPorOficina();
+    console.log(empleadoReporte);
+    const pdf = await this.informeEmpleados.informeEmpleadosPdf(
+      empleadoReporte
+    );
+
+    return {
+      //datos binarios del archivo pdf
+      buffer: pdf,
+      //cabecera de respuesta al cliente
+      headers: {
+        "Content-Type": "application/pdf",
+
+        //inline significa que el cliente va a intentar abrir el pdf
+        "Content-Disposition": 'inline; filename="reporte.pdf"',
+      },
+    };
   };
 }

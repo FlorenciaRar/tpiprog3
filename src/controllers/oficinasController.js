@@ -1,5 +1,7 @@
 import OficinasService from "../services/oficinasService.js";
 
+const formatosPermitidos = ["pdf"];
+
 export default class oficinasController {
   constructor() {
     this.service = new OficinasService();
@@ -35,7 +37,9 @@ export default class oficinasController {
       const oficina = await this.service.buscarId(idOficina);
 
       if (!oficina) {
-        res.status(404).send({ estado: "ERROR", mensaje: "Oficina no encontrada" });
+        res
+          .status(404)
+          .send({ estado: "ERROR", mensaje: "Oficina no encontrada" });
       } else {
         res.status(200).send({ estado: "OK", data: oficina });
       }
@@ -83,7 +87,10 @@ export default class oficinasController {
     }
 
     try {
-      const modificacionOficina = await this.service.modificar(idOficina, datos);
+      const modificacionOficina = await this.service.modificar(
+        idOficina,
+        datos
+      );
 
       res.status(200).send({
         estado: "OK",
@@ -105,7 +112,10 @@ export default class oficinasController {
       if (empleadosOficina.length > 0) {
         res.status(200).send({ estado: "OK", data: empleadosOficina });
       } else {
-        res.status(404).send({ estado: "OK", mensaje: "No se han encontrado empleados para esta oficina" });
+        res.status(404).send({
+          estado: "OK",
+          mensaje: "No se han encontrado empleados para esta oficina",
+        });
       }
     } catch (error) {
       res.status(500).send({
@@ -122,11 +132,17 @@ export default class oficinasController {
         idOficina,
         empleados,
       };
-      const nuevoOficinaEmpleados = await this.service.agregarEmpleados(oficinaEmpleados);
+      const nuevoOficinaEmpleados = await this.service.agregarEmpleados(
+        oficinaEmpleados
+      );
       if (nuevoOficinaEmpleados.estado) {
-        res.status(200).send({ estado: "OK", mensaje: nuevoOficinaEmpleados.mensaje });
+        res
+          .status(200)
+          .send({ estado: "OK", mensaje: nuevoOficinaEmpleados.mensaje });
       } else {
-        res.status(404).send({ estado: "ERROR", mensaje: nuevoOficinaEmpleados.mensaje });
+        res
+          .status(404)
+          .send({ estado: "ERROR", mensaje: nuevoOficinaEmpleados.mensaje });
       }
     } catch (error) {
       res.status(500).send({
@@ -144,17 +160,44 @@ export default class oficinasController {
         empleados,
       };
 
-      const nuevoOficinaEmpleados = await this.service.quitarEmpleados(oficinaEmpleados);
+      const nuevoOficinaEmpleados = await this.service.quitarEmpleados(
+        oficinaEmpleados
+      );
       if (nuevoOficinaEmpleados.estado) {
-        res.status(200).send({ estado: "OK", mensaje: nuevoOficinaEmpleados.mensaje });
+        res
+          .status(200)
+          .send({ estado: "OK", mensaje: nuevoOficinaEmpleados.mensaje });
       } else {
-        res.status(404).send({ estado: "ERROR", mensaje: nuevoOficinaEmpleados.mensaje });
+        res
+          .status(404)
+          .send({ estado: "ERROR", mensaje: nuevoOficinaEmpleados.mensaje });
       }
     } catch (error) {
       res.status(500).send({
         estado: "ERROR",
         mensaje: "Ha ocurrido un error. Intentelo de nuevo más tarde",
       });
+    }
+  };
+
+  contarUsuariosPorOficina = async (req, res) => {
+    try {
+      const formato = req.query.formato;
+
+      if (!formato || !formatosPermitidos.includes(formato)) {
+        return res.status(400).send({
+          estado: "ERROR",
+          mensaje: "Formato invalido para el reporte de empleados",
+        });
+      }
+
+      const { buffer, headers } = await this.service.contarUsuariosPorOficina();
+
+      res.set(headers);
+      res.status(200).end(buffer);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ mensaje: "Error al obtener las estadísticas" });
     }
   };
 }

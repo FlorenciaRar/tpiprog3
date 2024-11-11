@@ -56,7 +56,40 @@ export default class InformeService {
     });
 
     await csvWriter.writeRecords(datosReporte);
-  
+
     return ruta;
+  };
+
+  informeEmpleadosPdf = async (datosReporte) => {
+    try {
+      const filePath = path.join(
+        __dirname,
+        "../utils/plantilla-informeEmpleados.html"
+      );
+      const htmlTemplate = fs.readFileSync(filePath, "utf8");
+
+      const template = handlebars.compile(htmlTemplate);
+      const htmlFinal = template(datosReporte);
+      console.log("datosReporte", datosReporte);
+
+      const browser = await puppeteer.launch();
+
+      const page = await browser.newPage();
+
+      await page.setContent(htmlFinal, { waitUntil: "load" });
+
+      const pdfBuffer = await page.pdf({
+        format: "A4",
+        printBackground: true,
+        margin: { top: "10px", bottom: "10px" },
+      });
+
+      await browser.close();
+
+      return pdfBuffer;
+    } catch (error) {
+      console.error("Error generando PDF:", error);
+      throw error;
+    }
   };
 }

@@ -19,15 +19,16 @@ export default class Oficinas {
     return resultado.length > 0 ? resultado[0] : null;
   };
 
-  buscarOficinaPorReclamoTipo = async (idReclamoTipo) =>{
+  buscarOficinaPorReclamoTipo = async (idReclamoTipo) => {
     const sql =
       "SELECT o.idOficina, o.nombre, o.idReclamoTipo FROM oficinas AS o WHERE idReclamoTipo = ? AND o.activo = 1";
     const [resultado] = await conexion.query(sql, [idReclamoTipo]);
     return resultado.length > 0 ? resultado[0] : null;
-  }
+  };
 
   crear = async ({ nombre, idReclamoTipo }) => {
-    const sql = "INSERT INTO oficinas (nombre, idReclamoTipo, activo) VALUES  (?, ?, 1);";
+    const sql =
+      "INSERT INTO oficinas (nombre, idReclamoTipo, activo) VALUES  (?, ?, 1);";
     const [resultado] = await conexion.query(sql, [nombre, idReclamoTipo]);
 
     if (resultado.affectedRows === 0) {
@@ -66,10 +67,16 @@ export default class Oficinas {
         empleadosAgregados.push(empleado);
       }
       await conexion.commit();
-      return { estado: true, mensaje: `${empleadosAgregados.length} empleados agregados` };
+      return {
+        estado: true,
+        mensaje: `${empleadosAgregados.length} empleados agregados`,
+      };
     } catch (error) {
       await conexion.rollback();
-      return { estado: false, mensaje: "Ocurrió un error agregando empleados a la oficina" };
+      return {
+        estado: false,
+        mensaje: "Ocurrió un error agregando empleados a la oficina",
+      };
     }
   };
 
@@ -80,15 +87,41 @@ export default class Oficinas {
 
       for (const empleado of empleadosExistentes) {
         const sql = `UPDATE usuarios_oficinas SET activo = 0 WHERE idUsuario = ? AND idOficina = ?;`;
-        const resultado = conexion.query(sql, [empleado.idUsuario, idOficina]);
+        const resultado = await conexion.query(sql, [
+          empleado.idUsuario,
+          idOficina,
+        ]); // Agregado await
+
         empleadosQuitados += 1;
       }
+
       await conexion.commit();
-      return { estado: true, mensaje: `${empleadosQuitados} empleados quitados con exito!` };
+
+      return {
+        estado: true,
+        mensaje: `${empleadosQuitados} empleados quitados con éxito!`,
+      };
     } catch (error) {
       await conexion.rollback();
-      console.log(error);
-      return { estado: false, mensaje: "Ocurrió un error quitando empleados a la oficina" };
+      console.log("Error:", error);
+      return {
+        estado: false,
+        mensaje: "Ocurrió un error quitando empleados a la oficina",
+      };
     }
+  };
+
+  //Metodo agregado para Recuperatorio ,  * Para el perfil de administrador: estadística de cantidad de usuarios por oficina*.
+  contarUsuariosPorOficina = async () => {
+    const sql = `
+    SELECT o.idOficina, o.nombre AS oficina, COUNT(u.idUsuario) AS cantidadUsuarios
+    FROM oficinas o
+    LEFT JOIN usuarios_oficinas uo ON o.idOficina = uo.idOficina
+    LEFT JOIN usuarios u ON uo.idUsuario = u.idUsuario
+    WHERE u.idUsuarioTipo = 2 AND u.activo = 1
+    GROUP BY o.idOficina, o.nombre;
+  `;
+    const [resultado] = await conexion.query(sql);
+    return resultado;
   };
 }

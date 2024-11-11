@@ -1,8 +1,14 @@
 import { conexion } from "./conexion.js";
 
+//Hice esta modificacion para obtener a que oficina pertenece cada Empleado
 export default class Empleados {
   buscarTodos = async () => {
-    const sql = "SELECT idUsuario, nombre, apellido, correoElectronico FROM usuarios WHERE idUsuarioTipo = 2 AND activo = 1;";
+    const sql = `
+      SELECT u.idUsuario, u.nombre, u.apellido, u.correoElectronico, u.idUsuarioTipo, uo.idOficina
+      FROM usuarios u
+      LEFT JOIN usuarios_oficinas uo ON u.idUsuario = uo.idUsuario
+      WHERE u.idUsuarioTipo = 2 AND u.activo = 1;
+    `;
     const [resultado] = await conexion.query(sql);
     return resultado;
   };
@@ -14,17 +20,29 @@ export default class Empleados {
     return resultado.length > 0 ? resultado[0] : null;
   };
 
-  buscarEnOficina = async ( idUsuario, idOficina ) => {
+  buscarEnOficina = async (idUsuario, idOficina) => {
     const sql =
       "SELECT u.idUsuario, u.nombre, u.apellido, u.correoElectronico, u.idUsuarioTipo, o.idOficina, o.nombre AS 'oficina' FROM usuarios AS u JOIN usuarios_oficinas AS uo ON u.idUsuario = uo.idUsuario JOIN oficinas AS o ON uo.idOficina = o.idOficina WHERE uo.idUsuario = ? AND uo.idOficina = ? AND uo.activo = 1;";
     const [resultado] = await conexion.query(sql, [idUsuario, idOficina]);
     return resultado.length > 0 ? resultado[0] : null;
   };
 
-  crear = async ({ nombre, apellido, correoElectronico, contrasenia, imagen }) => {
+  crear = async ({
+    nombre,
+    apellido,
+    correoElectronico,
+    contrasenia,
+    imagen,
+  }) => {
     const sql =
       "INSERT INTO usuarios (nombre, apellido, correoElectronico, contrasenia, idUsuarioTipo, imagen, activo) VALUES  (?, ?, ?, SHA2(?, 256), 2, ?, 1);";
-    const [resultado] = await conexion.query(sql, [nombre, apellido, correoElectronico, contrasenia, imagen]);
+    const [resultado] = await conexion.query(sql, [
+      nombre,
+      apellido,
+      correoElectronico,
+      contrasenia,
+      imagen,
+    ]);
     if (resultado.affectedRows === 0) {
       return "Ocurrió un error creando el empleado";
     }

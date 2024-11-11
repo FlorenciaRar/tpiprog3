@@ -2,7 +2,11 @@ import express from "express";
 import UsuariosController from "../../controllers/usuariosController.js";
 import { verificarTipoUsuario } from "../../middlewares/roleMiddleware.js";
 import { manejarErrores } from "../../middlewares/manejarErrores.js";
-import { validarIdUsuario, validarUsuarios, validarCambioContrasenia } from "../../middlewares/validaciones.js";
+import {
+  validarIdUsuario,
+  validarUsuarios,
+  validarCambioContrasenia,
+} from "../../middlewares/validaciones.js";
 import { authenticateJWT } from "../../middlewares/authMiddleware.js";
 import { upload } from "../../config/multer.js";
 

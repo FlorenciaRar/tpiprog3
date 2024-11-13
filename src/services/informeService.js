@@ -60,7 +60,7 @@ export default class InformeService {
     return ruta;
   };
 
-  informeEmpleadosPdf = async (datosReporte) => {
+  informeEmpleadosPdf = async (empleadoReporte) => {
     try {
       const filePath = path.join(
         __dirname,
@@ -69,8 +69,8 @@ export default class InformeService {
       const htmlTemplate = fs.readFileSync(filePath, "utf8");
 
       const template = handlebars.compile(htmlTemplate);
-      const htmlFinal = template(datosReporte);
-      console.log("datosReporte", datosReporte);
+      const htmlFinal = template(empleadoReporte);
+      console.log("datosReporte", empleadoReporte);
 
       const browser = await puppeteer.launch();
 

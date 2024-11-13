@@ -184,7 +184,7 @@ export default class oficinasController {
     try {
       const formato = req.query.formato;
 
-      if (!formato || !formatosPermitidos.includes(formato)) {
+      if (!formato || !formatosPermitidos.includes(formato.toLowerCase())) {
         return res.status(400).send({
           estado: "ERROR",
           mensaje: "Formato invalido para el reporte de empleados",

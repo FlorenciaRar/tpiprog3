@@ -45,6 +45,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/v1/", authRoutes);
+app.use("/api/v1/registrarse", v1UsuariosRouter); //Ruta para acceder a la creación de usuarios solicitada en el Recuperatorio
 app.use("/api/v1/reclamos-estado", authenticateJWT, verificarTipoUsuario([1]), v1ReclamosEstadoRouter);
 app.use("/api/v1/reclamos-tipo", authenticateJWT, verificarTipoUsuario([1]), v1ReclamosTipoRouter);
 app.use("/api/v1/oficinas", authenticateJWT, verificarTipoUsuario([1]), v1OficinasRouter);

@@ -76,4 +76,12 @@ router.patch(
   usuariosController.modificarContrasenia
 );
 
+//Creacion de usuario solicitado para el Recuperatorio\
+//se utiliza el usuariosController.crear para reutilizar el codigo ya creado
+router.post(
+  "/nuevo-usuario",
+  upload.single("imagen"),
+  usuariosController.crear
+);
+
 export { router };

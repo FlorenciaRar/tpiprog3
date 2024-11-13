@@ -81,7 +81,6 @@ export default class OficinasService {
 
   contarUsuariosPorOficina = async () => {
     const empleadoReporte = await this.oficinas.contarUsuariosPorOficina();
-    console.log(empleadoReporte);
     const pdf = await this.informeEmpleados.informeEmpleadosPdf(
       empleadoReporte
     );

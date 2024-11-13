@@ -84,11 +84,16 @@ export default class ReclamosService {
       };
     }
 
-    const oficina = await this.oficinasService.buscarOficinaPorReclamoTipo(reclamo.idReclamoTipo);
+    const oficina = await this.oficinasService.buscarOficinaPorReclamoTipo(
+      reclamo.idReclamoTipo
+    );
 
-    const empleado = await this.empleadosService.buscarEnOficina(idUsuario, oficina.idOficina);
+    const empleado = await this.empleadosService.buscarEnOficina(
+      idUsuario,
+      oficina.idOficina
+    );
 
-    if(!empleado){
+    if (!empleado) {
       return {
         estado: false,
         mensaje: "El empleado no puede modificar este reclamo",
@@ -171,9 +176,9 @@ export default class ReclamosService {
     if (!datosReporte || datosReporte.length === 0) {
       return { estado: false, mensaje: "Sin datos para el reporte" };
     }
-    
+
     const csv = await this.informes.informeReclamoCsv(datosReporte);
- 
+
     return {
       path: csv,
       headers: {

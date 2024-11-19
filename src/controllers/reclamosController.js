@@ -7,14 +7,19 @@ export default class ReclamosController {
     this.service = new ReclamosService();
   }
 
+  // Servicio que utiliza la base de datos
   buscarTodos = async (req, res) => {
     const { limit, offset } = req.query;
-    const querys = {
-      limite: limit ? Number(limit) : 0,
-      desplazamiento: offset ? Number(offset) : 0,
-    };
+
+    // Asegurarse de que son números válidos
+    const limite = limit ? Number(limit) : 10; // Por defecto, 10 resultados por página
+    const desplazamiento = offset ? Number(offset) * limite : 0; // Calcula el desplazamiento
+
     try {
-      const reclamos = await this.service.buscarTodos(querys);
+      const reclamos = await this.service.buscarTodos({
+        limite,
+        desplazamiento,
+      });
       res.status(200).send({ estado: "OK", data: reclamos });
     } catch (error) {
       console.log(error);

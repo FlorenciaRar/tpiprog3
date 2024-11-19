@@ -14,11 +14,17 @@ RECLAMO,TIPO,ESTADO,FECHA CREADO,CLIENTE
 29,Falla de motor,Creado,2024-11-10 12:10:02,Gaston modificacion Bordet
 30,Falla de motor,Creado,2024-11-10 12:17:34,Gaston modificacion Bordet
 31,Falla de frenos,Creado,2024-11-10 12:25:52,Gaston modificacion Bordet
+37,Reembolso,Creado,2024-11-19 14:16:13,Usuario Nuevo Segundo
+38,Reemplazo de piezas,Creado,2024-11-19 14:16:39,Usuario Nuevo Segundo
+39,Reembolso,Creado,2024-11-19 14:16:52,Usuario Nuevo Segundo
+40,Aprobación de cobertura,Creado,2024-11-19 14:17:02,Usuario Nuevo Segundo
 10,Aprobación de cobertura,En Proceso,2024-08-15 09:00:00,Khal Drogo
 11,Falla de suspensión,En Proceso,2024-08-15 15:00:00,Catelyn Stark
+35,Falla de motor,En Proceso,2024-11-19 14:09:27,Usuario Nuevo Segundo
 16,Falla de frenos,Cancelado,2024-08-15 10:30:00,Yara Greyjoy
 23,Falla de frenos,Cancelado,2024-11-09 18:42:13,Gaston modificacion Bordet
 24,Falla de frenos,Cancelado,2024-11-09 19:08:39,Gaston modificacion Bordet
 25,Falla de frenos,Cancelado,2024-11-09 19:38:53,Gaston modificacion Bordet
 33,Reembolso,Cancelado,2024-11-11 14:58:03,Gaston modificacion Bordet
 34,Falla de motor,Cancelado,2024-11-11 15:42:50,Gaston modificacion Bordet
+36,Falla de motor,Cancelado,2024-11-19 14:09:53,Usuario Nuevo Segundo

@@ -1,7 +1,7 @@
 import UsuariosService from "../services/usuariosService.js";
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -35,7 +35,9 @@ export default class usuariosController {
       const usuario = await this.service.buscarId(idUsuario);
 
       if (!usuario) {
-        res.status(404).send({ estado: "ERROR", mensaje: "Usuario no encontrado" });
+        res
+          .status(404)
+          .send({ estado: "ERROR", mensaje: "Usuario no encontrado" });
       } else {
         res.status(200).send({ estado: "OK", data: usuario });
       }
@@ -46,9 +48,9 @@ export default class usuariosController {
     }
   };
 
-  crear = async (req, res) => {   
-    
-    const { nombre, apellido, correoElectronico, contrasenia, imagen } = req.body;
+  crear = async (req, res) => {
+    const { nombre, apellido, correoElectronico, contrasenia, imagen } =
+      req.body;
     try {
       const usuario = {
         nombre,
@@ -60,7 +62,9 @@ export default class usuariosController {
       const creacionUsuario = await this.service.crear(usuario);
 
       if (!creacionUsuario.estado) {
-        res.status(400).send({ estado: "ERROR", mensaje: creacionUsuario.mensaje });
+        res
+          .status(400)
+          .send({ estado: "ERROR", mensaje: creacionUsuario.mensaje });
       } else {
         res.status(201).send({ estado: "OK", data: creacionUsuario.data });
       }
@@ -73,15 +77,15 @@ export default class usuariosController {
 
   modificar = async (req, res) => {
     const idUsuario = req.user.idUsuario;
-    const imagen  = req.file ? req.file.filename : null;            
-    const datos = { ...req.body, imagen};
+    const imagen = req.file ? req.file.filename : null;
+    const datos = { ...req.body, imagen };
 
     if (req.fileValidationError) {
       return res.status(400).send({
-          estado: "ERROR",
-          mensaje: req.fileValidationError
+        estado: "ERROR",
+        mensaje: req.fileValidationError,
       });
-  }
+    }
 
     if (!Object.keys(datos).length) {
       return res.status(400).send({
@@ -110,7 +114,10 @@ export default class usuariosController {
         datos,
       });
       if (!modificacionUsuario.estado) {
-        res.status(404).send({ estado: "ERROR", mensaje: "El usuario no se pudo modificar" });
+        res.status(404).send({
+          estado: "ERROR",
+          mensaje: "El usuario no se pudo modificar",
+        });
       } else {
         res.status(200).send({ estado: "OK", data: modificacionUsuario.data });
       }
@@ -139,7 +146,10 @@ export default class usuariosController {
         datos,
       });
       if (!modificacionUsuario.estado) {
-        res.status(404).send({ estado: "ERROR", mensaje: "No se pudo modificar la contrasenia" });
+        res.status(404).send({
+          estado: "ERROR",
+          mensaje: "No se pudo modificar la contrasenia",
+        });
       } else {
         res.status(200).send({ estado: "OK", data: modificacionUsuario.data });
       }
@@ -151,42 +161,41 @@ export default class usuariosController {
     }
   };
 
-buscarImagen = async (req, res) => {
-    const idUsuario = req.params.idUsuario;    
+  buscarImagen = async (req, res) => {
+    const idUsuario = req.params.idUsuario;
     if (!idUsuario) {
-        return res.status(400).send({
-            estado: "ERROR",
-            mensaje: "Datos requeridos",
-        });
+      return res.status(400).send({
+        estado: "ERROR",
+        mensaje: "Datos requeridos",
+      });
     }
 
     try {
-        const usuario = await this.service.buscarImagen(idUsuario);        
-        if (!usuario || !usuario.imagen) {
-            return res.status(404).send({
-                estado: "ERROR",
-                mensaje: "Usuario o imagen no encontrado",
-            });
-        }
-        //comprueba que el archivo exista en el directorio
-        const imagePath = path.join(__dirname, '..', 'publico', usuario.imagen);
+      const usuario = await this.service.buscarImagen(idUsuario);
+      if (!usuario || !usuario.imagen) {
+        return res.status(404).send({
+          estado: "ERROR",
+          mensaje: "Usuario o imagen no encontrado",
+        });
+      }
+      //comprueba que el archivo exista en el directorio
+      const imagePath = path.join(__dirname, "..", "public", usuario.imagen);
 
-        if (!fs.existsSync(imagePath)) {
-            return res.status(404).send({
-                estado: "ERROR",
-                mensaje: "Imagen no encontrada",
-            });
-        }
-        console.log(imagePath);
-        //res.sendFile(imagePath);
-        res.status(200).send({ estado: "OK", data: usuario });
+      if (!fs.existsSync(imagePath)) {
+        return res.status(404).send({
+          estado: "ERROR",
+          mensaje: "Imagen no encontrada",
+        });
+      }
+      console.log(imagePath);
+      //res.sendFile(imagePath);
+      res.status(200).send({ estado: "OK", data: usuario });
     } catch (error) {
       console.log(error);
-        res.status(500).send({
-            estado: "ERROR",
-            mensaje: "Ha ocurrido un error. Intentelo de nuevo más tarde",
-        });
+      res.status(500).send({
+        estado: "ERROR",
+        mensaje: "Ha ocurrido un error. Intentelo de nuevo más tarde",
+      });
     }
-};
-  
+  };
 }

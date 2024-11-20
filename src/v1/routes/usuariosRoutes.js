@@ -44,6 +44,16 @@ router.post(
 #swagger.path = '/usuarios'
 */
 );
+
+router.patch(
+  "/contrasenia/",
+  authenticateJWT,
+  verificarTipoUsuario([1, 3]),
+  validarCambioContrasenia,
+  manejarErrores,
+  usuariosController.modificarContrasenia
+);
+
 router.patch(
   "/:idUsuario",
   authenticateJWT,
@@ -65,15 +75,6 @@ router.get(
   manejarErrores,
   usuariosController.buscarImagen
   //#swagger.description = 'Buscar imagen por usuario por ID'
-);
-
-router.patch(
-  "/contrasenia/",
-  authenticateJWT,
-  verificarTipoUsuario([1, 3]),
-  validarCambioContrasenia,
-  manejarErrores,
-  usuariosController.modificarContrasenia
 );
 
 //Creacion de usuario solicitado para el Recuperatorio\

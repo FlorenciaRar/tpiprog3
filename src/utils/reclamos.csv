@@ -18,6 +18,7 @@ RECLAMO,TIPO,ESTADO,FECHA CREADO,CLIENTE
 38,Reemplazo de piezas,Creado,2024-11-19 14:16:39,Usuario Nuevo Segundo
 39,Reembolso,Creado,2024-11-19 14:16:52,Usuario Nuevo Segundo
 40,Aprobación de cobertura,Creado,2024-11-19 14:17:02,Usuario Nuevo Segundo
+41,Falla de motor,Creado,2024-11-19 22:27:04,Gaston modificacion Bordet
 10,Aprobación de cobertura,En Proceso,2024-08-15 09:00:00,Khal Drogo
 11,Falla de suspensión,En Proceso,2024-08-15 15:00:00,Catelyn Stark
 35,Falla de motor,En Proceso,2024-11-19 14:09:27,Usuario Nuevo Segundo

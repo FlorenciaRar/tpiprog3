@@ -2,21 +2,35 @@ import { conexion } from "./conexion.js";
 
 export default class Usuarios {
   buscarTodos = async () => {
-    const sql = "SELECT idUsuario,nombre, apellido, correoElectronico FROM usuarios WHERE activo = 1;";
+    const sql =
+      "SELECT idUsuario,nombre, apellido, correoElectronico FROM usuarios WHERE activo = 1;";
     const [resultado] = await conexion.query(sql);
     return resultado;
   };
 
   buscarId = async (idUsuario) => {
-    const sql = "SELECT idUsuario, nombre, apellido, correoElectronico, idUsuarioTipo FROM usuarios WHERE idUsuario = ? AND activo = 1;";
+    const sql =
+      "SELECT idUsuario, nombre, apellido, correoElectronico, idUsuarioTipo FROM usuarios WHERE idUsuario = ? AND activo = 1;";
     const [resultado] = await conexion.query(sql, [idUsuario]);
     return resultado.length > 0 ? resultado[0] : null;
   };
 
-  crear = async ({ nombre, apellido, correoElectronico, contrasenia, imagen }) => {
+  crear = async ({
+    nombre,
+    apellido,
+    correoElectronico,
+    contrasenia,
+    imagen,
+  }) => {
     const sql =
       "INSERT INTO usuarios (nombre, apellido, correoElectronico, contrasenia, idUsuarioTipo, imagen, activo) VALUES  (?, ?, ?, SHA2(?, 256), 3, ?, 1);";
-    const [resultado] = await conexion.query(sql, [nombre, apellido, correoElectronico, contrasenia, imagen]);
+    const [resultado] = await conexion.query(sql, [
+      nombre,
+      apellido,
+      correoElectronico,
+      contrasenia,
+      imagen,
+    ]);
 
     if (resultado.affectedRows === 0) {
       return "Ocurrió un error creando el usuario";
@@ -36,7 +50,8 @@ export default class Usuarios {
   };
 
   modificarContrasenia = async ({ datos, idUsuario }) => {
-    const sql = "UPDATE usuarios SET contrasenia = SHA2(?, 256) WHERE idUsuario = ? AND activo = 1";
+    const sql =
+      "UPDATE usuarios SET contrasenia = SHA2(?, 256) WHERE idUsuario = ? AND activo = 1";
     const [resultado] = await conexion.query(sql, [datos, idUsuario]);
 
     if (resultado.affectedRows === 0) {
@@ -53,13 +68,15 @@ export default class Usuarios {
   };
 
   buscarImagen = async (idUsuario) => {
-    const sql = "SELECT idUsuario, imagen FROM usuarios WHERE idUsuario = ? AND activo = 1;";
+    const sql =
+      "SELECT idUsuario, imagen FROM usuarios WHERE idUsuario = ? AND activo = 1;";
     const [resultado] = await conexion.query(sql, [idUsuario]);
     return resultado.length > 0 ? resultado[0] : null;
   };
 
   buscarUsuarioPorMail = async (correo) => {
-    const sql = "SELECT idUsuario, nombre, apellido, correoElectronico, idUsuarioTipo FROM usuarios WHERE correoElectronico = ? AND activo = 1;";
+    const sql =
+      "SELECT idUsuario, nombre, apellido, correoElectronico, idUsuarioTipo FROM usuarios WHERE correoElectronico = ? AND activo = 1;";
     const [resultado] = await conexion.query(sql, [correo]);
     return resultado.length > 0 ? resultado[0] : null;
   };
